@@ -12,7 +12,8 @@ When visiting the EO DataHub in a web browser session authentication will be use
 
 To authenticate to the EO DataHub APIs, users should use an API token. API tokens can be managed using the interface in the Workspaces section of the web presence (not implemented yet).
 
-> **_Note_** > _Until the web interface for managing API tokens is ready, it is necessary to request them from an API. This API is not intended to be available to users in the final EO DataHub, and will be protected from public access once the web UI is available._
+> **_Note_** 
+> _Until the web interface for managing API tokens is ready, it is necessary to request them from an API. This API is not intended to be available to users in the final EO DataHub, and will be protected from public access once the web UI is available._
 >
 > _To request an API token, you must have access to a valid OIDC access token for your user. You can request one of these with a direct access grant to Keycloak's ODC endpoint:_
 >
@@ -48,6 +49,7 @@ Access to workspace contents can be managed both via a browser with a session co
 Unauthenticated requests will be redirected to Keycloak to sign in. Users may only access files in their own workspace or workspace groups that they are members of.
 
 An example request for accessing a workspace file is as follows:
+
 ```http
 GET /files/<bucket_name>/<path_to_file> HTTP/1.1
 Host: <workspace_name>.workspaces.test.eodhp.eco-ke-staging.com
@@ -56,14 +58,14 @@ Authorization: Bearer <api_token>
 
 #### S3 Bucket
 
-Workspace object stores, including saved catalogs and workflow outputs, are accessible at 
-```https://<workspace_name>.workspaces.test.eodhp.eco-ke-staging.com/files/<bucket_name>/<path_to_file>```.
+Workspace object stores, including saved catalogs and workflow outputs, are accessible at
+`https://<workspace_name>.workspaces.test.eodhp.eco-ke-staging.com/files/<bucket_name>/<path_to_file>`.
 The bucket name and path to workflow outputs may be obtained from ADES outputs.
 
 #### Block Storage
 
-Workspace block stores relevant to AppHub are accessible at 
-```https://<workspace_name>.workspaces.dev.eodhp.eco-ke-staging.com/files/workspaces/<path_to_file>```.
+Workspace block stores relevant to AppHub are accessible at
+`https://<workspace_name>.workspaces.dev.eodhp.eco-ke-staging.com/files/workspaces/<path_to_file>`.
 
 ## App Developers
 
