@@ -4,6 +4,11 @@ The EO DataHub platform has different ways to authenticate for different use cas
 
 ## Hub Users
 
+These authentication methods are applicable either when:
+
+- A user is interacting with the EO DataHub directly
+- A user's own code is interacting with the EO DataHub on the user's behalf
+
 ### Session Authentication
 
 When visiting the EO DataHub in a web browser session authentication will be used. The session can be started by using the "Sign In" link in the web presence. This will start a cookie based session that will be shared between all visits to \*.eodatahub.org.uk. The session will be terminated after 30 minutes of inactivity.
@@ -12,7 +17,8 @@ When visiting the EO DataHub in a web browser session authentication will be use
 
 To authenticate to the EO DataHub APIs, users should use an API token. API tokens can be managed using the interface in the Workspaces section of the web presence (not implemented yet).
 
-> **_Note_** 
+> **_Note_**
+>
 > _Until the web interface for managing API tokens is ready, it is necessary to request them from an API. This API is not intended to be available to users in the final EO DataHub, and will be protected from public access once the web UI is available._
 >
 > _To request an API token, you must have access to a valid OIDC access token for your user. You can request one of these with a direct access grant to Keycloak's ODC endpoint:_
@@ -45,7 +51,9 @@ You can request as many API tokens as you wish.
 
 ### Accessing Workspace
 
-Access to workspace contents can be managed both via a browser with a session cookie and through an API token as described in the API Tokens section. Preflighted API requests are also supported.
+Access to workspace contents can be managed both via a browser with a session cookie and through an API token as described in the API Tokens section. Note that the session cookie for workspaces is different from the cookie used for platform authentication.
+
+Preflighted API requests are also supported.
 Unauthenticated requests will be redirected to Keycloak to sign in. Users may only access files in their own workspace or workspace groups that they are members of.
 
 An example request for accessing a workspace file is as follows:
@@ -69,14 +77,20 @@ Workspace block stores relevant to AppHub are accessible at
 
 ## App Developers
 
-Keycloak clients can be set up by EO DataHub developers on behalf of application developers (one per app). Please notify the developers of the OIDC code flows you wish to utilise, as these are enabled on an individual basis.
+EO DataHub apps are tools which are not part of the EO DataHub itself, but which call EO DataHub APIs on behalf of hub users other than the application developer.
+
+OpenID Connect clients can be set up in Keycloak by EO DataHub developers on behalf of application developers (one per app). Please notify the developers of the OIDC code flows you wish to utilise, as these are enabled on an individual basis.
 
 The options in Keycloak are (OIDC terminology in brackets):
 
 - Standard flow (Authorization Code Flow)
-- Direct access grant (Resource Owner Password Credentials Grant)
-- Implicit flow (Implicit Flow)
+- Direct access grant (Resource Owner Password Credentials Grant) [deprecated]
+- Implicit flow (Implicit Flow) [deprecated]
 - Service account flow (Client Credentials Grant)
+
+> **_Note_**
+>
+> _The Resource Owner Password Credentials Grant and the Implicit Flow are both deprecated and should not normally be used. Most applications should use the Authorization Code flow._
 
 ### Frontend Applications
 
