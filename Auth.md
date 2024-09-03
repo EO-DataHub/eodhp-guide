@@ -44,9 +44,26 @@ You can request as many API tokens as you wish.
 
 ### Accessing Workspace
 
+Access to workspace contents can be managed both via a browser with a session cookie and through an API token as described in the API Tokens section. Preflighted API requests are also supported.
+Unauthenticated requests will be redirected to Keycloak to sign in. Users may only access files in their own workspace or workspace groups that they are members of.
+
+An example request for accessing a workspace file is as follows:
+```http
+GET /files/<bucket_name>/<path_to_file> HTTP/1.1
+Host: <workspace_name>.workspaces.test.eodhp.eco-ke-staging.com
+Authorization: Bearer <api_token>
+```
+
 #### S3 Bucket
 
+Workspace object stores, including saved catalogs and workflow outputs, are accessible at 
+```https://<workspace_name>.workspaces.test.eodhp.eco-ke-staging.com/files/<bucket_name>/<path_to_file>```.
+The bucket name and path to workflow outputs may be obtained from ADES outputs.
+
 #### Block Storage
+
+Workspace block stores relevant to AppHub are accessible at 
+```https://<workspace_name>.workspaces.dev.eodhp.eco-ke-staging.com/files/workspaces/<path_to_file>```.
 
 ## App Developers
 
