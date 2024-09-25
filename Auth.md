@@ -15,33 +15,12 @@ When visiting the EO DataHub in a web browser session authentication will be use
 
 ### API Tokens
 
-To authenticate to the EO DataHub APIs, users should use an API token. API tokens can be managed using the interface in the Workspaces section of the web presence (not implemented yet).
+To authenticate to the EO DataHub APIs, users should use an API token. API tokens can be managed using the interface in the Workspaces section of the web presence.
 
-> **_Note_**
->
-> _Until the web interface for managing API tokens is ready, it is necessary to request them from an API. This API is not intended to be available to users in the final EO DataHub, and will be protected from public access once the web UI is available._
->
-> _To request an API token, you must have access to a valid OIDC access token for your user. You can request one of these with a direct access grant to Keycloak's ODC endpoint:_
->
->     curl -L 'https://test.eodatahub.org.uk/keycloak/realms/eodhp/protocol/openid-connect/token' \
->         -H 'Content-Type: application/x-www-form-urlencoded' \
->         --d 'client_id=<client_id>' \
->         --d 'client_secret=<client_secret>' \
->         --d 'username=<username>' \
->         --d 'password=<password>' \
->         --d 'grant_type=password'
->
-> _With a valid access token, you can request an API token using:_
->
->     curl -L -X POST 'https://test.eodatahub.org.uk/api/tokens' \
->         -H 'Authorization: Bearer <access_token>'
->
-> _You should take note of the API token as you will not be able to retrieve it again (it will not appear in any GET requests)._
->
-> _The following endpoints are available to manage your tokens:_
->
-> - [GET, POST] https://test.eodatahub.org.uk/api/tokens
-> - [GET, DELETE] https://test.eodatahub.org.uk/api/tokens/<token_id>
+1. Log into EO DataHub
+2. Visit _Workspaces_ page from nav bar
+3. Under applications select DataHub API
+4. Create a new API Token
 
 API tokens act as offline access tokens. They are valid until deleted.
 
