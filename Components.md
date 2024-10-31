@@ -4,7 +4,8 @@
 
 ### Lead Developer
 
-- Alex Palmer
+- Tom Jellicoe
+- Mark Small (UI)
 
 ### Repositories
 
@@ -17,6 +18,7 @@ Configuration:
 - test-catalogue-data
 
 Code:
+
 - catalogue-search-service
 - configscanning
 - eodhp-git-change-scanner
@@ -29,12 +31,11 @@ Code:
 - stac-harvester
 - stac-harvester-ingester
 
-
 ## Workflow and Analysis System
 
 ### Lead Developer
 
-- Steven Gillies
+- Jonny Langstone
 
 ## Workflow Runner
 
@@ -55,7 +56,6 @@ Configuration:
 
 - public-workflows
 
-
 ## Data Access Services
 
 ### Lead Developer
@@ -68,12 +68,21 @@ Code:
 
 - eodhp-convert-netcdf
 
+## Data Streams
+
+### Lead Developer
+
+- Alex Palmer
+- Mark Small (UI)
+
+### Repositories
 
 ## Web Presence
 
 ### Lead Developer
 
 - Hannah Collingwood
+- Mark Small (UI)
 
 ### Repositories
 
@@ -85,7 +94,6 @@ Configuration:
 
 - eodhp-web-presence-helm
 
-
 ## Catalogue UI
 
 ### Lead Developer
@@ -95,15 +103,22 @@ Configuration:
 ### Repositories
 
 Code:
+
 - eodhp-resource-catalogue-ui
 - stac-browser
-
 
 ## IAM
 
 ### Lead Developer
 
 - Steven Gillies
+- Jonny Langstone
+
+## Event Notification Service
+
+### Lead Developer
+
+- Hannah Collingwood
 
 ### Repositories
 
@@ -115,7 +130,6 @@ Configuration:
 
 - eodhp-opa-config-dev
 - eodhp-opa-config-test
-
 
 ## System Management
 
@@ -136,17 +150,15 @@ Code:
 
 - github-actions
 
-
 ## Testing
 
 ### Lead Developer
 
-- ~~Serkan Dural~~
-
+- Alex Palmer
 
 # Lead Responsibilities
 
 A lead might not do all (or even most) development on a component but should
 
-* Help plan the functional and architectural evolution of the component - developing or writing user stories, for example.
-* Be responsible for maintenance of the component and repos that aren't for particular stories. That includes updating dependencies, picking up security alerts and creating tags/packages/builds/... when we're making a release.
+- Help plan the functional and architectural evolution of the component - developing or writing user stories, for example.
+- Be responsible for maintenance of the component and repos that aren't for particular stories. That includes updating dependencies, picking up security alerts and creating tags/packages/builds/... when we're making a release.
