@@ -17,6 +17,7 @@ The `eodh` client is responsible for all platform authentication on the eodatahu
 
 - openid
 - profile
+- aud
 
 **Optional Scopes**
 
@@ -39,6 +40,7 @@ The `eodh-workspaces` client is responsible for all workspace authentication, in
 
 - openid
 - profile
+- aud
 
 **Optional Scopes**
 
@@ -76,6 +78,16 @@ This scope provides user info and should normally be provided as default by most
   "preferred_username": "jbloggs",
   "given_name": "Joe",
   "family_name": "Bloggs",
+}
+```
+
+**aud**
+The audience of clients to which the access token can be used.
+
+```
+{
+  ...
+  "aud": ["client1", "client2"]
 }
 ```
 
