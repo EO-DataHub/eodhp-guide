@@ -46,6 +46,7 @@ The `eodh-workspaces` client is responsible for all workspace authentication, in
 - roles
 - workspaces
 - workspace:${workspace}
+- user_service:${user_service}
 
 ## Scopes
 
@@ -112,7 +113,9 @@ This scope provides available workspaces without setting the active workspace.
 ```
 
 **workspaces:${workspace}**
-This is a dynamic scope that will return an active workspace, if authorised. The available workspaces are included with this as well. The desired active workspace is passed as part of the token request as a dynamic scope parameter after the ':'.
+This is a dynamic scope that will return the active workspace, if authorised. The available workspaces are included with this as well. The desired active workspace is passed as part of the token request as a dynamic scope parameter after the ':'.
+
+The scope also contains an additional AWS scope to allow for parameterised AWS policies when using `assumeRoleWithWebIdentity` using principal tags.
 
 ```
 {
@@ -120,6 +123,30 @@ This is a dynamic scope that will return an active workspace, if authorised. The
   "workspaces": {
     "active": "workspace1",
     "available": ["workspace1", "workspace2"]
+  },
+  "https://aws.amazon.com/tags": {
+    "principal_tags": {
+      "workspaces": ["workspace1"]
+    }
+  }
+}
+```
+
+**user_service:${user_service}**
+This is a dynamic scope that will return the active user_service. There is no additional authorisation required for this.
+
+The scope also contains an additional AWS scope to allow for parameterised AWS policies when using `assumeRoleWithWebIdentity` using principal tags.
+
+```
+{
+  ...
+  "workspaces": {
+    "user_service": "user_service1"
+  },
+  "https://aws.amazon.com/tags": {
+    "principal_tags": {
+      "user_services": ["user_service1"]
+    }
   }
 }
 ```
