@@ -72,10 +72,10 @@ This scope provides user info and should normally be provided as default by most
 ```
 {
   ...
-  "name": "Steven Gillies",
-  "preferred_username": "sgillies-tpzuk",
-  "given_name": "Steven",
-  "family_name": "Gillies",
+  "name": "Joe Bloggs",
+  "preferred_username": "jbloggs",
+  "given_name": "Joe",
+  "family_name": "Bloggs",
 }
 ```
 
