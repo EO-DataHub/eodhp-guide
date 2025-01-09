@@ -23,6 +23,7 @@ By default, requests are directed to the elastic load balancer.
 Traffic matching the URI form `/files/<workspace_bucket>` are instead directed to a workspace S3 bucket origin. This origin must be defined in terraform for each new bucket to be opened up to https access.
 
 Requests intended for an S3 bucket should also pass through two Lambda@Edge functions.
+
 - The first of these runs on `viewer-request`, and validates the access token against a secret key located in AWS secrets. Additionally, it stores the host of the request as `X-Original-Host`, since this contains the workspace name.
 - The second lambda function runs on `origin-request`, and uses the workspace name and URI to redirect the request to an item in the S3 bucket.
 
@@ -30,15 +31,35 @@ In the repository, these functions are stored under lambda-functions. Any requir
 
 The result of this is that requests to `https://my-workspace.<workspace domain>/files/store-name/object/full/name.tif` with a valid token will be directed to an object located at `my-workspace/object/full/name.tif` in bucket `store-name`.
 
+### Turn on a development cluster
+
+The development clusters are automatically shutdown outside of UK working hours. Some may not be turned on automatically if they are not expected to be used all of the time. Therefore, it may be necessary to manually start a development cluster. Steps are provided below to do this.
+
+AWS > EKS > dev3 > Compute > Open both node groups > for each, open Autoscaling group > edit capacity > desired 2, min 2, max 5
+
+1. Log into the AWS web console that contains the cluster
+2. Visit Elastic Kubernetes Service (EKS)
+3. Click into the cluster you wish to start
+4. Select _Compute_ tab
+5. Open all node groups which you wish to start (usually all). For each node group:
+   1. Open the autoscaling group
+   2. Edit the capacity
+   3. Enter values. Recommended values for a development cluster are: desired 2, min 2, max 5
+6. Use `kubectl get nodes -w` to watch for nodes coming online
+7. When nodes are online you should be able to use ArgoCD UI as usual to check statuses of apps
+
+To turn a development cluster back off you can follow the same steps except set capacity to desired 0, min 0, max 0. Depending on the cluster configuration this may not be required as development clusters should shut down at the end of the working day.
+
 ## Supporting Infrastructure Deployment
 
 Before deploying the main EO DataHub Platform infrastructure, the supporting infrastructure must be deployed.
 
 The supporting infrastructure repository contains Terraform configurations for creating and managing resources used across deployed environments such as:
- - The VPC within which all deployed clusters are hosted
- - Public NAT gateways
- - IAM roles
- - S3 buckets
+
+- The VPC within which all deployed clusters are hosted
+- Public NAT gateways
+- IAM roles
+- S3 buckets
 
 The lifecycles of these resources are independent of the deployment environments (dev/test/prod).
 
@@ -48,16 +69,17 @@ For managing these resources, visit the [Supporting Infrastructure Terraform rep
 
 1. **Initialize Terraform**:
    Navigate to the Terraform directory where the configurations are stored.
+
    ```bash
    cd terraform
    terraform init # Initialize the Terraform environment
    ```
 
 2. **Deploy the Infrastructure**:
-    Ensure your AWS account ID and GitHub organization are specified in the vars/terraform.tfvars file. Then, apply the Terraform configuration.
-    ```
-    terraform apply -var-file vars/terraform.tfvars # Apply the Terraform configuration
-    ```
+   Ensure your AWS account ID and GitHub organization are specified in the vars/terraform.tfvars file. Then, apply the Terraform configuration.
+   ```
+   terraform apply -var-file vars/terraform.tfvars # Apply the Terraform configuration
+   ```
 
 Complete these steps before proceeding with the deployment of the main infrastructure.
 
@@ -88,6 +110,7 @@ The supporting terraform repository configures an Aurora serverless v2 Postgres 
 The ArgoCD deployment installs and configures a Postgres operator which adds databases, users and schemas to the infrastructure, with credentials stored as kubernetes secrets. The intended design is that each application will have its own database, and each database will have a schema and user per environment.
 
 The process for setting up a new application to use the database is as follows:
+
 1. The following manifests should be created in a file named <app-name>-db.yaml in the apps/databases/envs/<env> directory of the argocd deployment. These resources need to be created in the same namespace as the postgres-operator deployment.
    1. Create a `Postgres` resource. This contains basic information on the new database and sets up a schema for the environment.
    2. Create a `PostgresUser` resource. This creates a user as an owner of the database, and creates kubernetes secrets for the user.
