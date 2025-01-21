@@ -125,7 +125,7 @@ This scope provides available workspaces without setting the active workspace.
 ```
 
 **workspaces:${workspace}**
-This is a dynamic scope that will return the active workspace, if authorised. The available workspaces are included with this as well. The desired active workspace is passed as part of the token request as a dynamic scope parameter after the ':'.
+This is a dynamic scope that will return the active workspace, if authorised. The available workspaces are included with this as well. The desired active workspace is passed as part of the token request as a dynamic scope parameter after the ':'. Available workspaces will be cut down to only include the active workspace. The fields are kept separate so that behaviour based on active workspaces can be separated from bahviour that can work with multiple workspaces.
 
 The scope also contains an additional AWS scope to allow for parameterised AWS policies when using `assumeRoleWithWebIdentity` using principal tags.
 
@@ -134,7 +134,7 @@ The scope also contains an additional AWS scope to allow for parameterised AWS p
   ...
   "workspaces": {
     "active": "workspace1",
-    "available": ["workspace1", "workspace2"]
+    "available": ["workspace1"]
   },
   "https://aws.amazon.com/tags": {
     "principal_tags": {
