@@ -1,5 +1,13 @@
 # EODHP Development Guide
 
+## Sprint Cycle
+
+At the start of each sprint a fresh branch is taken from `main` and named `dev-XX-Y` where XX is the sprint number and Y is the iteration that sprint. Y is necessary as sometimes it may be necessary to refresh the dev branch multiple times during a sprint.
+
+When a developer begins work on an issue they take a branch from `main`. The branch should follow Gitflow naming and mention the Jira issue key, e.g. `feature/EODHP-123-my-new-feature`. Work on code updates on the feature branch, and when ready to test merge into current develop branch. Repeat this process until the issue is resolved. At this point, create a PR and assing reviewer(s). Once PR has been accepted merge completed feature back into main.
+
+`main` branch is always the source of truth for the latest configuration of the EODH deployment.
+
 ## Deploying to a Development Cluster
 
 Code on a feature branch in a code repository can be deployed to a development cluster. It's assumed here that the repository is using the shared GitHub actions in https://github.com/EO-DataHub/github-actions
@@ -9,8 +17,9 @@ First, push your changes to GitHub on the feature branch, for example `feature/E
 Secondly, edit the ArgoCD configuration for the development cluster and change the image for the component to use the new tag, `feature-EODHP-123-example-latest`. This shouldn't be merged to branches controlling other clusters so this doesn't need to be part of a PR or ArgoCD feature branch. The target service also needs to use `imagePullPolicy: Always`, which can be set and merged as part of the later PR if it isn't set already.
 
 Finally, either:
-* go to the ArgoCD UI, find the deployment for your app (marked as type 'deploy') and choose 'Restart' from its menu;
-* OR run `kubectl rollout -n <namespace> restart deployment/<deployment-name>`.
+
+- go to the ArgoCD UI, find the deployment for your app (marked as type 'deploy') and choose 'Restart' from its menu;
+- OR run `kubectl rollout -n <namespace> restart deployment/<deployment-name>`.
 
 The first and third steps can be repeated without needing to change ArgoCD.
 
