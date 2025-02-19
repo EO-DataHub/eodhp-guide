@@ -1,203 +1,202 @@
-# EO DataHub Platform Deployment
+## Terraform
 
-## Infrastructure
+The [Terraform CLI](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli), [kubectl]([Command line tool (kubectl) | Kubernetes](https://kubernetes.io/docs/reference/kubectl/)) and [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/) are required to deploy the infrastructure.
 
-The EODHP is designed to be deployed to AWS. The infrastructure deployment is managed by the [Terraform deployment](https://github.com/EO-DataHub/eodhp-deploy-infrastucture) and [Supporting Terraform deployment](https://github.com/EO-DataHub/eodhp-deploy-supporting-infrastructure) repositories.
+The Terraform deployments depend on AWS CLI profiles being configured for the respective target AWS account instances.
 
-The Terraform repos manages multiple deployment environments using workspaces. Before deploying ensure you are in the correct workspace.
+- profile `eodhp-test` for `dev` and `test` clusters
+- profile `eodhp-prod` for `staging` and `prod` clusters
+  To set up an AWS CLI profile use `aws configure --profile $PROFILE`. At all times you must ensure you use the correct `--profile $PROFILE` flag in all AWS CLI calls.
 
-The deployment configuration variables are stored in the terraform/envs/\*/\*.tfvars files.
+If you need to inspect outputs from a previous run of Terraform deployments use `terraform output`.
+
+### AWS Shared Infrastructure
+
+The following instructions are for the `https://github.com/EO-DataHub/eodhp-deploy-supporting-infrastructure.git` repository.
+
+The AWS shared infrastructure is deployed once per AWS instance. It creates and shared resources between clusters, such as:
+
+- VPC
+- Internet gateways
+- NATs
+- Database server
+- S3 buckets
+
+```bash
+# instructions are for prod workspace, update as necessary for other workspaces
+cd terraform
+terraform workspace list  # see available workspaces
+terraform workspace new prod  # if workspace does not exist
+terraform workspace select prod
+terraform init  # if first time setting up local repo
+# confirm input variables in envs/prod.tfvars file
+terraform apply -var-file envs/prod.tfvars
+# check plan and accept if everything ok
+# it may be necessary to run more than once if the plan fails
+# inspect the output variables to see key parameters
+```
+
+### Deployment Infrastructure
+
+The following instructions are for the `https://github.com/EO-DataHub/eodhp-deploy-infrastucture.git` repository. Instructions are for prod workspace, update as necessary for other workspaces
+
+The deployment infrastructure is deployed once per environment. It contains per environment resources such as:
+
+- EKS cluster
+- Cloudfront instances
+- Route53 routes
+- Cluster subnets
+- Node groups and configuration
+- IAM roles
 
 ```bash
 cd terraform
-terraform workspace list
-terraform workspace select dev
-terraform apply -var-file envs/dev/dev.tfvars
+terraform workspace list  # see available workspaces
+terraform workspace new prod  # if workspace does not exist
+terraform workspace select prod
+terraform init  # if first time setting up local repo
+# confirm input variables in envs/prod.tfvars file. Refer to output parameters from eodhp-deploy-supporting-infrastructure execution, where necessary.
+terraform apply -var-file envs/prod.tfvars
+# check plan and accept if everything ok
+# it may be necessary to run more than once if the plan fails
 ```
 
-### Workspace cloudfront distribution
+### Kubectl Context
 
-The terraform deployment repository sets up a cloudfront distribution to manage traffic to the workspace domains.
-
-By default, requests are directed to the elastic load balancer.
-Traffic matching the URI form `/files/<workspace_bucket>` are instead directed to a workspace S3 bucket origin. This origin must be defined in terraform for each new bucket to be opened up to https access.
-
-Requests intended for an S3 bucket should also pass through two Lambda@Edge functions.
-
-- The first of these runs on `viewer-request`, and validates the access token against a secret key located in AWS secrets. Additionally, it stores the host of the request as `X-Original-Host`, since this contains the workspace name.
-- The second lambda function runs on `origin-request`, and uses the workspace name and URI to redirect the request to an item in the S3 bucket.
-
-In the repository, these functions are stored under lambda-functions. Any required modules will be installed by the terraform, and the scripts are redeployed to AWS as zip files when changes are made.
-
-The result of this is that requests to `https://my-workspace.<workspace domain>/files/store-name/object/full/name.tif` with a valid token will be directed to an object located at `my-workspace/object/full/name.tif` in bucket `store-name`.
-
-### Turn on a development cluster
-
-The development clusters are automatically shutdown outside of UK working hours. Some may not be turned on automatically if they are not expected to be used all of the time. Therefore, it may be necessary to manually start a development cluster. Steps are provided below to do this.
-
-AWS > EKS > dev3 > Compute > Open both node groups > for each, open Autoscaling group > edit capacity > desired 2, min 2, max 5
-
-1. Log into the AWS web console that contains the cluster
-2. Visit Elastic Kubernetes Service (EKS)
-3. Click into the cluster you wish to start
-4. Select _Compute_ tab
-5. Open all node groups which you wish to start (usually all). For each node group:
-   1. Open the autoscaling group
-   2. Edit the capacity
-   3. Enter values. Recommended values for a development cluster are: desired 2, min 2, max 5
-6. Use `kubectl get nodes -w` to watch for nodes coming online
-7. When nodes are online you should be able to use ArgoCD UI as usual to check statuses of apps
-
-To turn a development cluster back off you can follow the same steps except set capacity to desired 0, min 0, max 0. Depending on the cluster configuration this may not be required as development clusters should shut down at the end of the working day.
-
-## Supporting Infrastructure Deployment
-
-Before deploying the main EO DataHub Platform infrastructure, the supporting infrastructure must be deployed.
-
-The supporting infrastructure repository contains Terraform configurations for creating and managing resources used across deployed environments such as:
-
-- The VPC within which all deployed clusters are hosted
-- Public NAT gateways
-- IAM roles
-- S3 buckets
-
-The lifecycles of these resources are independent of the deployment environments (dev/test/prod).
-
-For managing these resources, visit the [Supporting Infrastructure Terraform repository](https://github.com/EO-DataHub/eodhp-deploy-supporting-infrastructure).
-
-### Deployment Steps
-
-1. **Initialize Terraform**:
-   Navigate to the Terraform directory where the configurations are stored.
-
-   ```bash
-   cd terraform
-   terraform init # Initialize the Terraform environment
-   ```
-
-2. **Deploy the Infrastructure**:
-   Ensure your AWS account ID and GitHub organization are specified in the vars/terraform.tfvars file. Then, apply the Terraform configuration.
-   ```
-   terraform apply -var-file vars/terraform.tfvars # Apply the Terraform configuration
-   ```
-
-Complete these steps before proceeding with the deployment of the main infrastructure.
-
-## Applications
-
-The platform components and applications are managed using the GitOps framework ArgoCD in the [ArgoCD deployment](https://github.com/EO-DataHub/eodhp-argocd-deployment).
-
-The repo contains the configuration for multiple environments.
-
-First ArgoCD has to be deployed to the cluster and then the ArgoCD application CRDs. Once ArgoCD applications have been applied then ArgoCD manages itself, as well as the platform applications.
+Create the `kubectl` context of the AWS EKS cluster. You will need the [aws-iam-authenticator]([kubernetes-sigs/aws-iam-authenticator: A tool to use AWS IAM credentials to authenticate to a Kubernetes cluster](https://github.com/kubernetes-sigs/aws-iam-authenticator)) to create the kubectl context.
 
 ```bash
-kubectl apply -k apps/argocd
-kubectl apply -k eodhp/envs/dev
+aws --profile $PROFILE eks --region $REGION update-kubeconfig --name $CLUSTER_NAME --role-arn $ROLE_ARN --alias $ALIAS
 ```
 
-### Deployment Repository Authorisation
+Where:
 
-If the ArgoCD deployment is private then you will have to generate a deployment key for the repository and connect the ArgoCD instance to the repository before it can read it. This can be done using the `argo` CLI or via the ArgoCD web UI.
+- PROFILE is the profile you have set up for the AWS account instance you are targeting. See available profiles with `aws configure list-profiles`
+- REGION can be found from Terraform output `region`
+- CLUSTER_NAME can be found from Terraform output `cluster_name`
+- ROLE_ARN can be found from Terraform output `eks_access_principal_arn`
+- ALIAS is for your own reference, but suggest to use Terraform output `cluster_prefix`
 
 ```bash
-argocd repo add git@github.com:yourusername/yourrepo.git --ssh-private-key-path ~/.ssh/repo_key
+kubectl config get-contexts
+kubectl config use-context eodhp-prod
 ```
 
-### Centralised Postgres Database
+## ArgoCD
 
-The supporting terraform repository configures an Aurora serverless v2 Postgres database for multiple applications to use.
-The ArgoCD deployment installs and configures a Postgres operator which adds databases, users and schemas to the infrastructure, with credentials stored as kubernetes secrets. The intended design is that each application will have its own database, and each database will have a schema and user per environment.
+The ArgoCD configuration deploys all of the EODH services.
 
-The process for setting up a new application to use the database is as follows:
+You will need [kubectl]([Command line tool (kubectl) | Kubernetes](https://kubernetes.io/docs/reference/kubectl/)), [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/), [Kustomize]([Kustomize - Kubernetes native configuration management](https://kustomize.io/)), [Helm]([Helm | Installing Helm](https://helm.sh/docs/intro/install/)) and [Gomplate]([gomplate - gomplate documentation](https://docs.gomplate.ca/)) to manage the ArgoCD deployment.
 
-1. The following manifests should be created in a file named <app-name>-db.yaml in the apps/databases/envs/<env> directory of the argocd deployment. These resources need to be created in the same namespace as the postgres-operator deployment.
-   1. Create a `Postgres` resource. This contains basic information on the new database and sets up a schema for the environment.
-   2. Create a `PostgresUser` resource. This creates a user as an owner of the database, and creates kubernetes secrets for the user.
-   3. Create a `Job`. This will set permissions of the user to restrict it to the environment's schema by running the script in `postgres-scripts.yaml`. It requires postgres admin credentials.
-2. To allow an application to use the newly created database, credentials may be obtained using the kubernetes secret created by the PostgresUser. This exists in the databases namespace, so to fascilitate access a ClusterSecretStore, `database-store`, has been created that can fetch secrets from this namespace and replicate them in the app namespace. The keys for this secret can be set as convenient. The replicated secret data should then be passed into the application manfiests where appropriate. The secret makes the host, database name, user name and password all available.
+### Preparation
 
-## Manual Configuration
+```bash
+# https://github.com/EO-DataHub/eodhp-argocd-deployment.git
+# instructions are for prod overlay, update as necessary for other overlays
+# inspect eodhp/envs/prod/kustomization.yaml patches to see target branch
+git checkout $TARGET_BRANCH
+# check your kubectl context is pointed to the cluster set up in eodhp-deploy-infrastucture
+kubectl config get-contexts
+kubectl config set-context $CONTEXT  # if you need to update it
+```
 
-There are some manual steps required. While these will be automated as far as possible the current steps are outlined below.
+### Bootstrapping
 
-### Keycloak
+If this is the first deployment of the environment then you must first boostrap ArgoCD and then complete some minor set up of some apps.
 
-#### Update GitHub SSO configuration
+1. Bootstrap argocd
 
-In order for users to authenticate via GitHub, Keycloak needs access to the GitHub OAuth app secret.
+```bash
+make bootstrap
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo  # get argocd initial password
+kubectl port-forward service/argocd-server -n argocd 8080:443  # port forward argocd ui (necessary until platform deployment has created argocd ingress)
+```
 
-##### First time setup
+2. Visit http://127.0.0.1:8080 and log in to admin panel
+3. Connect argocd to repository (not necessary if repo is public):
+   Name: eodh
+   Project: leave empty
+   Repository URL: `git@github.com:EO-DataHub/eodhp-argocd-deployment.git`
+   SSH private key data: Use repository deploy key
+   Connect
+   Status show successful connection.
+4. Deploy argocd application set `make deploy env=prod`. You should see applications begin to initialise in the argocd UI. There may be race conditions as the apps come up. If any fail then enter the app in the UI and sync them again.
 
-This step will not normally be required for restarting the dev or test clusters.
+   Initially these are the core applications that should be up:
 
-1. Log in to GitHub and navigate to the `KeyCloakAuth` OAuth App
-2. Under `General`, navigate to `Client secrets` and click `Generate a new client secret`. Copy the secret
-3. In AWS Secrets Manager, find the `eodhp-<env>` secret
-4. Click `Retrieve secrets value`
-5. Click `Edit`
-6. Ensure that there is a key called `keycloak.auth.githubSecret`. Add if not present
-7. Paste the secret in the values field
-8. Save
+   - argocd
+   - autoscaler
+   - aws
+   - cert-manager
+   - certs
+   - database
+   - external-secrets
+   - nginx
+   - opal
+   - redis
+   - pulsar
+   - replicator
+   - secret-generator
 
-#### Updating GitHub secret
+   Apps that will not work until further configuration are, they can be ignored for now:
 
-1. Log in to AWS Secrets Manager and find the `eodhp-<env>` secret
-2. Click `Retrieve secrets value`
-3. Copy the value for the `keycloak.auth.githubSecret` entry
-4. Navigate to the Keycloak admin panel at `<env>.eodatahub.org.uk/keycloak/admin` and log in
-5. Select the `eodhp` realm
-6. Click `Identity Providers`
-7. Click `github`
-8. Under `Settings`, update the Client Secret with the value from AWS
-9. Save
+   - auth-agent
+   - oauth2-proxy
 
-#### Add Admin User to EODHP Realm
+   While the mentioned applications should by synced and healthy on their own at this stage, it has been observed that race conditions can occur that are too complex to diagnose. If this happens, you can try the following:
 
-1. In Keycloak admin UI:
-   1. Select eodhp realm
-   2. Users
-   3. Add user
-      1. Set name as 'admin'
-      2. Create
-      3. In admin user credentials, set password (not temporary)
+   - Force sync the app from the applications UI page
+   - Try enabling server side apply when syncing app
+   - Delete the app in the ArgoCD UI and see if it comes back healthy (which should happen automatically due to the ApplicationSet, but you may wish to refresh all apps in the UI to speed the recreation up).
+   - If you are seeing errors regarding missing app namespaces you can create them manually with `kubectl create ns $NAMESPACE`.
 
-### Application Hub
+   Once the core applications are synced and healthy you may proceed.
 
-#### Update OAUTH Client Secret
+5. Configure Keycloak admin user for access to ArgoCD UI via ingress.
+6. Get keycloak initial admin password with `kubectl -n keycloak get secret keycloak-initial-admin -o jsonpath="{.data.password}" | base64 -d; echo`
+7. Visit https://eodatahub.org.uk/keycloak and login to `temp-admin` account using initial password.
+8. In the master realm, create an admin user with a password (under the credentials tab).
+9. Give the admin user the `admin` realm role.
+10. Log out of `temp-admin` and into `admin` and confirm that you have administration privileges. Once confirmed, you may delete `temp-admin` user.
+11. In the master realm, create an ArgoCD OIDC client.
+    Client ID: argocd
+    Name: ArgoCD
+    Root URL: https://argocd.eodatahub.org.uk
+    Home URL: https://argocd.argocd.eodatahub.org.uk/applications
+    Valid redirect URIs: /\*
+    Web origins: +
+    Client authentication: true
+    Authorization: false
+    Standard flow: true
+    Direct access grants: false
+12. Get the client secret from the client credentials tab and save it under the `keycloak.argocd.oauth2.secret` key in the AWS `eodhp` secret store. Wait a minute for the `external-secrets` controller to pull the password and restart the argocd server with `kubectl rollout restart -n argocd deploy/argocd-server`
+13. Under the argocd client in Keycloak, visit Client scopes > argocd-dedicated > Add mapper > From predefined mappers > realm roles > Add
+    Edit the newly created mapper to have the following settings:
+    Name: realm roles
+    Realm Role prefix: ""
+    Multivalued: true
+    Token Claim Name: roles
+    Claim JSON Type: String
+    Add to ID token: true
+    Add to access token: false
+    Add to lightweight access token: false
+    Add to userinfo: false
+    Add to token introspection: true
+14. You should now be able to visit https://argocd.eodatahub.org.uk and sign in with keycloak for admin access to ArgoCD UI.
 
-The application hub OAUTH_CLIENT_SECRET is generated by Keycloak when it is installed. A new secret is generated each time Keycloak is reinstalled.
+### Keycloak EODHP Realm Configuration
 
-The client secret is not automatically propagated to the App Hub, this must be done manually.
+The Keycloak EODHP realm should have been configured on Keycloak initialisation. When Keycloak initialises the OIDC clients it will generate a client secret for each. These client secrets need to be copied into the AWS `eodhp` secret store so that ArgoCD can inject them into the relevant applications. The OIDC clients and their `eodhp` secret keys are given below:
 
-1. In Keycloak admin UI:
-   1. Select eodhp realm
-   2. Clients
-   3. application-hub
-   4. Credentials
-   5. Copy Client secret
-2. In AWS console:
-   1. Secrets Manager
-   2. eodhp-dev
-   3. Retrieve secret value
-   4. Edit
-   5. Update app-hub.OAUTH_CLIENT_SECRET with new client secret
-3. In cluster CLI:
-   1. Ensure secret has propagated to app-hub secret:
-      1. `kubectl get secrets -n proc app-hub -o yaml`
-      2. Copy base64 encoded secret OAUTH_CLIENT_SECRET
-      3. `echo <secret_value> | base64 -d`
-      4. Confirm secret has propagated, if not repeat steps 1-3 until secret has propagated
-   2. Restart application hub
-      1. `kubectl rollout restart -n proc deploy/application-hub-hub`
-4. Test login through Application Hub
+- eodh - eodh.oidc.clientSecret
+- eodh-workspaces - eodh-workspaces.oidc.clientSecret
 
-#### Add Users to jupyter-lab Group
+Once these have been updated and you have waited a minute for `external-secrets` to sync, return to the ArgoCD UI and sync first the `oauth2-proxy` app and then the `auth-agent` app.
 
-In order for users to have access to Jupyter Lab, they must be added to the jupyter-lab group in the Application Hub admin interface. This requires admin privileges within the Application Hub.
+### Open Policy Agent
 
-1. Log into Application Hub as admin
-2. Select Admin tab
-3. Manage groups
-4. Create jupyter-lab group
-5. Add users to group
+You need to ensure that an Open Policy Agent branch has been created for the cluster. The OPA repo is https://github.com/EO-DataHub/eodhp-opa-config.git, and the branch should match that defined in [ArgoCD deployment repo](https://github.com/EO-DataHub/eodhp-argocd-deployment.git) _apps/opal/envs/$ENV/kustomization.yaml_ patch.
+
+## Web Presence
+
+TODO
