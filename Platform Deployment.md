@@ -48,6 +48,14 @@ The deployment infrastructure is deployed once per environment. It contains per 
 - Cluster subnets
 - Node groups and configuration
 - IAM roles
+- ECR pull-through cache
+
+Before starting, a secret must be created in AWS Secrets Manager with the name `ecr-pullthroughcache/dh` and the following values:
+
+* `username`: a DockerHub username which will be used for cluster image pulls
+* `accessToken`: a DockerHub personal access token
+
+(Note: Terraform truncates the secret name when configuring ECR so 'dh' cannot become 'dockerhub')
 
 ```bash
 cd terraform
