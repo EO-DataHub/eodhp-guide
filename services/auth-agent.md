@@ -30,7 +30,7 @@ The Auth Agent is configured as part of the [ArgoCD deployment repo](https://git
 
 ### Control
 
-To restart service run `kubectl rollout restart auth-agent -n auth-agent` for Kubernetes cluster.
+To restart service run `kubectl rollout restart -n auth-agent deployment auth-agent` for Kubernetes cluster or use ArgoCD UI to restart.
 
 To stop service, the service must be removed from ArgoCD configuration.
 
@@ -42,7 +42,7 @@ To stop service, the service must be removed from ArgoCD configuration.
 
 ### Backups
 
-All state for the Auth Agent is within the database. Restoring a previous state involves following the database restore procedure.
+All state for the Auth Agent is in its database. Restoring a previous state involves following the database restore procedure.
 
 ## Development
 
