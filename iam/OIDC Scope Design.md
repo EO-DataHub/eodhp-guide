@@ -52,7 +52,55 @@ The `eodh-workspaces` client is responsible for all workspace authentication, in
 
 - workspaces
 - workspace:${workspace}
+
+### ades
+
+The `ades` client is manages workflow runner service authentication and scopes.
+
+#### Supported Authentication Flows
+
+- Standard flow
+- Direct access grants
+- Service account roles
+
+#### Scopes
+
+**Default Scopes**
+
+- openid
+- aud
+- profile
+- groups
+- roles
+
+**Optional Scopes**
+
+- workspaces
+- workspace:${workspace}
 - user_service:${user_service}
+
+### jupyter
+
+The `jupyter` client is manages JupyterHub service authentication and scopes.
+
+#### Supported Authentication Flows
+
+- Standard flow
+- Direct access grants
+
+#### Scopes
+
+**Default Scopes**
+
+- openid
+- aud
+- profile
+- groups
+- roles
+
+**Optional Scopes**
+
+- workspaces
 
 ## Scopes
 
