@@ -20,13 +20,19 @@ As Auth Agent is called on every request to eodatahub.org.uk and eodatahub-works
 
 ## Operation
 
-The service runs as a Kubernetes deployment named auth-agent under the auth-agent namespace.
+The service runs as a Kubernetes deployment named `auth-agent` under the `auth-agent` namespace.
 
 The Auth Agent is called by the Nginx auth_request functionality on all requests to eodatahub.org.uk and eodatahub-workspaces.org.uk, with the exception of authentication endpoints (Keycloak and Oauth2-Proxy instances). All requests into the Nginx reverse proxy for the domains specified are sent via subrequest through the Auth Agent. If Auth Agent determines that the request is authorised it will pass the request upstream for processing. Otherwise it will return a 401 (unauthenticated) or 403 (unauthorised) as required and the request will be rejected.
 
 ### Configuration
 
-The Auth Agent is configured as part of the [ArgoCD deployment repo](https://github.com/EO-DataHub/eodhp-auth-agent) in the apps/auth-agent directory. Modifications to the deployment configuration should be made there.
+The Auth Agent is configured as part of the [ArgoCD deployment repo](https://github.com/EO-DataHub/eodhp-auth-agent) in the apps/auth-agent directory.
+
+### Control
+
+To restart service run `kubectl rollout restart auth-agent -n auth-agent` for Kubernetes cluster.
+
+To stop service, the service must be removed from ArgoCD configuration.
 
 ### Dependencies
 
