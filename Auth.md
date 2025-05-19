@@ -39,20 +39,20 @@ An example request for accessing a workspace file is as follows:
 
 ```http
 GET /files/<bucket_name>/<path_to_file> HTTP/1.1
-Host: <workspace_name>.workspaces.test.eodhp.eco-ke-staging.com
+Host: <workspace_name>.eodatahub-workspaces.org.uk
 Authorization: Bearer <api_token>
 ```
 
 #### S3 Bucket
 
 Workspace object stores, including saved catalogs and workflow outputs, are accessible at
-`https://<workspace_name>.workspaces.test.eodhp.eco-ke-staging.com/files/<bucket_name>/<path_to_file>`.
+`https://<workspace_name>.eodatahub-workspaces.org.uk/files/<bucket_name>/<path_to_file>`.
 The bucket name and path to workflow outputs may be obtained from ADES outputs.
 
 #### Block Storage
 
 Workspace block stores relevant to AppHub are accessible at
-`https://<workspace_name>.workspaces.dev.eodhp.eco-ke-staging.com/files/workspaces/<path_to_file>`.
+`https://<workspace_name>.eodatahub-workspaces.org.uk/files/workspaces/<path_to_file>`.
 
 ## App Developers
 
@@ -77,4 +77,4 @@ You will require a public Keycloak client set up for your application by an EO D
 
 ### Backend Applications
 
-You will require a confidential Keycloak client set up for your application by an EO DataHub developer. You will be provided with a `client id` and a `client secret` to use to authenticate with the platform.
+You will require a confidential Keycloak client set up for your application by an EO DataHub developer. You will be provided with a _client id_ and a _client secret_ to use to authenticate with the platform.
