@@ -26,7 +26,7 @@ The Auth Agent is called by the Nginx auth_request functionality on all requests
 
 ### Configuration
 
-The Auth Agent is configured as part of the [ArgoCD deployment repo](https://github.com/EO-DataHub/eodhp-auth-agent) in the apps/auth-agent directory.
+The Auth Agent is configured as part of the [ArgoCD deployment repo](https://github.com/EO-DataHub/eodhp-argocd-deployment) in the apps/auth-agent directory.
 
 ### Control
 
