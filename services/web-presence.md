@@ -4,9 +4,12 @@
 
 The web presence is the face of the EO DataHub and is accessible via the internet. Here users are able to sign up for an EO DataHub account and the web presence provides links to all aspects of the system together along with comprehensive documentation.
 
+The web presence is also responsible for serving the Workspace UI static files
+
 ### Code Repositories and Artifacts
 
 - Code available in https://github.com/EO-DataHub/eodhp-web-presence repository
+- Workspace UI code available in https://github.com/EO-DataHub/eodhp-workspace-ui repository
 - Container image published to public.ecr.aws/eodh/eodhp-web-presence AWS ECR
 - Deployment is configured in https://github.com/EO-DataHub/eodhp-argocd-deployment repository, apps/web-presence directory
 
