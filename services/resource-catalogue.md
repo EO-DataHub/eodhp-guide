@@ -54,7 +54,7 @@ The resource catalogue currently supports the following data sources:
 #### Transformers
 
 ##### Harvest
-- 
+- Transforms STAC content into a standardised EODH format, ensuring correct links, summaries, and extensions where applicable.
 - Code available in https://github.com/EO-DataHub/harvest-transformer repository
 - Container image published to public.ecr.aws/eodh/harvest-transformer AWS ECR
 
