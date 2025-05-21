@@ -2,13 +2,14 @@
 
 ## Summary
 
-Data adaptors are used to order data from Airbus and Planet.
+Data adaptors are used to order data from Airbus and Planet. Adaptors run in the EODH as user service workflows in specialised data provider namespaces via the ADES service.
+
+There are separate adaptors for Planet, Airbus SAR, and Airbus Optical data providers. Each adaptor interfaces with the provider to place an order for a single item, wait for the item to be delivered to an S3 bucket, then downloads and adds assets to a STAC item tracking the order. The ADES process handles upload of assets and ingestion of STAC into the user's workspace.
 
 
 ### Code Repositories and Artifacts
 
-- Deployment is configured in https://github.com/EO-DataHub/eodhp-argocd-deployment repository, apps/resource-catalogue directory
-- Code available in https://github.com/EO-DataHub/commercial-data-adaptors repository
+- Code is available in https://github.com/EO-DataHub/commercial-data-adaptors repository
 
 #### Airbus
 - Container image published to public.ecr.aws/eodh/airbus-optical-adaptor and public.ecr.aws/eodh/airbus-sar-adaptor AWS ECR
@@ -19,46 +20,38 @@ Data adaptors are used to order data from Airbus and Planet.
 
 ### Dependent Services
 
-[//]: # (The elasticsearch ingester takes inputs from the harvest transformer.)
+There are no services dependent on the adaptors.
 
 
 ## Operation
 
-[//]: # (The service runs as a Kubernetes deployment under the `rc` namespace.)
+Adaptors run as an ADES workflow under either the `ws-planet` or `ws-airbus` namespace. Once deployed, they may be started by calls to an endpoint in the manage-catalogue-fastapi API.
 
 
 ### Configuration
 
-[//]: # (The resource catalogue is configured as part of the [ArgoCD deployment repo]&#40;https://github.com/EO-DataHub/eodhp-argocd-deployment&#41; in the apps/resource-catalogue directory.)
+Adaptors are configured as user service workflows via http and cwl scripts provided in the adaptor repository.
 
 
 ### Control
 
-[//]: # (To restart services run `kubectl rollout restart -n rc deployment <service-name>` for Kubernetes cluster or use ArgoCD UI to restart.)
-
-[//]: # ()
-[//]: # (Harvesters are produced on schedule - to rerun, set the scheduled time to be in the future and ensure the time has updated in ArgoCD.)
-
-[//]: # ()
-[//]: # (To stop services, the service must be removed from ArgoCD configuration.)
-
+Adaptors are run and managed by the ADES service and the manage-catalogue-fastapi API. 
 
 ### Dependencies
 
-[//]: # (There are many dependencies on external data for the resource catalogue, particularly for Planet, which requires the data to be present via the Planet API as and when required by the user. For individual dependencies, check the individual code repositories provided above.)
+- ADES - Adaptors run on the ADES service.
+- Resource Catalogue stac-fastapi - Outputs of the adaptors are ingested into the ordering workspace's catalogue via stac-fastapi.
+- Resource Catalogue manage-catalogue-fastapi - Adaptors are called by an API that handles inputs and creation of the order-tracking STAC item.
+- Workspace Controller - Adaptors are dependent on data provider API keys linked to a workspace, and cannot place orders if a key is not linked.
 
 
 ### Backups
 
-[//]: # (All processed files are saved to the `catalogue-population-eodhp` bucket. These can be backed up using the S3 backup procedure if additional backups are required. )
+Outputs of the data adaptors are stored in S3 buckets. Ingested items are backed up as part of the stac-fastapi database. The original delivered items are not removed by the adaptors.
 
 
 ## Development
 
-[//]: # (The resource code is version controlled in the repositories stated above.)
+Adaptor code is version controlled in https://github.com/EO-DataHub/commercial-data-adaptors repository.
 
-[//]: # ()
-[//]: # (New versions should be released by creating a new release using GitHub web UI with a version tag following the pattern v1.2.3. The commit tag will trigger the GitHub action release process.)
-
-[//]: # ()
-[//]: # (Alternately, releases may be published directly from the code repository with `make publish version=v1.2.3`, but this should only be used for test releases as the Git commit will not be properly tagged.)
+New versions are released by creating a release using the process described in the README of the repository.
