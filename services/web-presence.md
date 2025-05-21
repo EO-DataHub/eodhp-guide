@@ -36,9 +36,7 @@ The service runs as a Kubernetes deployment named `web-presence` under the `web`
 
 The web presence is configured as part of the [ArgoCD deployment repo](https://github.com/EO-DataHub/eodhp-argocd-deployment) in the apps/web-presence directory.
 
-The CMS can be updated at any time through the admin panel at https://eodatahub.org.uk/admin. Click Pages on the left hand side to be taken to a hierarchy of pages. Clicking on an individual page will allow the page to be edited.
-
-Admin rights are required to edit the CMS, which can be done through the admin panel at https://eodatahub.org.uk/admin. Admin rights for individual users can be set in keycloak at https://eodatahub.org.uk/keycloak - the `hub_admin` role is required.
+The CMS can be updated at any time through the admin panel at https://eodatahub.org.uk/admin. Admin rights for individual users can be set in keycloak at https://eodatahub.org.uk/keycloak - the `hub_admin` role is required. Click Pages on the left hand side to be taken to a hierarchy of pages. Clicking on an individual page will allow the page to be edited. 
 
 
 ### Control
