@@ -15,24 +15,24 @@ The resource catalogue currently supports the following data sources:
 
 - Deployment is configured in https://github.com/EO-DataHub/eodhp-argocd-deployment repository, apps/resource-catalogue directory
 
-### Data sources
+#### Data sources
 
-#### SPDX harvester
+##### SPDX harvester
 - The SPDX harvester is a cron job that runs monthly to compare the already fetched files with those available at SPDX licenses. It first checks for a valid SPDX license identifier. If one is found, it creates two different license links using the transformer code repository, which then become part of the collection. Currently, the licenses are stored in an SPDX S3 bucket for each environment, and the bucket is hosted using CloudFront.
 - Code available in https://github.com/EO-DataHub/eodhp-spdx-change-scanner repository
 - Container image published to public.ecr.aws/eodh/eodhp-spdx-change-scanner AWS ECR
 
-#### Airbus harvester
+##### Airbus harvester
 - Harvests data from Airbus and converts to STAC format
 - Code available in https://github.com/EO-DataHub/airbus-harvester repository
 - Container image published to public.ecr.aws/eodh/airbus-harvester AWS ECR
 
-#### Planet harvester
+##### Planet harvester
 - Harvests data for Planet collections (only) and converts to STAC format
 - Code available in https://github.com/EO-DataHub/planet-harvester repository
 - Container image published to public.ecr.aws/eodh/planet-harvester AWS ECR
 
-#### STAC harvester
+##### STAC harvester
 - Harvests STAC data from STAC catalogues
 - The STAC harvester is configured in the https://github.com/EO-DataHub/stac-harvester-configurations repository. 
 - Ingesting of STAC harvesters is carried out by ingesters. Code available in the https://github.com/EO-DataHub/stac-harvester-ingester repository.
@@ -40,42 +40,31 @@ The resource catalogue currently supports the following data sources:
 - STAC harvester code available in the https://github.com/EO-DataHub/stac-harvester repository
 - STAC harvester ingester container image published to public.ecr.aws/eodh/stac-harvester AWS ECR
 
-#### Workspace file harvester
+##### Workspace file harvester
 - Harvests user-supplied files into the user data directory
 - Code available in https://github.com/EO-DataHub/workspace-file-harvester repository
 - Container image published to public.ecr.aws/eodh/workspace-file-harvester AWS ECR
 
-#### Planet proxy
+##### Planet proxy
 - Proxy for Planet to access data and convert to STAC format
 - Code available in https://github.com/EO-DataHub/stac-planet-api repository
 - Container image published to public.ecr.aws/eodh/stac-planet-api AWS ECR
 
 
-### Transformers
+#### Transformers
 
-#### Harvest
+##### Harvest
 - 
 - Code available in https://github.com/EO-DataHub/harvest-transformer repository
 - Container image published to public.ecr.aws/eodh/harvest-transformer AWS ECR
 
-#### Annotations
+##### Annotations
 - 
 - Code available in https://github.com/EO-DataHub/annotations-transformer repository
 - Container image published to public.ecr.aws/eodh/annotations-transformer AWS ECR
 
 
-### Data adaptors
-- 
-- Code available in https://github.com/EO-DataHub/commercial-data-adaptors repository
-
-#### Airbus
-- Container image published to public.ecr.aws/eodh/airbus-optical-adaptor and public.ecr.aws/eodh/airbus-sar-adaptor AWS ECR
-
-#### Planet
-- Container image published to public.ecr.aws/eodh/planet-adaptor AWS ECR
-
-
-### FastAPI
+#### FastAPI
 - 
 - Code available in https://github.com/EO-DataHub/resource-catalogue-fastapi repository
 - Container image published to public.ecr.aws/eodh/resource-catalogue-fastapi AWS ECR
