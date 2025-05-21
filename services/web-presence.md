@@ -26,6 +26,8 @@ The web presence provides a user interface for:
  - workspace management (including permissions and token generation)
  - account management (including billing)
 
+Admin rights are required to edit the CMS, which can be done through the admin panel at https://eodatahub.org.uk/admin. Admin rights for individual users can be set in keycloak at https://eodatahub.org.uk/keycloak - the `hub_admin` role is required.
+
 Large parts of the system are available through an API so the web presence isn't always required for access. 
 
 ## Operation
@@ -47,8 +49,6 @@ To stop service, the service must be removed from ArgoCD configuration.
 ### Dependencies
 
 There is a postgres SQL database where data for the CMS is stored, along with a corresponding S3 bucket (web-artefacts-eodhp) for media files uploaded for the CMS. The `static-web-artefacts-eodh` S3 bucket contains static apps including the workspace UI and catalogue UI which are accessible from the web presence.
-
-Admin rights are required to edit the CMS, which can be done through the admin panel at https://eodatahub.org.uk/admin. Admin rights for individual users can be set in keycloak at https://eodatahub.org.uk/keycloak.
 
 ### Backups
 
