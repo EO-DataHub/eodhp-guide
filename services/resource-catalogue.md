@@ -98,7 +98,7 @@ The resource catalogue is configured as part of the [ArgoCD deployment repo](htt
 
 ### Control
 
-To restart service run `kubectl rollout restart -n rc deployment <service-name>` for Kubernetes cluster or use ArgoCD UI to restart.
+To restart services run `kubectl rollout restart -n rc deployment <service-name>` for Kubernetes cluster or use ArgoCD UI to restart.
 
 Harvesters are produced on schedule - to rerun, set the scheduled time to be in the future and ensure the time has updated in ArgoCD.
 
