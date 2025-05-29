@@ -12,7 +12,7 @@ Use this procedure when you need to gain access to the Kibana UI, deployed as pa
 
 1. For initial access to Kibana, retrieve the default user credentials from the Kubernetes cluster. The default username is `elastic`, and the password can be obtained using command below.
    ```sh
-   kubectl -n keycloak get secret keycloak-initial-admin -o jsonpath="{.data.elastic}" | base64 -d; echo
+   kubectl -n elk get secret elasticsearch-es-elastic-user -o jsonpath="{.data.elastic}" | base64 -d; echo
    ```
 2. Navigate to https://logs.eodatahub.org.uk and log in with credentials.
 3. From here, you can use the Analytics and Observability apps to view logs and metrics for the platform.
