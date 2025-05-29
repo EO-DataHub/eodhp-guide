@@ -2,7 +2,7 @@
 
 ## OIDC Clients
 
-### eodh (Formerly oauth2-proxy)
+### eodh
 
 The `eodh` client is responsible for all platform authentication on the eodatahub.org.uk domain.
 
@@ -10,21 +10,25 @@ The `eodh` client is responsible for all platform authentication on the eodatahu
 
 - Standard flow
 - Direct access grants
+- Service account roles
 
 #### Scopes
 
 **Default Scopes**
 
 - openid
-- profile
 - aud
-
-**Optional Scopes**
-
+- profile
+- email
 - groups
 - roles
 
-### eodh-workspaces (Formerly oauth2-proxy-workspaces)
+**Optional Scopes**
+
+- workspaces
+- workspaces-owned
+
+### eodh-workspaces
 
 The `eodh-workspaces` client is responsible for all workspace authentication, including authorisation on the eodatahub-workspaces.org.uk domain.
 
@@ -39,20 +43,69 @@ The `eodh-workspaces` client is responsible for all workspace authentication, in
 **Default Scopes**
 
 - openid
-- profile
 - aud
+- profile
+- groups
+- roles
 
 **Optional Scopes**
 
+- workspaces
+- workspace:${workspace}
+
+### ades
+
+The `ades` client is manages workflow runner service authentication and scopes.
+
+#### Supported Authentication Flows
+
+- Standard flow
+- Direct access grants
+- Service account roles
+
+#### Scopes
+
+**Default Scopes**
+
+- openid
+- aud
+- profile
 - groups
 - roles
+
+**Optional Scopes**
+
 - workspaces
 - workspace:${workspace}
 - user_service:${user_service}
 
+### jupyter
+
+The `jupyter` client is manages JupyterHub service authentication and scopes.
+
+#### Supported Authentication Flows
+
+- Standard flow
+- Direct access grants
+
+#### Scopes
+
+**Default Scopes**
+
+- openid
+- aud
+- profile
+- groups
+- roles
+
+**Optional Scopes**
+
+- workspaces
+
 ## Scopes
 
 **openid**
+
 This is the default scope returned as a baseline by all OIDC clients.
 
 ```
@@ -69,6 +122,7 @@ This is the default scope returned as a baseline by all OIDC clients.
 ```
 
 **profile**
+
 This scope provides user info and should normally be provided as default by most OIDC clients.
 
 ```
@@ -81,7 +135,19 @@ This scope provides user info and should normally be provided as default by most
 }
 ```
 
+**email**
+
+This scope provides user email, and is required for `oauth2-proxy` OIDC clients.
+
+```
+{
+  ...
+  "email": "joebloggs@eodatahub.org.uk",
+}
+```
+
 **aud**
+
 The audience of clients to which the access token can be used.
 
 ```
@@ -92,6 +158,7 @@ The audience of clients to which the access token can be used.
 ```
 
 **groups**
+
 This scope provides the Keycloak groups that a user is a member of.
 
 ```
@@ -102,40 +169,52 @@ This scope provides the Keycloak groups that a user is a member of.
 ```
 
 **roles**
+
 This scope provides the Keycloak roles that a group is permitted for.
 
 ```
 {
   ...
-  "roles": ["role1", "role2"]
-}
-```
-
-**workspaces**
-This scope provides available workspaces without setting the active workspace.
-
-```
-{
-  ...
-  "workspaces": {
-    "active": null,
-    "available": ["workspace1", "workspace2"]
+  "roles": {
+    "realm_access": {
+      "roles": ["role1", "role2"]
+    }
   }
 }
 ```
 
-**workspaces:${workspace}**
-This is a dynamic scope that will return the active workspace, if authorised. The available workspaces are included with this as well. The desired active workspace is passed as part of the token request as a dynamic scope parameter after the ':'. Available workspaces will be cut down to only include the active workspace. The fields are kept separate so that behaviour based on active workspaces can be separated from bahviour that can work with multiple workspaces.
+**workspaces**
+
+This scope provides available workspaces available to the user. It is used to grant access to non-chargeable workspace resources for the user.
+
+```
+{
+  ...
+  "workspaces": ["workspace1", "workspace2"]
+}
+```
+
+**workspaces-owned**
+
+This scope provides authorisation for user owned workspaces, which allows additional admin permissions over in addition to the workspace scope.
+
+```
+{
+  ...
+  "workspaces-owned": ["workspace1", "workspace2"]
+}
+```
+
+**workspace:${workspace}**
+
+This is a dynamic scope that will designate the active workspace, if authorised. The desired active workspace is passed as part of the token request as a dynamic scope parameter after the ':'. If `workspaces` scope is also requested then the available workspaces are filtered to only include the active workspace.
 
 The scope also contains an additional AWS scope to allow for parameterised AWS policies when using `assumeRoleWithWebIdentity` using principal tags.
 
 ```
 {
   ...
-  "workspaces": {
-    "active": "workspace1",
-    "available": ["workspace1"]
-  },
+  "workspace": "workspace1",
   "https://aws.amazon.com/tags": {
     "principal_tags": {
       "workspaces": ["workspace1"]
@@ -144,17 +223,15 @@ The scope also contains an additional AWS scope to allow for parameterised AWS p
 }
 ```
 
-**user_service:${user_service}**
-This is a dynamic scope that will return the active user_service. There is no additional authorisation required for this.
+**user_services:${user_service}**
+This is a dynamic scope that will return the active user_service. There is no additional authorisation required for this. This scope is intended for use only by authorised OIDC clients as machine users.
 
 The scope also contains an additional AWS scope to allow for parameterised AWS policies when using `assumeRoleWithWebIdentity` using principal tags.
 
 ```
 {
   ...
-  "workspaces": {
-    "user_service": "user_service1"
-  },
+  "user_service": "user_service1",
   "https://aws.amazon.com/tags": {
     "principal_tags": {
       "user_services": ["user_service1"]
