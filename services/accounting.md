@@ -54,6 +54,8 @@ The Ingester depends on Collectors to send it data and the Collectors on the Ing
 
 The API Service is a Kubernetes Service and Deployment, both called `accounting-api` in the `accounting` namespace. The Ingester is a Deployment only, called `accounting-ingester`. Both may and do have multiple replicas.
 
+The accounting API service service `/api/accounting/prices` and `/api/accounting/skus` with no authentication requirement. For the other endpoints (see `/api/docs`) either the `hub_admin` role is required, or for `/api/workspaces/<workspace>/accounting/...` ownership or membership of the workspace is required, or for `/api/workspaces/<account>/accounting` ownership of the account is required.
+
 #### Configuring Products and Prices
 
 Products and prices can be configured via a ConfigMap, which is created at
