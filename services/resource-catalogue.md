@@ -79,7 +79,7 @@ To generate an API key for elasticsearch:
 - Go to https://logs.eodatahub.org.uk
 - Click `Elasticsearch`
 - Click `Endpoints & API keys` (top right)
-- Click on the `API key`
+- Click on the `API key` tab
 - Create an API key and add it to the `resource-catalogue.workspaces.elasticsearch.api_key` entry in Secrets Manager
 - If necessary, restart the `workspace-file-harvester` pod
 
