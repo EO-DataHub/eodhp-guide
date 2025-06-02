@@ -72,7 +72,15 @@ The resource catalogue currently supports the following data sources:
 
 ### Dependent Services
 
-The elasticsearch ingester takes inputs from the harvest transformer.
+The elasticsearch ingester takes inputs from the harvest transformer. 
+
+To generate an API key for elasticsearch:
+
+- Go to https://logs.eodatahub.org.uk
+- Click `Elasticsearch`
+- Click `Endpoints & API keys` (top right)
+- Click on the `API key`
+- Create an API key and add it to the `resource-catalogue.workspaces.elasticsearch.api_key` entry in Secrets Manager
 
 
 ## Operation
