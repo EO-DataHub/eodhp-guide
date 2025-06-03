@@ -44,7 +44,7 @@ If they are developing a purely frontend application, they will require a "publi
 The Keycloak Content-Security-Policy needs to be updated to allow the app OIDC client to use an iframe to log in to the platform. To add the domain to the Keycloak CSP:
 
 1. In Keycloak realm, visit Realm settings from the left sidebar.
-2. Under security defenses tab, add domain (including protocol) to the Content-Security-Policy string under `frame-ancestors`. Example: `frame-src 'self'; frame-ancestors 'self' http://127.0.0.1:* https://*.eodatahub.org.uk;  object-src 'none';` Note that wildcards can be used to widen acceptable domains to all ports or subdomains.
+2. Under security defenses tab, add domain (including protocol) to the Content-Security-Policy string under `frame-ancestors`. Example: `frame-src 'self'; frame-ancestors 'self' https://*.eodatahub.org.uk;  object-src 'none';` For example, if the app developer app is hosted on `https://myapp.example.com` then the CSP becomes `frame-src 'self'; frame-ancestors 'self' https://*.eodatahub.org.uk https://myapp.example.com;  object-src 'none';`. To allow for local app development, you can add `http://127.0.0.1:*`. To allow all subdomains of a domain you can use `http://*.example.com`. The general form of the CSP is `frame-src 'self'; frame-ancestors 'self' {space delimited domain names, including protocol}; object-src 'none';`.
 
 ## Requirements
 
