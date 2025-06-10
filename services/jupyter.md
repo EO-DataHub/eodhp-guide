@@ -22,6 +22,8 @@ JupyterHub is a 3rd party open source software for allowing users to manage thei
 
 From JupyterHub, users can start and stop workspace notebooks for all workspaces they are a member of. They will be redirected to any new notebooks, or can connect to any notebooks already running using the JupyterHub app.
 
+JupyterHub runs as a deployment, `hub`, in Kubernetes in the `jupyter` namespace. User notebooks run in the relevant workspace namespaces, `ws-<workspace-name>`.
+
 ### Configuration
 
 Jupyter is configured in [ArgoCD Deployment](https://github.com/EO-DataHub/eodhp-argocd-deployment) repository, apps/jupyter directory.

@@ -25,6 +25,8 @@ Keycloak is the authentication backbone of the platform. It maintains the databa
 
 Requests are made to the Keycloak API via the platform OIDC clients. If Keycloak is unavailable then authentication requests will all fail, causing major disruption to the platform.
 
+Keycloak runs as a stateful set, `keycloak`, in Kubernetes in the `keycloak` namespace. 
+
 ### Configuration
 
 Keycloak is configured in [ArgoCD deployment repo](https://github.com/EO-DataHub/eodhp-argocd-deployment) repository, apps/keycloak directory.
