@@ -59,13 +59,13 @@ The resource catalogue currently supports the following data sources:
 - Container image published to public.ecr.aws/eodh/harvest-transformer AWS ECR
 
 ##### Annotations
-- 
+- Handles annotations data to be ingested into the the resource catalogue
 - Code available in https://github.com/EO-DataHub/annotations-transformer repository
 - Container image published to public.ecr.aws/eodh/annotations-transformer AWS ECR
 
 
 #### FastAPI
-- 
+- API to allow interaction with STAC-FastAPI within the EO DataHub.
 - Code available in https://github.com/EO-DataHub/resource-catalogue-fastapi repository
 - Container image published to public.ecr.aws/eodh/resource-catalogue-fastapi AWS ECR
 
