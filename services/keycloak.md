@@ -10,6 +10,7 @@ Keycloak is the OIDC IdP for the platform. It is the authentication service and 
 - Custom plugins maintained in https://github.com/EO-DataHub/eodh-keycloak
 - Custom build images stored in AWS ECR public.ecr.aws/eodh/eodh-keycloak
 - Deployment configured in https://github.com/EO-DataHub/eodhp-argocd-deployment repository, apps/keycloak directory
+- Keycloak theme modified using https://github.com/EO-DataHub/keycloakify-starter.git and theme.jsr artifact installed in https://github.com/EO-DataHub/eodh-keycloak
 
 ### Dependent Services
 
