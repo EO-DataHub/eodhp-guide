@@ -28,6 +28,8 @@ JupyterHub runs as a deployment, `hub`, in Kubernetes in the `jupyter` namespace
 
 Jupyter is configured in [ArgoCD Deployment](https://github.com/EO-DataHub/eodhp-argocd-deployment) repository, apps/jupyter directory.
 
+You can check the currently running JupyterHub version using https://eodatahub-workspaces.org.uk/notebooks/hub/api and the current JupyterLab version using `conda list` in a JupyterLab terminal.
+
 ### Control
 
 To restart service run `kubectl rollout restart -n jupyter deployment hub` for Kubernetes cluster or use ArgoCD UI to restart.
