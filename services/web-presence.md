@@ -32,6 +32,8 @@ Large parts of the system are available through an API so the web presence isn't
 
 The service runs as a Kubernetes deployment named `web-presence` under the `web` namespace.
 
+The web presence also uses a Helpscout Beacon to allow users to raise queries directly to Hub Admins. This Beacon is configured using the [Helpscout UI](https://secure.helpscout.net/settings/beacons/), where you can edit how the Beacon is displayed on the DataHub webpage, as well as alter the available options displayed when the Beacon is selected. Note, you need an account to make changes to the Beacon using the UI. The Beacon currently displayed on the Hub webpage is the `EODataHub Help` Beacon. The Beacon itself can be edited by selecting `Manage` in the navbar and then selecting `Beacons` in the dropdown. To edit the Problem Types displayed in the first page of the Beacon you need to edit the Custom Fields defined in the Helpscout client. Select `Inboxes` in the top left of the UI and select `EO Data Hub`, then select the Settings option (⚙️) in the bottom left of the UI and select `Custom Fields`, then select the Problem Type Field and make any changes before selecting `Save`.
+
 ### Configuration
 
 The web presence is configured as part of the [ArgoCD deployment repo](https://github.com/EO-DataHub/eodhp-argocd-deployment) in the apps/web-presence directory.
