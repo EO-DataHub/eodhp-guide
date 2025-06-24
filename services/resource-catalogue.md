@@ -4,6 +4,8 @@
 
 The resource catalogue contains services relating to data access and harvesting from source, along with transformations applied to the data and ordering data from commercial sources.
 
+This service ensures that data provided to the catalogue is complete and correct. Ingestion and access to the catalogue is provided by the [stac-fastapi](stac-fastapi.md) service.
+
 The resource catalogue currently supports the following data sources:
 
 - STAC catalogues
@@ -13,17 +15,25 @@ The resource catalogue currently supports the following data sources:
 
 ### Code Repositories and Artifacts
 
-- Deployment is configured in https://github.com/EO-DataHub/eodhp-argocd-deployment repository, apps/resource-catalogue directory
+The resource catalogue service consists of multiple sub-services, each with their own repositories and artifacts.
+- Deployment for each component is configured in https://github.com/EO-DataHub/eodhp-argocd-deployment repository, apps/resource-catalogue directory
+
+#### FastAPI
+- API to allow users to perform EODH-specific actions within the catalogue. Allows for interactions such as ordering commercial data via [data adaptors](data-adaptors.md).
+- Code available in https://github.com/EO-DataHub/resource-catalogue-fastapi repository
+- Container image published to public.ecr.aws/eodh/resource-catalogue-fastapi AWS ECR
 
 #### Data sources
 
+Raw data from several data sources is converted into STAC by harvesters. which run regularly to ensure that the EODH catalogue is kept up to date with changes to upstream data.
+
 ##### SPDX harvester
-- The SPDX harvester is a cron job that runs monthly to compare the already fetched files with those available at SPDX licenses. It first checks for a valid SPDX license identifier. If one is found, it creates two different license links using the transformer code repository, which then become part of the collection. Currently, the licenses are stored in an SPDX S3 bucket for each environment, and the bucket is hosted using CloudFront.
+- The SPDX harvester runs monthly via a cron job to maintain a collection of SPDX licences. It first checks for a valid SPDX license identifier. If one is found, it creates two different license links using the transformer code repository, which then become part of the collection. Currently, the licenses are stored in an SPDX S3 bucket for each environment, which is hosted using CloudFront.
 - Code available in https://github.com/EO-DataHub/eodhp-spdx-change-scanner repository
 - Container image published to public.ecr.aws/eodh/eodhp-spdx-change-scanner AWS ECR
 
 ##### Airbus harvester
-- Harvests data from Airbus and converts to STAC format
+- Harvests data from Airbus Optical and SAR archives, and converts to STAC format
 - Code available in https://github.com/EO-DataHub/airbus-harvester repository
 - Container image published to public.ecr.aws/eodh/airbus-harvester AWS ECR
 
@@ -32,10 +42,15 @@ The resource catalogue currently supports the following data sources:
 - Code available in https://github.com/EO-DataHub/planet-harvester repository
 - Container image published to public.ecr.aws/eodh/planet-harvester AWS ECR
 
+##### Planet proxy
+- Proxy for Planet to access items and assets converted to STAC format
+- Code available in https://github.com/EO-DataHub/stac-planet-api repository
+- Container image published to public.ecr.aws/eodh/stac-planet-api AWS ECR
+
 ##### STAC harvester
-- Harvests STAC data from STAC catalogues
+- Harvests STAC data from external STAC catalogues as specified in the stac harvester configuration repository
 - The STAC harvester is configured in the https://github.com/EO-DataHub/stac-harvester-configurations repository. 
-- Ingesting of STAC harvesters is carried out by ingesters. Code available in the https://github.com/EO-DataHub/stac-harvester-ingester repository.
+- Stac harvesters are created in the environment for each specified catalogue by the stac harvester ingester. Code available in the https://github.com/EO-DataHub/stac-harvester-ingester repository.
 - STAC harvester ingester container image published to public.ecr.aws/eodh/stac-harvester-ingester AWS ECR
 - STAC harvester code available in the https://github.com/EO-DataHub/stac-harvester repository
 - STAC harvester ingester container image published to public.ecr.aws/eodh/stac-harvester AWS ECR
@@ -45,13 +60,9 @@ The resource catalogue currently supports the following data sources:
 - Code available in https://github.com/EO-DataHub/workspace-file-harvester repository
 - Container image published to public.ecr.aws/eodh/workspace-file-harvester AWS ECR
 
-##### Planet proxy
-- Proxy for Planet to access data and convert to STAC format
-- Code available in https://github.com/EO-DataHub/stac-planet-api repository
-- Container image published to public.ecr.aws/eodh/stac-planet-api AWS ECR
-
-
 #### Transformers
+
+Once raw input data is harvested, it often is sent to a transformer via Pulsar to ensure that the STAC data is ready for the EODH catalogue. Transformed data is then ingested into the catalogue via a pulsar message sent to [STAC FastAPI](stac-fastapi.md)
 
 ##### Harvest
 - Transforms STAC content into a standardised EODH format, ensuring correct links, summaries, and extensions where applicable.
@@ -63,15 +74,8 @@ The resource catalogue currently supports the following data sources:
 - Code available in https://github.com/EO-DataHub/annotations-transformer repository
 - Container image published to public.ecr.aws/eodh/annotations-transformer AWS ECR
 
-
-#### FastAPI
-- API to allow interaction with STAC-FastAPI within the EO DataHub.
-- Code available in https://github.com/EO-DataHub/resource-catalogue-fastapi repository
-- Container image published to public.ecr.aws/eodh/resource-catalogue-fastapi AWS ECR
-
-
 ### Pipeline overview
-This is a brief overview of the steps required to harvest different data sources into the resource catalogue. For more information about the individual processes, refer to the appropriate documentation. 
+This is a brief overview of the steps required to harvest different data sources into the resource catalogue. For more information about the individual processes, refer to documentation within each repository.
 
 #### Workflow data
 1. A pulsar message is generated as part of a workflow or similar on the `harvested` topic.
@@ -85,9 +89,10 @@ This is a brief overview of the steps required to harvest different data sources
 4. The pulsar message is passed to the [stac-fastapi-ingester](https://github.com/EO-DataHub/stac-fastapi-ingester/tree/main/stac_fastapi_ingester) which ingests the messages into the catalogue.
 
 #### Planet catalogue
-The Planet catalogue is too big to fully harvest and most of the Planet catalogue is available via th [Planet proxy](https://github.com/EO-DataHub/stac-planet-api). Instead, harvesting for Planet data only takes place at the catalogue and collection level. Note that very few files are expected to be updated during a Planet harvest so the standard queue is used rather than the bulk queue as it is expected to be less busy.
+The Planet catalogue is too big to fully harvest and most of the Planet catalogue is available via the [Planet proxy](https://github.com/EO-DataHub/stac-planet-api). Instead, harvesting for Planet data only takes place at the catalogue and collection level. Note that very few files are expected to be updated during a Planet harvest so the standard queue is used rather than the bulk queue as it is expected to be less busy.
 1. A CronJob runs which collects data from Planet and arranges it into the STAC format. Pulsar messages are generated as part of this process and are sent with the `harvested` topic.
-2. Follow 3. and 4. above.
+2. The pulsar message is passed through the [STAC harvest transformer](https://github.com/EO-DataHub/harvest-transformer) which generates messages on the `transformed` topic.
+3. The pulsar message is passed to the [stac-fastapi-ingester](https://github.com/EO-DataHub/stac-fastapi-ingester/tree/main/stac_fastapi_ingester) which ingests the messages into the catalogue.
 
 #### STAC catalogue from API or git repository
 1. A catalogue (or collection) is defined in [stac-harvester-configurations](https://github.com/EO-DataHub/stac-harvester-configurations). 
@@ -101,8 +106,8 @@ The Planet catalogue is too big to fully harvest and most of the Planet catalogu
 #### Airbus catalogues
 Airbus catalogues share much of the pipeline above. Steps are as follows:
 1. A CronJob runs which collects data from Airbus and arranges it into the STAC format. Pulsar messages are generated as part of this process and are sent with the `harvested_bulk` topic.
-2. Follow 6. and 7. above.
-
+2. The pulsar message is passed through the [STAC harvest transformer](https://github.com/EO-DataHub/harvest-transformer) which generates messages on the `transformed_bulk` topic.
+3. The  pulsar message is passed to the [stac-fastapi-ingester](https://github.com/EO-DataHub/stac-fastapi-ingester/tree/main/stac_fastapi_ingester) which ingests the messages into the catalogue.
 
 
 ### Dependent Services
@@ -128,6 +133,7 @@ The service runs as a Kubernetes deployment under the `rc` namespace.
 
 The resource catalogue is configured as part of the [ArgoCD deployment repo](https://github.com/EO-DataHub/eodhp-argocd-deployment) in the apps/resource-catalogue directory.
 
+Harvesters, transformers, and the stac-fastapi ingestor can be configured to use different pulsar queues. This can be used to ensure that some data is quickly ingested through the pipeline without becoming blocked by long-poll harvests, which can run in a bulk queue.
 
 ### Control
 
