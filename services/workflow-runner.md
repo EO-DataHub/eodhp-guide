@@ -33,7 +33,7 @@ resources:
     memory: 1Gi
 ```
 
-You are also able to view workflow logs within the `zoo-project-dru-zoofpm` pod as well. First exec into the pod using `kubectl -n ades exec -it deploy/zoo-project-dru-zoofpm -- bash` and navigate to the `/opt/zooservices_user/<workspace-name>` to view all the available workflows in that workspace. You can then navigate to the `temp` directory to view details for any of the jobs that were run within that workspace, you can view the overall job details using the files in this directory, for example `<workflow-id>_<job-id>_error.log`. You can also view the individual step logs by navigating to the job-specific directories, for example `/opt/zooservices_user/<workspace-name>/temp/<workflow-id>-<job-id>`.
+You are also able to view workflow logs within the `zoo-project-dru-zoofpm` pod as well. First exec into the pod using `kubectl -n ades exec -it deploy/zoo-project-dru-zoofpm -- bash` and navigate to the `/opt/zooservices_user/<workspace-name>` directory to view all the available workflows in that workspace. You can then navigate to the `temp` directory to view details for any of the jobs that were run within that workspace, you can view the overall job details using the files in this directory, for example `<workflow-id>_<job-id>_error.log`. You can also view the individual step logs by navigating to the job-specific directories, for example `/opt/zooservices_user/<workspace-name>/temp/<workflow-id>-<job-id>`.
 
 ### Configuration
 
