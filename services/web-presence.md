@@ -32,11 +32,15 @@ Large parts of the system are available through an API so the web presence isn't
 
 The service runs as a Kubernetes deployment named `web-presence` under the `web` namespace.
 
-The web presence also uses a Helpscout Beacon to allow users to raise queries directly to Hub Admins. This Beacon is configured using the [Helpscout UI](https://secure.helpscout.net/settings/beacons/), where you can edit how the Beacon is displayed on the DataHub webpage, as well as alter the available options displayed when the Beacon is selected. Note, you need an account to make changes to the Beacon using the UI. The Beacon currently displayed on the Hub webpage is the `EODataHub Help` Beacon. The Beacon itself can be edited by selecting `Manage` in the navbar and then selecting `Beacons` in the dropdown. To edit the Problem Types displayed in the first page of the Beacon you need to edit the Custom Fields defined in the Helpscout client. Select `Inboxes` in the top left of the UI and select `EO Data Hub`, then select the Settings option (⚙️) in the bottom left of the UI and select `Custom Fields`, then select the Problem Type Field and make any changes before selecting `Save`.
+The web presence primarilly relies on a Content Management System (CMS) called Wagtail, which can be configured using the admin panel for the website by an authenticated user. Other top-level pages can be configured within the web-presence code itself.
+
+The web presence also uses a Helpscout Beacon to allow users to raise queries directly to Hub Admins. This Beacon is configured using the [Helpscout UI](https://secure.helpscout.net/settings/beacons/), where you can edit how the Beacon is displayed on the DataHub webpage, as well as alter the available options displayed when the Beacon is selected. Note, you need a Helpscout account to make changes to the Beacon using the UI, this is not the same as a Hub Admin account. The Beacon currently displayed on the Hub webpage is the `EODataHub Help` Beacon. The Beacon itself can be edited by selecting `Manage` in the navbar and then selecting `Beacons` in the dropdown. To edit the Problem Types displayed in the first page of the Beacon you need to edit the Custom Fields defined in the Helpscout client. Select `Inboxes` in the top left of the UI and select `EO Data Hub`, then select the Settings option (⚙️) in the bottom left of the UI and select `Custom Fields`, then select the Problem Type Field and make any changes before selecting `Save`.
 
 ### Configuration
 
 The web presence is configured as part of the [ArgoCD deployment repo](https://github.com/EO-DataHub/eodhp-argocd-deployment) in the apps/web-presence directory.
+
+The top-level pages that sit in front of the CMS can be configured in the [web-presence](https://github.com/EO-DataHub/eodhp-web-presence) repository, under eodhp_web_presence/core/templates. For example, to edit the nav bar and dropdown menus you can edit the menu.html file in the templates directory.
 
 The CMS can be updated at any time through the admin panel at https://eodatahub.org.uk/admin. Admin rights for individual users can be set in keycloak at https://eodatahub.org.uk/keycloak - the `hub_admin` role is required. Click Pages on the left hand side to be taken to a hierarchy of pages. Clicking on an individual page will allow the page to be edited. 
 
