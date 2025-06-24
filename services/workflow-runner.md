@@ -19,7 +19,7 @@ The Workflow Runner is comprised of several services, which all run in the `ades
 - deployment.apps/workflow-runner-api
 - deployment.apps/workflow-ingester
 
-The `workflow-runner-api` exposes a REST API that receives requests and processes them. Workflows can then be deployed, discovered and executed via the API, using HTTPS requests, Jupyter Notebooks, or via the Python pyeodh client.
+The `workflow-runner-api` exposes a REST API that receives requests and processes them. Workflows can then be deployed, discovered and executed via the API, using HTTPS requests, Jupyter Notebooks, or via the Python pyeodh client. This API is combined with the STAC Catalogue and is available for each workspace at `/api/catalogue/stac/catalogs/user/catalogs/<workspace>/processes` to access the available processes in a workspace, or `/api/catalogue/stac/catalogs/user/catalogs/<workspace>/jobs` to access the available jobs in a workspace.
 
 ### Configuration
 
