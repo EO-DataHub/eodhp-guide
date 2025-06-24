@@ -27,9 +27,11 @@ This service handles the STAC Catalogue for EO DataHub, using the STAC-FastApi p
 
 This service runs in Kubernetes as three services, one being read-only for external client access, run under `catalogue-search-service-client` in namespace `sfapi2`, and two providing read-write access for the ingester, run under `catalogue-search-service-ingester` and `catalogue-search-service-ingester-bulk` in namespace `sfapi2`, the first handling workspace uploads and workflow outputs, and the latter handling larger ingester requests from the harvest pipeline.
 
-All services rely on an elasticsearch deployment.
+Logs for the client and ingester can be viewed in Kubernetes either using ArgoCD or the command line, `kubectl -n sfapi2 logs deploy/catalogue-search-service-client` and `kubectl -n sfapi2 logs deploy/catalogue-search-service-ingester -c stac-fastapi-ingester` respectively. You can add the `-bulk` suffix to view the bulk ingester logs.
 
-Traffic is routed to the client via an ingress, available at `/api/catalogue/stac`
+All services rely on an elasticsearch deployment which is configured via a helm chart and values file in ArgoCD.
+
+Traffic is routed to the client via an ingress, available at `/api/catalogue/stac`.
 
 The ingester services rely on Pulsar messaging to ingest new STAC data from S3 file keys. The ingester and ingester-bulk listen to the `transformed` and `transformed-bulk` topics respectively.
 
