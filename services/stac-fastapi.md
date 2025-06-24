@@ -71,4 +71,4 @@ The ingester is configured in the [stac-fastapi-ingester](https://github.com/EO-
 
 The job to ingest the initial top-level catalogs is configured in the [eodhp-init-catalogs-harvest](https://github.com/EO-DataHub/eodhp-init-catalogs-harvest) repository.
 
-What is the release process?
+To build and release a new version of the STAC-FastApi you need to release an updated version of the eodhp-stac-fastapi repository, if changes have been made, and then update the version used in eodhp-stac-fastapi-elasticsearch-opensearch in the core/setup.py file. Then you can release a new version of this repository, and a GitHub action will build and publish the new image. Then update the image tag in the ArgoCD deployment for all three services, client and two ingesters.
