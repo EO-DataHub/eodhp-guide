@@ -11,7 +11,7 @@ This service handles the STAC Catalogue for EO DataHub, using the STAC-FastApi p
   - The elasticsearch implementation is configured in the [eodhp-stac-fastapi-elasticsearch-opensearch](https://github.com/EO-DataHub/eodhp-stac-fastapi-elasticsearch-opensearch repository)
 - The STAC-FastApi ingester is configured in the [stac-fastapi-ingester](https://github.com/EO-DataHub/stac-fastapi-ingester) repository
 - The Initial Catalog Harvester is configured in the [eodhp-init-catalogs-harvest](https://github.com/EO-DataHub/eodhp-init-catalogs-harvest) repository
-- The STAC-FastApi service is deployed as a public image available at public.ecr.aws/eodh/eodhp-stac-fastapi
+- The STAC-FastApi service is deployed as a public image available at public.ecr.aws/eodh/eodhp-stac-fastapi, which is built from the eodhp-stac-fastapi-elasticsearch-opensearch repository, which directly installs the parent package, eodhp-stac-fastapi, at build time.
 - The STAC-FastApi Ingester service is deployed as a public image available at public.ecr.aws/eodh/eodhp-stac-fastapi-ingester
 - The Initial catalog harvest job is deployed as a public image available at public.ecr.aws/eodh/eodhp-init-catalog-ingest
 
@@ -63,12 +63,10 @@ Where is state of service backed up? How to restore?
 
 The stac-fastapi deployments are developed across two repositories:
 - The first defines the abstract methods for STAC-FastApi, found in the [eodhp-stac-fastapi](https://github.com/EO-DataHub/eodhp-stac-fastapi) repository
-- The second defines the elasticsearch implementation for STAC-FastApi, found in the [eodhp-stac-fastapi-elasticsearch-opensearch](https://github.com/EO-DataHub/eodhp-stac-fastapi-elasticsearch-opensearch) repository
+- The second defines the elasticsearch implementation for STAC-FastApi, found in the [eodhp-stac-fastapi-elasticsearch-opensearch](https://github.com/EO-DataHub/eodhp-stac-fastapi-elasticsearch-opensearch) repository. This repository directly uses the parent repository, so the versions need to be properly maintained to ensure any new changes are inorporated when we rebuild the elasticsearch-opensearch image.
 
 The ingester is configured in the [stac-fastapi-ingester](https://github.com/EO-DataHub/stac-fastapi-ingester) repository.
 
 The job to ingest the initial top-level catalogs is configured in the [eodhp-init-catalogs-harvest](https://github.com/EO-DataHub/eodhp-init-catalogs-harvest) repository.
-
-Where is the code for this service kept?
 
 What is the release process?
