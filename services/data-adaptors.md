@@ -2,9 +2,9 @@
 
 ## Summary
 
-Data adaptors enable ordering of commercial data from Airbus and Planet within the EO DataHub. These adaptors run as user service workflows in specialised data provider namespaces via the ADES service.
+Data adaptors enable ordering of commercial data from Airbus and Planet within the EO DataHub. These adaptors run as user service workflows in specialised data provider namespaces via the [Workflow Runner](workflow-runner.md) service.
 
-Each adaptor interfaces with its respective provider to place an order for a single item, waits for delivery to an S3 bucket, then downloads and attaches assets to a STAC item that tracks the order. The ADES process manages asset upload and ingestion of STAC items into the user's workspace.
+Each adaptor interfaces with its respective provider to place an order for a single item, waits for delivery to an S3 bucket, then downloads and attaches assets to a STAC item that tracks the order. The Workflow Runner manages asset upload and ingestion of STAC items into the user's workspace.
 
 ### Code Repositories and Artifacts
 
@@ -25,7 +25,7 @@ There are no services that depend on the adaptors.
 
 ## Operation
 
-Adaptors run as ADES workflows under either the `ws-planet` or `ws-airbus` namespaces. Once deployed, they can be started by making calls to an endpoint in the `manage-catalogue-fastapi` API.
+Adaptors run as workflows under either the `ws-planet` or `ws-airbus` namespaces. Once deployed, they can be started by making calls to an endpoint in the `manage-catalogue-fastapi` API.
 
 ### Configuration
 
@@ -33,12 +33,12 @@ Adaptors are configured as user service workflows using HTTP and CWL scripts pro
 
 ### Control
 
-Adaptors are managed and executed by the ADES service and the `manage-catalogue-fastapi` API.
+Adaptors are managed and executed by the Workflow Runner service and the `manage-catalogue-fastapi` API in the Resource Catalogue.
 
 ### Dependencies
 
-- **ADES:** Adaptors run on the ADES service.
-- **Resource Catalogue (`stac-fastapi`):** Outputs from the adaptors are ingested into the ordering workspace's catalogue.
+- **Workflow Runner:** Adaptors run as workflows within the EODH.
+- **STAC FastAPI:** Outputs from the adaptors are ingested into the ordering workspace's catalogue.
 - **Resource Catalogue (`manage-catalogue-fastapi`):** Adaptors are triggered by this API, which handles inputs and the creation of the order-tracking STAC item.
 - **Workspace Controller:** Adaptors require data provider API keys linked to a workspace. Orders cannot be placed if a key is not linked.
 
