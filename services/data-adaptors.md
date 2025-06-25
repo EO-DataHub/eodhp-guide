@@ -2,7 +2,7 @@
 
 ## Summary
 
-Data adaptors enable ordering of commercial data from Airbus and Planet within the EO DataHub. These adaptors run as user service workflows in specialised data provider namespaces via the [Workflow Runner](workflow-runner.md) service.
+Data adaptors enable ordering of commercial data from Airbus and Planet within the EO DataHub. These adaptors run as user service workflows in specialised data provider workspaces via the [Workflow Runner](workflow-runner.md) service.
 
 Each adaptor interfaces with its respective provider to place an order for a single item, waits for delivery to an S3 bucket, then downloads and attaches assets to a STAC item that tracks the order. The Workflow Runner manages asset upload and ingestion of STAC items into the user's workspace.
 
@@ -50,4 +50,4 @@ Adaptor outputs are stored in S3 buckets. Ingested items are backed up as part o
 
 Adaptor code is version controlled in the [EO-DataHub/commercial-data-adaptors](https://github.com/EO-DataHub/commercial-data-adaptors) repository.
 
-New versions are released by following the release process described in the repository's README.
+New versions are released by following the release process described in the repository's README. Deploying adaptors is a manual one time process that must be done when all dependncies are deployed and workspaces for data providers are created.
