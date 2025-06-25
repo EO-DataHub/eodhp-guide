@@ -50,4 +50,6 @@ Adaptor outputs are stored in S3 buckets. Ingested items are backed up as part o
 
 Adaptor code is version controlled in the [EO-DataHub/commercial-data-adaptors](https://github.com/EO-DataHub/commercial-data-adaptors) repository.
 
-New versions are released by following the release process described in the repository's README. Deploying adaptors is a manual one time process that must be done when all dependncies are deployed and workspaces for data providers are created.
+New versions are released by following the release process described in the repository's README. Deploying adaptors is a manual one time process that must be done when all dependencies are deployed and workspaces for data providers are created.
+
+In order to deploy adaptors, `planet` and `airbus` workspaces must first exist. It is useful but not necessary to make a specific user to own each of these workspaces to maintain security and allow admins to deploy the adaptors with a workspace scoped token. Login credentials for these accounts can be managed via keycloak.
