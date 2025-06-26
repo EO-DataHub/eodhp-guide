@@ -21,6 +21,20 @@ The Workflow Runner is comprised of several services, which all run in the `ades
 
 The `workflow-runner-api` exposes a REST API that receives requests and processes them. Workflows can then be deployed, discovered and executed via the API, using HTTPS requests, Jupyter Notebooks, or via the Python pyeodh client. This API is combined with the STAC Catalogue and is available for each workspace at `/api/catalogue/stac/catalogs/user/catalogs/<workspace>/processes` to access the available processes in a workspace, or `/api/catalogue/stac/catalogs/user/catalogs/<workspace>/jobs` to access the available jobs in a workspace.
 
+To bugfix a failed workflow in the backend, you will need to know the workspace, `<workspace-name>`, in which the workflow was executed which can be used to determine the namespace in which the workflow was run, `ws-<workspace-name>`. You can then list all of the pods that were recently run in that workspace to identify any useful pods, `kubectl -n ws-<workspace-name> get pods`. Look for any recent pods with a naming structure similar to `job-<uuid>`. You can then view the logs for any of these pods using `kubectl -n ws-<workspace-name> logs job-<uuid>` and view logs for each of the steps that were run during the execution of that workflow, this includes Kubernetes manifests for each job run for that workflow as well. You can also view these logs in realtime by providing the `-f` argument. In these logs look for an `Error` alerts or `OOMKilled` warnings to determine what caused a workflow step to fail. If you see any Out of Memory errors, you may need to increase the amount of RAM and CPU being requested by the workflow in the CWL resource requirements - you can check these values also in the printed manifests:
+
+```
+resources:
+  limits:
+    cpu: "1"
+    memory: 1Gi
+  requests:
+    cpu: "1"
+    memory: 1Gi
+```
+
+You are also able to view workflow logs within the `zoo-project-dru-zoofpm` pod as well. First exec into the pod using `kubectl -n ades exec -it deploy/zoo-project-dru-zoofpm -- bash` and navigate to the `/opt/zooservices_user/<workspace-name>` directory to view all the available workflows in that workspace. You can then navigate to the `temp` directory to view details for any of the jobs that were run within that workspace, you can view the overall job details using the files in this directory, for example `<workflow-id>_<job-id>_error.log`. You can also view the individual step logs by navigating to the job-specific directories, for example `/opt/zooservices_user/<workspace-name>/temp/<workflow-id>-<job-id>`.
+
 ### Configuration
 
 The Auth Agent is configured as part of the [ArgoCD deployment repo](https://github.com/EO-DataHub/eodhp-argocd-deployment) in the apps/ades directory.
