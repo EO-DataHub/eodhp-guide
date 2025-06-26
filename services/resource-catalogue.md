@@ -101,13 +101,13 @@ The Planet catalogue is too big to fully harvest and most of the Planet catalogu
 4. The [stac-harvester-ingester](https://github.com/EO-DataHub/stac-harvester-ingester) then receives the message and creates a [STACHarvester](https://github.com/EO-DataHub/eodhp-argocd-deployment/blob/main/apps/resource-catalogue/base/git-harvester/crds.yaml), a [sensor](https://argoproj.github.io/argo-events/concepts/sensor/) and an [event source](https://argoproj.github.io/argo-events/concepts/event_source/). The STACHarvester is a Custom Resource which contains fields for the provided catalogue's URL, source and target. This can be accessed by other kubernetes resources.
 5. When the event is triggered on schedule, a [stac-harvester](https://github.com/EO-DataHub/stac-harvester) job runs which harvests from the catalogue defined in the corresponding STACHarvester CRD. Pulsar messages are generated as part of this process and are sent with the `harvested_bulk` topic.
 6. The pulsar message is passed through the [STAC harvest transformer](https://github.com/EO-DataHub/harvest-transformer) which generates messages on the `transformed_bulk` topic.
-7. The  pulsar message is passed to the [stac-fastapi-ingester](https://github.com/EO-DataHub/stac-fastapi-ingester/tree/main/stac_fastapi_ingester) which ingests the messages into the catalogue.
+7. The pulsar message is passed to the [stac-fastapi-ingester](https://github.com/EO-DataHub/stac-fastapi-ingester/tree/main/stac_fastapi_ingester) which ingests the messages into the catalogue.
 
 #### Airbus catalogues
 Airbus catalogues share much of the pipeline above. Steps are as follows:
 1. A CronJob runs which collects data from Airbus and arranges it into the STAC format. Pulsar messages are generated as part of this process and are sent with the `harvested_bulk` topic.
 2. The pulsar message is passed through the [STAC harvest transformer](https://github.com/EO-DataHub/harvest-transformer) which generates messages on the `transformed_bulk` topic.
-3. The  pulsar message is passed to the [stac-fastapi-ingester](https://github.com/EO-DataHub/stac-fastapi-ingester/tree/main/stac_fastapi_ingester) which ingests the messages into the catalogue.
+3. The pulsar message is passed to the [stac-fastapi-ingester](https://github.com/EO-DataHub/stac-fastapi-ingester/tree/main/stac_fastapi_ingester) which ingests the messages into the catalogue.
 
 
 ### Dependent Services

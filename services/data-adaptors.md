@@ -33,7 +33,7 @@ Adaptors are configured as user service workflows using HTTP and CWL scripts pro
 
 ### Control
 
-Adaptors are managed and executed by the Workflow Runner service and the `manage-catalogue-fastapi` API in the Resource Catalogue.
+Adaptors are managed and executed by the Workflow Runner service and the `manage-catalogue-fastapi` API in the Resource Catalogue namespace.
 
 ### Dependencies
 
@@ -52,4 +52,4 @@ Adaptor code is version controlled in the [EO-DataHub/commercial-data-adaptors](
 
 New versions are released by following the release process described in the repository's README. Deploying adaptors is a manual one time process that must be done when all dependencies are deployed and workspaces for data providers are created.
 
-In order to deploy adaptors, `planet` and `airbus` workspaces must first exist. It is useful but not necessary to make a specific user to own each of these workspaces to maintain security and allow admins to deploy the adaptors with a workspace scoped token. Login credentials for these accounts can be managed via keycloak.
+In order to deploy adaptors, `planet` and `airbus` workspaces must first exist. It is useful but not necessary to make a specific user with these names to own each of these workspaces to maintain security and allow admins to deploy the adaptors with a workspace scoped token. Login credentials for these accounts can be managed via keycloak.
