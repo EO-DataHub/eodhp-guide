@@ -26,3 +26,4 @@ When viewing pod resources, note that any Notebook pods will be prefixed with `j
 - If you wish to find a given pod using the Kubernetes CLI, you can use the following command, if you are not sure of the namespace: `kubectl get pods -A | grep <pod-name>`. This will return all pods running in the cluster that contain the `pod-name` in their name.
 - It is important to consider the Node type deployed to the cluster, as this will define the restrictions that apply to CPU and RAM available throughout each cluster node.
 - If any dashboard fields appears blank, ensure you have selected an appropriate timescale in the top right, for example if no data is seen for the last 15 minutes, consider increasing it to 30 minutes.
+- Note, the data that is displayed in these Grafana dashboards provides the basis for billing and accounting information
