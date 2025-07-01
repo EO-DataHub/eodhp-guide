@@ -2,7 +2,7 @@
 
 ## Summary
 
-The workflow runner is built on the EOEPCA ADES building block. It orchestrates workflow execution for the platform. A REST API has been built on top of the ADES component for managing workflow requests and integrating it with the platform IAM.
+The workflow runner is built on the EOEPCA ADES building block. It orchestrates workflow execution for the platform. A REST API has been built on top of the ADES component for managing workflow requests and integrating it with the platform IAM. This service also includes system tests for the Workflow Runner, and also services that harvest and ingest workflows into user workspaces, as well as services to ingest default workflows into a demo workspace to be executed by other users.
 
 ### Dependent Services
 
@@ -18,6 +18,10 @@ The Workflow Runner is comprised of several services, which all run in the `ades
 - deployment.apps/zoo-project-dru-kubeproxy
 - deployment.apps/workflow-runner-api
 - deployment.apps/workflow-ingester
+- deployment.apps/ades-schema
+- deployment.apps/workflow-system-test-file
+- deployment.apps/workflow-system-test-url
+- deployment.apps/wr-default-loader
 
 The `workflow-runner-api` exposes a REST API that receives requests and processes them. Workflows can then be deployed, discovered and executed via the API, using HTTPS requests, Jupyter Notebooks, or via the Python pyeodh client. This API is combined with the STAC Catalogue and is available for each workspace at `/api/catalogue/stac/catalogs/user/catalogs/<workspace>/processes` to access the available processes in a workspace, or `/api/catalogue/stac/catalogs/user/catalogs/<workspace>/jobs` to access the available jobs in a workspace.
 
@@ -54,11 +58,12 @@ To stop service, the service must be removed from ArgoCD configuration.
 ### Dependencies
 
 - Open Policy Agent - The Workflow Runner uses fine-grained authorisation policies defined in the Open Policy Agent. If the OPA is not available, authorisation of requests will fail.
-- S3 access to workflow access bucket - Access to historic workflow logs and results is determined based on workflow access details stored in S3
+- S3 access to workflow access bucket - Access to historic workflow logs and results is determined based on workflow access details stored in S3.
+- The workflow system tests rely on the Harvest Pipeline to harvest and ingest outputs. If the pipeline is not functioning correctly, the system tests will fail.
 
 ### Backups
 
-All state for the Workflow Runner is in its database. Restoring a previous state involves following the database restore procedure.
+All state for the Workflow Runner is in its database. Restoring a previous state involves following the database restore procedure. The database is deployed as part of the databases service.
 
 ## Development
 
@@ -66,7 +71,7 @@ All state for the Workflow Runner is in its database. Restoring a previous state
 
 The Workflow Runner is built from multiple microservices, each with their own code repository.
 
-- ZOO-Project
+- ZOO-Project - https://github.com/EO-DataHub/eodhp-argocd-deployment/blob/main/apps/ades/base/values.yaml
 
   - The ZOO parent git repository - https://github.com/EO-DataHub/ZOO-Project
     - Image: public.ecr.aws/eodh/zoo-project-dru
@@ -76,7 +81,7 @@ The Workflow Runner is built from multiple microservices, each with their own co
     - Image: public.ecr.aws/eodh/eodhp-calrissian
   - Proc Service Template - https://github.com/EO-DataHub/eoepca-proc-service-template
 
-- Stage In and out
+- Stage In and out - https://github.com/EO-DataHub/eodhp-argocd-deployment/blob/main/apps/ades/base/values.yaml
 
   - Stagein - https://github.com/EO-DataHub/ades-stagein
     - Image: public.ecr.aws/eodh/eodhp-ades-stagein
@@ -100,8 +105,12 @@ The Workflow Runner is built from multiple microservices, each with their own co
   - Git Change Scanner
     - Image: public.ecr.aws/eodh/eodhp-git-change-scanner
 
-- Workflow Ingester
-  - Deployment
+- Workflow Ingester - https://github.com/EO-DataHub/eodhp-argocd-deployment/blob/main/apps/ades/base/ingester/deployment.yaml
+  - Deployment - https://github.com/EO-DataHub/workflow-ingester
     - Image: public.ecr.aws/eodh/eodhp-workflow-ingester
+
+- Default Workflow Loader - https://github.com/EO-DataHub/eodhp-argocd-deployment/blob/main/apps/ades/base/default-loader/job.yaml
+  - Job - https://github.com/EO-DataHub/public-workflow-loader
+    - Image: public.ecr.aws/eodh/workflow-loader
 
 Additional guidance can be found in the [EOEPCA Deployment Guide](https://eoepca.readthedocs.io/projects/deploy/en/stable/eoepca/ades-zoo/) under the ADES component.
