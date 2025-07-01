@@ -92,7 +92,7 @@ The Workflow Runner is built from multiple microservices, each with their own co
 
 - Workflow Runner API - https://github.com/EO-DataHub/eodhp-argocd-deployment/tree/main/apps/ades/base/api
 
-  - Deployment
+  - Deployment - https://github.com/EO-DataHub/ades-fastapi
     - Image: public.ecr.aws/eodh/ades-fastapi
   - Service
   - Ingress
@@ -104,7 +104,7 @@ The Workflow Runner is built from multiple microservices, each with their own co
 
 - Workflow Harvester - https://github.com/EO-DataHub/eodhp-argocd-deployment/tree/staging/apps/ades/base/harvester
 
-  - Git Change Scanner
+  - Git Change Scanner - https://github.com/EO-DataHub/eodhp-git-change-scanner
     - Image: public.ecr.aws/eodh/eodhp-git-change-scanner
 
 - Workflow Ingester - https://github.com/EO-DataHub/eodhp-argocd-deployment/blob/main/apps/ades/base/ingester/deployment.yaml
