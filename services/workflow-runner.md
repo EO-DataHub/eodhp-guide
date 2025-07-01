@@ -2,7 +2,7 @@
 
 ## Summary
 
-The workflow runner is built on the EOEPCA ADES building block. It orchestrates workflow execution for the platform. A REST API has been built on top of the ADES component for managing workflow requests and integrating it with the platform IAM. This service also includes system tests for the Workflow Runner, and also services that harvest and ingest workflows into user workspaces, as well as services to ingest default workflows into a demo workspace to be executed by other users.
+The workflow runner is built on the EOEPCA ADES building block. It orchestrates workflow execution for the platform. A REST API has been built on top of the ADES component for managing workflow requests and integrating it with the platform IAM. This service also includes system tests for the Workflow Runner, and also services that harvest and ingest workflows into user workspaces, as well as services to ingest default workflows into a demo workspace to be executed by other users. A job is also provided to configure the RDS database with the correct schemas upon application start-up.
 
 ### Dependent Services
 
