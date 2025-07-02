@@ -12,7 +12,7 @@ Pulsar allows messages to be passed between services within the cluster. This pr
 
 - Workspaces services - unable to create workspace data stores in S3 or resource catalogue
 - Harvest pipeline - unable to transform or ingest data into the resource catalogue
-- Logging - ELKstac will no longer receive logs from services
+- Logging - ELK Stack will no longer receive logs from services
 - Other services that monitor topics or send messages using Pulsar
 
 ## Operation
