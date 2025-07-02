@@ -21,7 +21,7 @@ Many services rely on databases being created and maintained, so if this service
 - Workflow Runner - database stores workflow details and request information
 - Auth Agent
 - Keycloak
-- Web Presence
+- Web Presence - stores Wagtail contents
 - Workspace - stores workspace details, including ownership and membership information
 
 
