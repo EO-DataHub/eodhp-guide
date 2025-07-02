@@ -71,7 +71,7 @@ The ingester is configured in the [stac-fastapi-ingester](https://github.com/EO-
 
 The job to ingest the initial top-level catalogs is configured in the [eodhp-init-catalogs-harvest](https://github.com/EO-DataHub/eodhp-init-catalogs-harvest) repository.
 
-To build and release a new version of the STAC-FastApi you need to release an updated version of the eodhp-stac-fastapi repository, if changes have been made, and then update the version used in eodhp-stac-fastapi-elasticsearch-opensearch in the core/setup.py file. Then you can release a new version of this repository using the Github UI, and a GitHub action will build and publish the new image.
+To build and release a new version of the STAC-FastApi you need to release an updated version of the eodhp-stac-fastapi repository, if changes have been made, and then update the version used in eodhp-stac-fastapi-elasticsearch-opensearch in the core/setup.py file. Then you can release a new version of this repository via the GitHub repo page, and a GitHub action will build and publish the new image.
 
 Other images can also be built and published using the GitHub actions by creating new releases in the GitHub UI.
 
