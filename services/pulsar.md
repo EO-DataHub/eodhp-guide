@@ -49,7 +49,7 @@ To stop service, the service must be removed from ArgoCD configuration.
 
 ### Backups
 
-Pulsar stores its data in persistent volumes as part of its deployment. Pulsar is configured with statefulsets and replicas to handle occasions where services become unresponsive to prevent data loss.
+Pulsar stores its data in persistent volumes as part of its deployment. Pulsar is configured with statefulsets and replicas to handle occasions where services become unresponsive to prevent data loss. No other backups are required.
 
 ## Development
 
