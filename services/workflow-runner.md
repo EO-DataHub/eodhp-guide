@@ -62,6 +62,8 @@ To stop service, the service must be removed from ArgoCD configuration.
 - Open Policy Agent - The Workflow Runner uses fine-grained authorisation policies defined in the Open Policy Agent. If the OPA is not available, authorisation of requests will fail.
 - S3 access to workflow access bucket - Access to historic workflow logs and results is determined based on workflow access details stored in S3.
 - The workflow system tests rely on the Harvest Pipeline to harvest and ingest outputs. If the pipeline is not functioning correctly, the system tests will fail.
+- Pulsar service - to support harvesting and ingesting workflow outputs into the workspace sub-catalogue in the Resource Catalogue
+- The Workspaces service - to create the workspace in which the workflow will be executed, also to handle S3 object storage for outputs
 
 ### Backups
 
@@ -76,12 +78,19 @@ The Workflow Runner is built from multiple microservices, each with their own co
 - ZOO-Project - https://github.com/EO-DataHub/eodhp-argocd-deployment/blob/main/apps/ades/base/values.yaml
 
   - The ZOO parent git repository - https://github.com/EO-DataHub/ZOO-Project
+    - Overall deployment that handles database calls, ADES API responses and calls the sub packages to run the workflow in Kubernetes
     - Image: public.ecr.aws/eodh/zoo-project-dru
   - Pycalrissian - https://github.com/EO-DataHub/pycalrissian
+    - Constructs the PVCs required by Calrissian to execute the workflow
+    - Configures the Calrissian pod with the correct environment variables and command line inputs
   - ZOO Calrissian Runner - https://github.com/EO-DataHub/zoo-calrissian-runner
+    - Constructs the pycalrissian context and execution instances
   - Calrissian - https://github.com/EO-DataHub/calrissian
+    - Runs the workflow in Kubernetes, constructing pods and mounting the required environment variables and volumes to each step
     - Image: public.ecr.aws/eodh/eodhp-calrissian
   - Proc Service Template - https://github.com/EO-DataHub/eoepca-proc-service-template
+    - Mounted to the zoo-project-dru-zoofpm pod and used to construct the workflow python script when a new workflow is deployed
+    - Branch used is configured in the values file 
 
 - Stage In and Out - https://github.com/EO-DataHub/eodhp-argocd-deployment/blob/main/apps/ades/base/values.yaml
 
