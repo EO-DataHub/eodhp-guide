@@ -83,7 +83,7 @@ The Workflow Runner is built from multiple microservices, each with their own co
     - Image: public.ecr.aws/eodh/eodhp-calrissian
   - Proc Service Template - https://github.com/EO-DataHub/eoepca-proc-service-template
 
-- Stage In and out - https://github.com/EO-DataHub/eodhp-argocd-deployment/blob/main/apps/ades/base/values.yaml
+- Stage In and Out - https://github.com/EO-DataHub/eodhp-argocd-deployment/blob/main/apps/ades/base/values.yaml
 
   - Stagein - https://github.com/EO-DataHub/ades-stagein
     - Image: public.ecr.aws/eodh/eodhp-ades-stagein
