@@ -62,6 +62,8 @@ To stop service, the service must be removed from ArgoCD configuration.
 - Open Policy Agent - The Workflow Runner uses fine-grained authorisation policies defined in the Open Policy Agent. If the OPA is not available, authorisation of requests will fail.
 - S3 access to workflow access bucket - Access to historic workflow logs and results is determined based on workflow access details stored in S3.
 - The workflow system tests rely on the Harvest Pipeline to harvest and ingest outputs. If the pipeline is not functioning correctly, the system tests will fail.
+- Pulsar service - to support harvesting and ingesting workflow outputs into the workspace sub-catalogue in the Resource Catalogue
+- The Workspaces service - to create the workspace in which the workflow will be executed, also to handle S3 object storage for outputs
 
 ### Backups
 
