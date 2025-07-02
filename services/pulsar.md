@@ -2,7 +2,7 @@
 
 ## Summary
 
-Pulsar allows messages to be passed between services within the cluster. This provides functionality that is used throughout the harvest pipeline, workspaces API and logging services.
+Pulsar allows messages to be passed between services within the cluster. This provides functionality that is used throughout the harvest pipeline, workspaces API and logging services among others.
 
 ### Code Repositories and Artifacts
 
@@ -21,14 +21,14 @@ Pulsar runs as a number of subservices in Kubernetes within the `pulsar` namespa
 
 Pulsar is a 3rd party open source software providing a distributed Publication/Subscription based messaging system as part of the EO DataHub platform.
 
-Traffic external to the cluster is handled via an ingress and allows access to the Pulsar UI, available at pulsar.eodatahub.org.uk to authenticated users.
+Traffic external to the cluster is handled via an ingress and allows access to the Pulsar UI, available at https://pulsar.eodatahub.org.uk to authenticated users.
 
 You can make use of the Pulsar API to monitor Pulsar health across topics, by port-forwarding into one of the Pulsar pods and following the Pulsar API [guide](https://pulsar.apache.org/docs/2.11.x/pulsar-api-overview/).
 
 
 ### Configuration
 
-Pulsar is configured in [ArgoCD Deployment](https://github.com/EO-DataHub/eodhp-argocd-deployment) repository, apps/pulsar directory.
+Pulsar is configured in [ArgoCD Deployment](https://github.com/EO-DataHub/eodhp-argocd-deployment) repository, apps/pulsar directory. Deployed via Helm chart with a values file for configuration.
 
 ### Control
 
