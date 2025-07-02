@@ -49,10 +49,10 @@ To stop service, the service must be removed from ArgoCD configuration.
 
 ### Backups
 
-Pulsar stores its data in persistent volumes as part of its deployment. If these PVs were lost, there is a potential for the message queues to be lost, should there be a large backlog of messages, this could lead to messages being missed and data not be ingested as expected. However, Pulsar is configured with statefulsets and replicas to handle occasions where services become unresponsive to prevent data loss.
+Pulsar stores its data in persistent volumes as part of its deployment. Pulsar is configured with statefulsets and replicas to handle occasions where services become unresponsive to prevent data loss.
 
 ## Development
 
-Pulsar is an 3rd-party open-source project, https://github.com/apache/pulsar. Stock images are available at apachepulsar/pulsar-all. This is deployed via Helm chart, https://pulsar.apache.org/charts/pulsar, with configuration handled via a values file with Kustomize.
+Pulsar is a 3rd-party open-source project, https://github.com/apache/pulsar. Stock images are available at apachepulsar/pulsar-all. This is deployed via Helm chart, https://pulsar.apache.org/charts, with configuration handled via a values file with Kustomize.
 
 Updates can be made to the configuration in the ArgoCD deployment repository, https://github.com/EO-DataHub/eodhp-argocd-deployment, in the apps/pulsar directory, and then raised as a pull requests against the main branch.
