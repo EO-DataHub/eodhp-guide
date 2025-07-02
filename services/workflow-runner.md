@@ -78,12 +78,19 @@ The Workflow Runner is built from multiple microservices, each with their own co
 - ZOO-Project - https://github.com/EO-DataHub/eodhp-argocd-deployment/blob/main/apps/ades/base/values.yaml
 
   - The ZOO parent git repository - https://github.com/EO-DataHub/ZOO-Project
+    - Overall deployment that handles database calls, ADES API responses and calls the sub packages to run the workflow in Kubernetes
     - Image: public.ecr.aws/eodh/zoo-project-dru
   - Pycalrissian - https://github.com/EO-DataHub/pycalrissian
+    - Constructs the PVCs required by Calrissian to execute the workflow
+    - Configures the Calrissian pod with the correct environment variables and command line inputs
   - ZOO Calrissian Runner - https://github.com/EO-DataHub/zoo-calrissian-runner
+    - Constructs the pycalrissian context and execution instances
   - Calrissian - https://github.com/EO-DataHub/calrissian
+    - Runs the workflow in Kubernetes, constructing pods and mounting the required environment variables and volumes to each step
     - Image: public.ecr.aws/eodh/eodhp-calrissian
   - Proc Service Template - https://github.com/EO-DataHub/eoepca-proc-service-template
+    - Mounted to the zoo-project-dru-zoofpm pod and used to construct the workflow python script when a new workflow is deployed
+    - Branch used is configured in the values file 
 
 - Stage In and Out - https://github.com/EO-DataHub/eodhp-argocd-deployment/blob/main/apps/ades/base/values.yaml
 
