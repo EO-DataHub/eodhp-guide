@@ -50,6 +50,19 @@ The API Service depends on the Ingester adding data to the database but will sti
 
 The Ingester depends on Collectors to send it data and the Collectors on the Ingester to store it. These are linked by Pulsar (asynchronous persistent messaging) and none will fail due to temporary downtime of any other.
 
+The ingester uses a Pulsar schema for the workspace-settings topic whereas the workspace-manager which writes to this topic does
+not. If a schema compatibility error is observerd then the following may solve it:
+
+```
+kubectl port-forward service/pulsar-proxy -n pulsar 8080:8080 &
+pulsar-admin --admin-url http://localhost:8080 topicPolicies set-schema-compatibility-strategy -s=ALWAYS_COMPATIBLE persistent://public/default/workspace-settings
+```
+
+`pulsar-admin` comes with the Pulsar binary download.
+
+This is only likely to be seen in new clusters and may only happen if service startup and first workspace status
+message have a particular order.
+
 #### Operation
 
 The API Service is a Kubernetes Service and Deployment, both called `accounting-api` in the `accounting` namespace. The Ingester is a Deployment only, called `accounting-ingester`. Both may and do have multiple replicas.

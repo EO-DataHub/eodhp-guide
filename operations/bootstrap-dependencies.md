@@ -2,6 +2,8 @@
 
 Dependencies between some services need to be managed carefully so that clusters can be bootstrapped. This describes some of those dependencies and the order we require. These are mostly configured into ArgoCD and do not need to be explicitly handled by a system operator.
 
+If you need to debug a badly broken platform and you don't know why then this is a useful order to check things in - later items will not be the cause of problems in earlier items.
+
 See [Platform Deployment](Platform Deployment.md) for a step-by-step cluster creation guide.
 
 Some particular concerns:
@@ -53,7 +55,7 @@ Bootstrap order:
   - external-secrets
   - `database` app (creates DBs in Aurora)
   - redis (needed by oauth2-proxy)
-- sync-wave -40 (management infra):
+- sync-wave -30 (management infra):
   - nginx
   - ArgoCD
   - Keycloak (note: depends on a database and external-secrets)
@@ -61,7 +63,7 @@ Bootstrap order:
   - Prometheus
   - Grafana (needs external-secrets)
   - linkerd viz
-- sync-wave -30 (EODH infra)
+- sync-wave -20 (EODH infra)
   - OPAL
   - Pulsar
   - oauth2-proxy
