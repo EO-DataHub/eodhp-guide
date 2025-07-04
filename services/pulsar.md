@@ -11,7 +11,7 @@ Pulsar allows messages to be passed between services within the cluster. This pr
 ### Dependent Services
 
 - Workspaces services - unable to create workspace data stores in S3 or Resource Catalogue
-- Harvest pipeline - unable to transform or ingest data into the Resource Catalogue
+- Harvest pipeline - unable to transform or ingest data into the Resource Catalogue, including adapters
 - Accounting - unable to receive and ingest new billing events from billing collectors, and won't receive information about workspace accounts from the workspace services.
 - Other services that monitor topics or send messages using Pulsar
 
