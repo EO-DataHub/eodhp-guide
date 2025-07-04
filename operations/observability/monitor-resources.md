@@ -7,6 +7,7 @@ This operation allows a Hub Admin to monitor specific resource usage down to nam
 ## When to Use
 
 If pods are starting to fail in workspaces, for example during Notebook processing or Workflow execution, then an Admin may wish to bugfix this issue. Grafana can help a user to determine if there are any issues with resource usage within the cluster. If the issue might be related to resource usage, then Grafana can help identify which pods, or even containers, are using excessive resources.
+Grafana can also be used to monitor the Pulsar messaging service, in particular the rate at which catalogue harvester messages are propagating through the harvest pipeline. This can also help to identify backlogs or bottlenecks in one of the steps.
 
 ## Operation
 
