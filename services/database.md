@@ -18,11 +18,12 @@ Databases are then defined in the base directory, including configmaps to define
 ### Dependent Services
 
 Many services rely on databases being created and maintained, so if this services fails, there a re a number of dependent services that may face issues:
-- Workflow Runner - database stores workflow details and request information
+- Workflow Runner - stores workflow details and request information, handled by the ADES
 - Auth Agent
 - Keycloak
 - Web Presence - stores Wagtail contents
 - Workspace - stores workspace details, including ownership and membership information
+- Accounting - storing billing events from billing collectors 
 
 
 ## Operation
