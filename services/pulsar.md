@@ -2,7 +2,7 @@
 
 ## Summary
 
-Pulsar allows messages to be passed between services within the cluster. This provides functionality that is used throughout the harvest pipeline, workspaces API and logging services among others.
+Pulsar allows messages to be passed between services within the cluster. This provides functionality that is used throughout the harvest pipeline, workspaces API and accounting services among others.
 
 ### Code Repositories and Artifacts
 
@@ -10,9 +10,9 @@ Pulsar allows messages to be passed between services within the cluster. This pr
 
 ### Dependent Services
 
-- Workspaces services - unable to create workspace data stores in S3 or resource catalogue
-- Harvest pipeline - unable to transform or ingest data into the resource catalogue
-- Logging - ELK Stack will no longer receive logs from services
+- Workspaces services - unable to create workspace data stores in S3 or Resource Catalogue
+- Harvest pipeline - unable to transform or ingest data into the Resource Catalogue
+- Accounting - unable to receive and ingest new billing events from billing collectors, and won't receive information about workspace accounts from the workspace services.
 - Other services that monitor topics or send messages using Pulsar
 
 ## Operation
@@ -23,7 +23,7 @@ Pulsar is a 3rd party open source software providing a distributed Publication/S
 
 Traffic external to the cluster is handled via an ingress and allows access to the Pulsar UI, available at https://pulsar.eodatahub.org.uk to authenticated users.
 
-You can make use of the Pulsar API to monitor Pulsar health across topics, by port-forwarding into one of the Pulsar pods and following the Pulsar API [guide](https://pulsar.apache.org/docs/2.11.x/pulsar-api-overview/).
+You can make use of the Pulsar API to monitor Pulsar health across topics, by port-forwarding into one of the Pulsar pods and following the Pulsar API [guide](https://pulsar.apache.org/docs/4.0.x/pulsar-api-overview/).
 
 
 ### Configuration
