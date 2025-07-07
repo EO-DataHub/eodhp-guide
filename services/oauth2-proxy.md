@@ -1,10 +1,12 @@
-# Oauth2 Proxy
+# Oauth2 Proxy and Redis
 
 ## Summary
 
 OAuth2 Proxy instances act as OIDC clients to Keycloak for user access to the EO DataHub. There is one Oauth2 Proxy deployment per domain, platform (eodatahub.org.uk) and workspaces (eodatahub-workspaces.org.uk). The workspaces deployment handles both eodatahub-workspaces.org.uk and \*.eodatahub-workspaces.org.uk domains.
 
 Both OAuth2 Proxy deployments are Keycloak confiential clients (they require a client ID and client secret to authenticate with Keycloak, the secrets are defined by the AWS secret store).
+
+OAuth2 Proxy uses Redis as a data store for session storage.
 
 ### Code Repositories and Artifacts
 
@@ -22,13 +24,15 @@ Traffic reaches the deployments through Nginx Ingress Controller. Login requests
 
 ### Configuration
 
-OAuth2 Proxies are configured in [ArgoCD deployment repo](https://github.com/EO-DataHub/eodhp-argocd-deployment) repository, apps/oauth2-proxy directory.
+OAuth2 Proxies are configured in [ArgoCD deployment repo](https://github.com/EO-DataHub/eodhp-argocd-deployment) repository, apps/oauth2-proxy directory. Redis, its datastore, is configured in apps/redis.
 
 ### Control
 
 To restart platform OAuth2 Proxy, run `kubectl rollout restart -n oauth2-proxy deployment oauth2-proxy-platform` for Kubernetes cluster or use ArgoCD UI to restart.
 
 Similarly for workspace OAuth2 Proxy, `kubectl rollout restart -n oauth2-proxy deployment oauth2-proxy-workspaces`.
+
+For Redis use `kubectl rollout restart -n redis sts`.
 
 To stop service, the app must be removed from ArgoCD configuration.
 
