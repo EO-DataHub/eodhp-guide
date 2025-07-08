@@ -8,7 +8,7 @@ Both may play a larger role in the future, especially for user-managed harvestin
 
 ### Dependent Services
 
-Airbus harvesting depends on Argo Events to trigger it. Harvesting of catalogue and workflow configuration from Git also depends on it, including setting up the initial 'public', 'commercial' and 'user' Catalogs.
+Airbus harvesting depends on Argo Events to trigger it.
 
 ### Configuration
 
