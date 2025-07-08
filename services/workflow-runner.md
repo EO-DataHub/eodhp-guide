@@ -43,6 +43,8 @@ You are also able to view workflow logs within the `zoo-project-dru-zoofpm` pod 
 
 Workflows and access policies can be harvested from Git using the EventBus and Sensor in the apps/ades/base/harvester directory. The default schedule is 7:30 UTC every morning, configured in apps/ades/base/harvester/events.yaml, and this will automatically harvest workflows from the [user-workflows-catalogue-prod](https://github.com/EO-DataHub/user-workflows-catalogue-prod) GitHub repository. These workflows and policies are harvested into S3 by the harvester job and then ingested by the ingester into the Workflow Runner under the workspace specified in the Git repository ready for execution. Branches should only be merged into main by a GitHub organisation owner to ensure workflows are deployed into the correct workspaces.
 
+The workflow system tests, included in this service, use the `workflowtestuser` workspace, with password stored in AWS Secrets Manager. To allow the system tests to run with correct authentication, you will need to login to this user account and generate an API key for the workspace of the same name. This API key needs to be stored in AWS Secrets Manager under `ades.workflow-systems-test.api-token`, and needs to be reset every 30 days.
+
 ### Configuration
 
 The Auth Agent is configured as part of the [ArgoCD deployment repo](https://github.com/EO-DataHub/eodhp-argocd-deployment) in the apps/ades directory.
