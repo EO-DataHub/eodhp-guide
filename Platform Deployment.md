@@ -204,7 +204,3 @@ Once these have been updated and you have waited a minute for `external-secrets`
 ### Open Policy Agent
 
 You need to ensure that an Open Policy Agent branch has been created for the cluster. The OPA repo is https://github.com/EO-DataHub/eodhp-opa-config.git, and the branch should match that defined in [ArgoCD deployment repo](https://github.com/EO-DataHub/eodhp-argocd-deployment.git) _apps/opal/envs/$ENV/kustomization.yaml_ patch.
-
-## Web Presence
-
-TODO
