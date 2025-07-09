@@ -49,6 +49,7 @@ The deployment infrastructure is deployed once per environment. It contains per 
 - Node groups and configuration
 - IAM roles
 - ECR pull-through cache
+- SES (Simple Email Service)
 
 Before starting, a secret must be created in AWS Secrets Manager with the name `ecr-pullthroughcache/dh` and the following values:
 
@@ -204,3 +205,22 @@ Once these have been updated and you have waited a minute for `external-secrets`
 ### Open Policy Agent
 
 You need to ensure that an Open Policy Agent branch has been created for the cluster. The OPA repo is https://github.com/EO-DataHub/eodhp-opa-config.git, and the branch should match that defined in [ArgoCD deployment repo](https://github.com/EO-DataHub/eodhp-argocd-deployment.git) _apps/opal/envs/$ENV/kustomization.yaml_ patch.
+
+### AWS SES (Simple Email Service) Production Access
+
+Our infrastructure includes a Terraform deployment that sets up the necessary components for sending emails using AWS SES from a subdomain. For example it would be used to send automated emails to users that create new billing accounts on the EO-DataHub platform.
+
+Due to AWS SES defaults, additional action is required before you can send emails to arbitrary recipients. New AWS accounts start with SES in `sandbox` mode, which imposes the following restrictions:
+- Emails can only be sent to verified addresses
+- Low sending limits
+- Useful only for testing, not production use
+
+To enable full email sending capabilities (i.e. to any unverified recipient), you must **request production access** for SES.
+
+#### Move SES Out of Sandbox
+1. In the AWS SES Service, click on _Get set up_
+2. Click on _Request production access_
+3. A form will appear to show the request details
+4. Fill out the form with the relevent details and submit the request
+
+AWS typically reviews and approves production access within 24-48 hours but they might ask you to provide additional information to make sure the service is not intended for spamming and other bad practises.
