@@ -1,5 +1,5 @@
 # Updating Database Records
-There might be a reason for needing to access the database directly and quering data / updating records. For example, manually disabling a billing account, changing the account owner associated with workspaces etc.
+There might be a reason for needing to access the database directly and querying data / updating records. For example, manually disabling a billing account, changing the account owner associated with workspaces etc.
 
 Please see [Database Client Access Details](services/database.md#client-access) for more information on connecting to one of the platforms databases.
 
