@@ -6,7 +6,7 @@ Please see [Database Client Access Details](services/database.md#client-access) 
 ### Update Billing Account Owner
 **Prerequisites**: Connect to the `workspaces` database via a PSQL Client of your choice.
 
-Each billing account has it's own `id` associated with it and can be found using
+Each billing account has its own `id` associated with it and can be found using
 
 ```sql
 SELECT * FROM accounts
