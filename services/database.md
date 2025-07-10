@@ -43,8 +43,7 @@ To restart the controller service run `kubectl rollout restart -n databases depl
 You should not delete any databases in this namespace, as this can cause data loss.
 
 ### Client Access
-If you need to connect directly to the Postgres SQL database (e.g. for debugging or manual queries), you can do so using a number of different clients, e.g. PGAdmin. The database credentials 
-are stored in a Kubernetes secret. 
+If you need to connect directly to the Postgres SQL database (e.g. for debugging or manual queries), you can do so using a number of different clients, e.g. PGAdmin. The database credentials are stored in a Kubernetes secret. 
 
 To extract the credentials apply the following command within the cluster:
 ```bash 
