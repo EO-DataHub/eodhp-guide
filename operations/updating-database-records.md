@@ -35,4 +35,3 @@ UPDATE accounts SET status = 'Unapproved' WHERE id = '...'
 ```
 
 Where `id` refers to the accounts `uuid`. 
-
