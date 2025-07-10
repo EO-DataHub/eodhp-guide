@@ -1,7 +1,7 @@
 # Updating Database Records
 There might be a reason for needing to access the database directly and querying data / updating records. For example, manually disabling a billing account, changing the account owner associated with workspaces etc.
 
-Please see [Database Client Access Details](services/database.md#client-access) for more information on connecting to one of the platforms databases.
+Please see [Database Client Access Details](services/database.md#client-access) for more information on connecting to one of the platform's databases.
 
 ### Update Billing Account Owner
 **Prerequisites**: Connect to the `workspaces` database via a PSQL Client of your choice.
