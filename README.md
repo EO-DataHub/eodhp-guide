@@ -1,6 +1,8 @@
 # EO DataHub Platform Guide
 
-This guide will outline all processes for an administrator of the UK EO DataHub.
+This contains guides to practical aspects of operating and developing the EO DataHub.
+
+The Architecture and Design Document and to a lesser extent the documentation repo provide more general architecture and design information.
 
 ## Deployment Repositories
 
