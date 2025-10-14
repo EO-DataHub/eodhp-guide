@@ -2,7 +2,7 @@
 
 ## Summary
 
-The Resource Catalogue User Interface (RC UI) is a React-based web application that provides users with the ability to discover, browse, visualize, and interact with geospatial data from STAC (SpatioTemporal Asset Catalog) collections. The application enables users to search for satellite imagery and other Earth observation data, view items on an interactive map, analyze data properties, and initiate data ordering and processing workflows.
+The Resource Catalogue User Interface (RC UI) is a React-based web application that provides users with the ability to discover, browse, visualize, and interact with geospatial data from STAC (SpatioTemporal Asset Catalog) collections. The application enables users to search for satellite imagery, Earth observation data, and climate projection data, view items on an interactive map, analyze data properties, and initiate data ordering and processing workflows.
 
 ### Code Repositories and Artifacts
 
@@ -29,6 +29,7 @@ The service runs as a static single-page application (SPA) hosted on AWS S3 and 
 
 - Development: `develop.eodhrc.sparkgeo.dev`
 - Demo: `demo.eodhrc.sparkgeo.dev`
+- Staging: (shares the same frontend deployment as production)
 - Production: `https://eodatahub.org.uk/`
 
 Traffic reaches the service through:
@@ -82,10 +83,13 @@ cdk deploy {environment}-eodhrc-static-site --profile {aws-profile}
 The Resource Catalogue UI depends on the following external services:
 
 - **STAC Catalogue API** - Provides access to collections, items, and search functionality
+- **Planet STAC Proxy** - Provides access to Planet commercial data (part of the STAC Catalogue API but with a different backend)
 - **Keycloak** - Provides user authentication and authorization
 - **TiTiler Service** - Provides dynamic raster tile generation for visualizing geospatial data on the map
 - **QGIS layer API (QLR)** - Provides API to produce QGIS layer files
 - **Workspace API** - Provides workspace management and user collection functionality
+- **Purchasing API** - Provides quotes and purchase functionality for commercial data
+- **ADES and Commercial Data Workflows** - Handles purchasing workflows for commercial data and processing services
 - **S3** - For storing and serving the static files, as well as accessing user data and thumbnails
 - **CloudFront** - CDN for distributing the application globally
 - **Route 53** - DNS service for domain resolution
