@@ -1,0 +1,40 @@
+{
+    "id": "airbus_phr_data",
+    "title": "Airbus PHR Data",
+    "type": "Collection",
+    "stac_version": "1.1.0",
+    "description": "Order records for Airbus PHR data, including completed purchases with their associated assets, as well as records of ongoing and failed orders.",
+    "license": "CC-BY-4.0",
+    "extent": {
+        "spatial": {
+            "bbox": [
+                [
+                    -180,
+                    -90,
+                    180,
+                    90
+                ]
+            ]
+        },
+        "temporal": {
+            "interval": [
+                [
+                    "2012-10-17T07:32:43Z",
+                    "2025-12-03T02:16:58.499000Z"
+                ]
+            ]
+        }
+    },
+    "links": [
+        {
+            "rel": "self",
+            "href": "catalogs/commercial-data/catalogs/airbus/collections/airbus_phr_data",
+            "type": "application/json"
+        },
+        {
+            "rel": "parent",
+            "href": "catalogs/commercial-data/catalogs/airbus",
+            "type": "application/json"
+        }
+    ]
+}
