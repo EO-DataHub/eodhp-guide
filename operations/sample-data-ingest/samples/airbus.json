@@ -1,0 +1,50 @@
+{
+    "id": "airbus",
+    "description": "Order records for Airbus, including completed purchases with their associated assets, as well as records of ongoing and failed orders.",
+    "stac_version": "1.1.0",
+    "links": [
+        {
+            "rel": "parent",
+            "type": "application/json",
+            "href": "catalogs/commercial-data"
+        },
+        {
+            "rel": "root",
+            "type": "application/json",
+            "href": "https://eodatahub.org.uk/api/catalogue/stac/"
+        },
+        {
+            "rel": "self",
+            "type": "application/json",
+            "href": "catalogs/commercial-data/catalogs/airbus"
+        }
+    ],
+    "title": "",
+    "type": "Catalog",
+    "stac_extensions": [],
+    "conformsTo": [
+        "https://api.stacspec.org/v1.0.0/item-search#sort",
+        "https://api.stacspec.org/v1.0.0/item-search#fields",
+        "https://api.stacspec.org/v1.0.0-rc.2/item-search#filter",
+        "https://api.stacspec.org/v1.0.0/collections",
+        "http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/features-filter",
+        "http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/filter",
+        "https://api.stacspec.org/v1.0.0-rc.1/collection-search#free-text",
+        "https://api.stacspec.org/v1.0.0-rc.1/ogcapi-features#free-text",
+        "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/geojson",
+        "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/oas30",
+        "http://www.opengis.net/spec/cql2/1.0/conf/basic-cql2",
+        "https://api.stacspec.org/v1.0.0-rc.1/collection-search",
+        "https://api.stacspec.org/v1.0.0/ogcapi-features",
+        "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core",
+        "http://www.opengis.net/spec/cql2/1.0/conf/cql2-text",
+        "https://api.stacspec.org/v1.0.0/item-search",
+        "http://www.opengis.net/spec/ogcapi-common-2/1.0/conf/simple-query",
+        "https://api.stacspec.org/v1.0.0/core",
+        "https://api.stacspec.org/v1.0.0-rc.1/item-search#free-text",
+        "https://api.stacspec.org/v1.0.0/item-search#query",
+        "http://www.opengis.net/spec/cql2/1.0/conf/cql2-json",
+        "http://www.opengis.net/spec/cql2/1.0/conf/advanced-comparison-operators",
+        "https://api.stacspec.org/v0.3.0/aggregation"
+    ]
+}
