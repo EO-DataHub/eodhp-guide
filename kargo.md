@@ -90,12 +90,20 @@ When a Freight is promoted to a stage, Kargo executes the following steps:
 ### Deploying a New Release (Semver)
 
 1. Push a new semver-tagged image to ECR (e.g., `v1.2.3`)
+    - Build the image from the repo
+    - Push to ECR
+    - This may happen automatically on pushes to some repo branches
 2. Kargo automatically creates Freight
 3. Freight auto-promotes to **test**
 4. Verify in test environment
 5. Manually promote to **staging**
+    - Go to `https://kargo.<domain>`
+    - Navigate to the project -> staging stage
+    - Click 'Promote from upstream'
 6. Verify in staging environment
 7. Manually promote to **prod**
+    - Navigate to the titiler project → prod stage
+    - Click "Promote from upstream"
 
 ### Deploying a Dev Build
 
