@@ -23,7 +23,7 @@ The ingestion process consists of four main steps:
 
 ## Step 1: Upload STAC Metadata Files
 
-In the samples data folder, you'll find examples of:
+In the example_data folder, you'll find examples of:
 - **STAC sub-catalog** files (e.g., `airbus.json`)
 - **Collection** files (e.g., `airbus_phr.json`)
 - **Item** files (e.g., `item1.json`)

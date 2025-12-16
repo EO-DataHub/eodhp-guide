@@ -1,0 +1,14 @@
+{
+    "inputs": {
+        "workspace": "airbus-order-testing",
+        "workspace_bucket": "workspaces-eodhp",
+        "commercial_data_bucket": "airbus-commercial-data",
+        "pulsar_url": "pulsar://pulsar-proxy.pulsar:6650",
+        "product_bundle": "Analytic",
+        "stac_key": "https://eodatahub.org.uk/api/catalogue/stac/catalogs/commercial/catalogs/airbus/collections/airbus_spot_data/items/DS_SPOT6_202504091054546_FR1_FR1_FR1_FR1_W003N52_06824",
+        "coordinates": "[[[-3.203754330269374, 51.507532030760885], [-3.104035137701414, 51.508683763781001], [-3.107736056188472, 51.442475892070306], [-3.197586132790944, 51.443757420020873], [-3.203754330269374, 51.507532030760885]]]",
+        "licence": "standard",
+        "end_users": "[{\"endUserName\": \"geodowd\", \"country\": \"GB\"}]",
+        "cluster_prefix": "eodhp"
+    }
+}
