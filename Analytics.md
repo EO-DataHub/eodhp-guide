@@ -233,7 +233,7 @@ This filter restricts results to open data downloads.
 - **Condition:** exactly matches
 - **Value:** open
 
-> Value is derived from the `data_type` parameter sent by `useAnalyticsActions.ts`.
+> Value is derived from the `data_type` parameter sent by `useGoogleAnalyticsActions.ts`.
 
 
 ## Exploration: Purchased Imagery (Commercial Data)
