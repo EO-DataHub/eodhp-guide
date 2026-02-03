@@ -111,9 +111,9 @@ kubectl config set-context $CONTEXT  # if you need to update it
 
 ### Bootstrapping
 
-If this is the first deployment of the environment then you must first boostrap ArgoCD and then complete some minor set up of some apps.
+If this is the first deployment of the environment then you must first bootstrap ArgoCD and then complete some initial setup. The bootstrap process exists because applications normally track `kargo/<app>/<env>` branches managed by Kargo, but on first deployment these branches don't exist yet.
 
-1. Bootstrap argocd
+1. Bootstrap ArgoCD
 
 ```bash
 make bootstrap
@@ -129,7 +129,13 @@ kubectl port-forward service/argocd-server -n argocd 8080:443  # port forward ar
    SSH private key data: Use repository deploy key
    Connect
    Status show successful connection.
-4. Deploy argocd application set `make deploy env=prod`. You should see applications begin to initialise in the argocd UI. There may be race conditions as the apps come up. If any fail then enter the app in the UI and sync them again.
+4. Deploy applications in bootstrap mode. This tracks the `main` branch as a fallback since Kargo branches don't exist yet.
+
+```bash
+make deploy-bootstrap env=<env>
+```
+
+   You should see applications begin to initialise in the argocd UI. There may be race conditions as the apps come up. If any fail then enter the app in the UI and sync them again.
 
    Initially these are the core applications that should be up:
 
@@ -152,7 +158,7 @@ kubectl port-forward service/argocd-server -n argocd 8080:443  # port forward ar
    - auth-agent
    - oauth2-proxy
 
-   While the mentioned applications should by synced and healthy on their own at this stage, it has been observed that race conditions can occur that are too complex to diagnose. If this happens, you can try the following:
+   While the mentioned applications should be synced and healthy on their own at this stage, it has been observed that race conditions can occur that are too complex to diagnose. If this happens, you can try the following:
 
    - Force sync the app from the applications UI page
    - Try enabling server side apply when syncing app
@@ -160,6 +166,10 @@ kubectl port-forward service/argocd-server -n argocd 8080:443  # port forward ar
    - If you are seeing errors regarding missing app namespaces you can create them manually with `kubectl create ns $NAMESPACE`.
 
    Once the core applications are synced and healthy you may proceed.
+
+### Keycloak Configuration
+
+Keycloak must be configured before Kargo promotions can be performed, as the Kargo UI authenticates via Keycloak OIDC.
 
 5. Configure Keycloak admin user for access to ArgoCD UI via ingress.
 6. Get keycloak initial admin password with `kubectl -n keycloak get secret keycloak-initial-admin -o jsonpath="{.data.password}" | base64 -d; echo`
@@ -192,6 +202,35 @@ kubectl port-forward service/argocd-server -n argocd 8080:443  # port forward ar
     Add to userinfo: false
     Add to token introspection: true
 14. You should now be able to visit https://argocd.eodatahub.org.uk and sign in with keycloak for admin access to ArgoCD UI.
+15. In the eodhp realm, create a Kargo OIDC client. Kargo uses Authorization Code Flow with PKCE and does not require a client secret.
+    Client ID: kargo
+    Name: Kargo
+    Root URL: https://kargo.eodatahub.org.uk
+    Valid redirect URIs: /\*
+    Web origins: +
+    Client authentication: false
+    Authorization: false
+    Standard flow: true
+    Direct access grants: false
+16. Ensure users who need Kargo admin access are assigned to the `admin` group in the eodhp realm.
+
+### Kargo Promotion
+
+With Keycloak configured, complete the bootstrap by promoting applications through Kargo.
+
+17. Promote all applications via the [Kargo UI](https://kargo.eodatahub.org.uk). This creates the `kargo/<app>/<env>` branches for each application.
+
+18. Redeploy to switch applications from the `main` branch fallback to the Kargo-managed branches.
+
+```bash
+make deploy env=<env>
+```
+
+### Kargo Integration
+
+Applications use [Kargo](https://kargo.io) for progressive delivery. Each application tracks a dedicated branch in the format `kargo/<app-name>/<env>` (e.g., `kargo/accounting-service/test`). When Kargo promotes an application, it renders the manifests from `main`, commits them to the `kargo/<app>/<env>` branch, and ArgoCD syncs from that branch.
+
+For full details on how Kargo and ArgoCD work together, warehouses, stages, promotion pipelines, and developer workflows, see the [Kargo Developer Guide](operations/kargo/developer-guide.md).
 
 ### Keycloak EODHP Realm Configuration
 
