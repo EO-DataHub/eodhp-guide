@@ -4,29 +4,26 @@
 
 ### ArgoCD Deployment
 
-The configuration of each environment is controller by the `eodhp-argocd-deployment` repo. The deployment is managed by ArgoCD in a GitOps methodology. Each deployment environment is linked to a specific branch of the `eodhp-argocd-deployment` repo and merges to these branches should be controlled.
+The configuration of each environment is controlled by the `eodhp-argocd-deployment` repo. The deployment is managed by ArgoCD in a GitOps methodology, with [Kargo](https://kargo.io) handling promotion of changes between environments.
 
-The environments are linked to the following branches:
+#### Branch and Promotion Model
 
-- dev -> dev-XX-Y
-- test -> main
-- staging -> staging
-- prod -> prod
+Developers commit changes to the `main` branch. Kargo detects changes and manages promotion through environments:
 
-The flow of new features will follow this path:
+1. **Commit to `main`** — developers merge feature branches into `main` via PR
+2. **Auto-promote to test** — Kargo detects the change and automatically promotes to the test environment
+3. **Manual promotion to staging** — promote via the [Kargo UI](https://kargo.eodatahub.org.uk) after verifying in test
+4. **Manual promotion to prod** — promote via the Kargo UI after verifying in staging
 
-> feature branch -> dev-XX-Y -> main -> staging -> prod
+Each environment reads from a dedicated `kargo/<app>/<env>` branch (e.g. `kargo/accounting-service/test`). These branches are managed entirely by Kargo — developers should not commit to them directly.
 
-The following approvals are required for branch merges:
+**Important:** Container image versions and Helm chart versions are managed by Kargo warehouses, which automatically detect new tags and versions from their respective registries. Manually editing image tags or chart versions in the deployment repo will not deploy those versions — they will be overwritten on the next Kargo promotion. To deploy a new image or chart version, push the artifact to its registry and let Kargo pick it up (see the developer guide for details).
 
-- feature branch -> dev-XX-Y: No approval needed
-- dev-XX-Y -> main: PR required (any peer)
-- main -> staging: PR required (all devs)
-- staging -> prod: PR required (all devs)
+For full details on Kargo warehouses, stages, promotion pipelines, and developer workflows (including deploying images and dev/feature branches), see the [Kargo Developer Guide](operations/kargo/developer-guide.md).
 
-At the start of each sprint a fresh branch is taken from `main` and named `dev-XX-Y` where XX is the sprint number and Y is the iteration that sprint. Y is necessary as sometimes it may be necessary to refresh the dev branch multiple times during a sprint.
+#### Developer Workflow
 
-When a developer begins work on an issue they take a branch from `main`. The branch should follow Gitflow naming and mention the Jira issue key, e.g. `feature/EODHP-123-my-new-feature`. Work on code updates on the feature branch, and when ready to test merge into current develop branch. Repeat this process until the issue is resolved. At this point, create a PR and assing reviewer(s). Once PR has been accepted merge completed feature back into main.
+When a developer begins work on an issue they take a branch from `main`. The branch should follow Gitflow naming and mention the Jira issue key, e.g. `feature/EODHP-123-my-new-feature`. Work on the feature branch and, when ready, create a PR and assign reviewer(s). Once the PR has been accepted, merge back into `main`.
 
 `main` branch is always the source of truth for the latest configuration of the EODH deployment.
 
