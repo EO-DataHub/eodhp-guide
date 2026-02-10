@@ -79,9 +79,9 @@ Create a JSON file (e.g., `message.json`) with the following structure:
     "source": "exampleworkspace-eodhp-config/",
     "target": "",
     "added_keys": [
-        "s3://catalogue-population-eodhp/file-harvester/exampleworkspace-eodhp-config/catalogs/user/catalogs/exampleworkspace/catalogs/commercial-data/catalogs/airbus.json",
-        "s3://catalogue-population-eodhp/file-harvester/exampleworkspace-eodhp-config/catalogs/user/catalogs/exampleworkspace/catalogs/commercial-data/catalogs/airbus/collections/airbus_phr.json",
-        "s3://catalogue-population-eodhp/file-harvester/exampleworkspace-eodhp-config/catalogs/user/catalogs/exampleworkspace/catalogs/commercial-data/catalogs/airbus/collections/airbus_phr/items/item1.json"
+        "file-harvester/exampleworkspace-eodhp-config/catalogs/user/catalogs/exampleworkspace/catalogs/commercial-data/catalogs/airbus.json",
+        "file-harvester/exampleworkspace-eodhp-config/catalogs/user/catalogs/exampleworkspace/catalogs/commercial-data/catalogs/airbus/collections/airbus_phr.json",
+        "file-harvester/exampleworkspace-eodhp-config/catalogs/user/catalogs/exampleworkspace/catalogs/commercial-data/catalogs/airbus/collections/airbus_phr/items/item1.json"
     ],
     "updated_keys": [],
     "deleted_keys": []
@@ -92,7 +92,7 @@ Create a JSON file (e.g., `message.json`) with the following structure:
 - `id`: Replace `exampleworkspace` with your workspace name
 - `workspace`: Replace `exampleworkspace` with your workspace name
 - `source`: Replace `exampleworkspace-eodhp-config/` with your workspace prefix
-- `added_keys`: List all S3 paths to the STAC files you uploaded in Step 1
+- `added_keys`: List all S3 paths to the STAC files you uploaded in Step 1 *but you must remove the leading `s3://catalogue-population-eodhp/` from the URL*.
 
 ### 2.3 Send the Message
 
