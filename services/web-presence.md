@@ -44,6 +44,16 @@ The top-level pages that sit in front of the CMS can be configured in the [web-p
 
 The CMS can be updated at any time through the admin panel at https://eodatahub.org.uk/admin. Admin rights for individual users can be set in keycloak at https://eodatahub.org.uk/keycloak - the `hub_admin` role is required. Click Pages on the left hand side to be taken to a hierarchy of pages. Clicking on an individual page will allow the page to be edited. 
 
+#### Menu Items
+
+Menu items (About, Data, Getting Started) are hardcoded in the template file and must be edited in code, not through the Wagtail CMS UI.
+
+**Location:** https://github.com/EO-DataHub/eodhp-web-presence/blob/main/eodhp_web_presence/core/templates/menu.html
+
+**To update menu items:**
+- Edit the `menu.html` template file directly
+- Modify the dropdown menu sections (About, Data, Getting Started) to change labels or URLs
+- Add/remove menu items by copying the existing dropdown structure
 
 ### Control
 
