@@ -77,6 +77,89 @@ Once raw input data is harvested, it often is sent to a transformer via Pulsar t
 ### Pipeline overview
 This is a brief overview of the steps required to harvest different data sources into the resource catalogue. For more information about the individual processes, refer to documentation within each repository.
 
+#### Pipeline Flow Diagram
+
+The following diagram shows how data flows from various sources through the harvest pipeline to the STAC catalogue:
+
+```mermaid
+flowchart TB
+    subgraph "Data Sources"
+        A1[User uploads via<br/>Web Presence]
+        A2[Planet API<br/>CronJob]
+        A3[Airbus<br/>CronJob]
+        A4[Workflow<br/>Output]
+    end
+    
+    subgraph "Harvesters"
+        H1[workspace-file-harvester]
+        H2[planet-harvester]
+        H3[airbus-harvester]
+    end
+    
+    subgraph "Transformers"
+        TR[harvest-transformer]
+    end
+    
+    subgraph "Ingesters"
+        I1[stac-fastapi-ingester<br/>standard queue]
+        I2[stac-fastapi-ingester<br/>bulk queue]
+    end
+    
+    subgraph "Destination"
+        D[STAC Catalogue]
+    end
+    
+    %% User Data Flow
+    A1 --> H1
+    H1 -->|harvested topic| TR
+    
+    %% Planet Flow
+    A2 --> H2
+    H2 -->|harvested topic| TR
+    
+    %% Workflow Flow
+    A4 -->|harvested topic| TR
+    
+    %% Standard Queue Flow
+    TR -->|transformed topic| I1
+    I1 --> D
+    
+    %% Airbus Flow
+    A3 --> H3
+    H3 -->|harvested_bulk topic| TR
+    
+    %% Bulk Queue Flow
+    TR -->|transformed_bulk topic| I2
+    I2 --> D
+    
+    style A1 fill:#e1f5ff
+    style A2 fill:#e1f5ff
+    style A3 fill:#e1f5ff
+    style A4 fill:#e1f5ff
+    style TR fill:#f3e5f5
+    style D fill:#e8f5e9
+```
+
+#### Pipeline Components
+
+- [**workspace-file-harvester**](https://github.com/EO-DataHub/workspace-file-harvester): Scans S3 bucket for changes and publishes to `harvested` topic
+- [**planet-harvester**](https://github.com/EO-DataHub/planet-harvester): Collects data from Planet API and converts to STAC format
+- [**airbus-harvester**](https://github.com/EO-DataHub/airbus-harvester): Collects data from Airbus and converts to STAC format
+- [**stac-harvester**](https://github.com/EO-DataHub/stac-harvester): Harvests STAC data from external catalogues
+- [**configuration-harvester**](https://github.com/EO-DataHub/eodhp-git-change-scanner): Scans stac-harvester-configurations repository
+- [**stac-harvester-ingester**](https://github.com/EO-DataHub/stac-harvester-ingester): Creates Kubernetes resources for STAC harvesters
+- [**harvest-transformer**](https://github.com/EO-DataHub/harvest-transformer): Transforms raw STAC data into standardized EODH format
+- [**stac-fastapi-ingester**](https://github.com/EO-DataHub/stac-fastapi-ingester/tree/main/stac_fastapi_ingester): Performs final ingestion into the resource catalogue
+
+#### Pulsar Topics
+
+- `harvested`: Standard queue for workspace uploads, workflow outputs, and Planet harvests
+- `transformed`: Standard queue for transformed messages from `harvested` topic
+- `harvested_bulk`: Bulk queue for large harvests (Airbus, STAC catalogues)
+- `transformed_bulk`: Bulk queue for transformed messages from `harvested_bulk` topic
+- `harvested_stac`: Queue for STAC harvester configuration messages
+- `transformed_stac`: Queue for transformed STAC harvester configuration messages
+
 #### Workflow data
 1. A pulsar message is generated as part of a workflow or similar on the `harvested` topic.
 2. The pulsar message is passed through the [STAC harvest transformer](https://github.com/EO-DataHub/harvest-transformer) which generates messages on the `transformed` topic.
