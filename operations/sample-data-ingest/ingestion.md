@@ -32,7 +32,7 @@ There can be multiple files of each type. These need to be uploaded to the `cata
 
 ### S3 Path Structure
 
-For a workspace named `exampleworkspace` is the production environment, the S3 paths should follow this pattern:
+For a workspace named `exampleworkspace` in the production environment, the S3 paths should follow this pattern:
 
 **Sub-catalog:**
 ```
@@ -50,6 +50,38 @@ s3://catalogue-population-eodhp/file-harvester/exampleworkspace-eodhp-config/cat
 ```
 
 **Note:** Replace `exampleworkspace` with your actual workspace name in all paths.
+
+### STAC record content and transformer behaviour
+
+The harvest-transformer normalises STAC before ingestion. When preparing your STAC files, the following applies.
+
+**Where records end up**
+- **Placement is determined by the S3 path (folder structure), not by the `collection` field in the JSON.** Use the folder structure you want in the catalogue (e.g. `…/collections/<collection_id>/items/<item_id>.json`). The `collection` property in the item should match that collection id for correctness but does not control where the file is written.
+
+**Links**
+- You can send **empty or missing `links`**: the transformer adds/rewrites `root` and `self` with the correct EODH catalogue URLs.
+- It **rewrites** these if present: `child`, `collection`, `item`, `items`, `parent`, `root`, `self`.
+- It **does not add** `parent` or `collection` when missing—it only rewrites them if present. For STAC best practice, include placeholders and they will be overwritten, e.g.:
+  ```json
+  "links": [
+    {"rel": "self", "href": "https://example.com/collections/my_coll/items/my_item"},
+    {"rel": "root", "href": "https://example.com/"},
+    {"rel": "parent", "href": "https://example.com/collections/my_coll"},
+    {"rel": "collection", "href": "https://example.com/collections/my_coll"}
+  ]
+  ```
+
+**What to include**
+
+| Aspect | Include? | Notes |
+|--------|----------|--------|
+| Path / folder structure | Yes | Dictates where the record ends up in the catalogue. |
+| `collection` (property) | Yes | Should match the collection id in the path. |
+| Links (self, root, parent, collection) | Optional | Can be blank; catalogue-structure links are added or rewritten. |
+| Item content | Yes | `id`, `type`, `stac_version`, `geometry`, `bbox`, `properties`, `assets`, etc. |
+| License | As needed | Valid SPDX id triggers license links; otherwise provide as appropriate. |
+
+For more detail, see [STAC records for harvest-transformer](stac-records-for-transformer.md).
 
 ---
 
