@@ -11,6 +11,8 @@ The configuration of each environment is controlled by the `eodhp-argocd-deploym
 Developers commit changes to the `main` branch. Kargo detects changes and manages promotion through environments:
 
 1. **Commit to `main`** — developers merge feature branches into `main` via PR
+> [!NOTE]
+> The default merge method is set to `Squash and merge` to mitigate possible conflicts of two PRs updating the same manifests. Kargo works best with linear history so "Rebase and merge" would work too. 
 2. **Auto-promote to test** — Kargo detects the change and automatically promotes to the test environment
 3. **Manual promotion to staging** — promote via the [Kargo UI](https://kargo.eodatahub.org.uk) after verifying in test
 4. **Manual promotion to prod** — promote via the Kargo UI after verifying in staging

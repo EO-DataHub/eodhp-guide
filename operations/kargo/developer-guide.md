@@ -21,8 +21,9 @@
 1. Push your image with any tag to ECR
 2. In the Kargo UI, navigate to the `<app>-dev-images` warehouse
 3. Refresh the warehouse, then click **Create Freight** -- you must **select image tags for ALL images** in the warehouse, not just the one you changed
-4. Promote the freight to the `<app>-dev` stage
-5. The image deploys to the **test** environment
+4. Promote `<app>-config` freight that is currently promoted in test stage (skip this if the freight is already promoted in dev)
+5. Promote the freight to the `<app>-dev` stage
+6. The image deploys to the **test** environment
 
 ---
 
@@ -344,6 +345,21 @@ Triggers an ArgoCD sync for the application. **Skipped for dev stages** (`isDevS
 7. The image is deployed to the **dev** environment on the test cluster
 
 > **Why manual?** Dev images use `freightCreationPolicy: Manual` and `imageSelectionStrategy: NewestBuild` to avoid auto-detecting every push. This gives you explicit control over which image combination to deploy.
+
+### Rolling back (promote forward)
+
+Kargo has no dedicated rollback feature. Instead, you "roll back" by **re-promoting an earlier freight** to the target stage. From Kargo's perspective this is just another promotion.
+
+1. Open the [Kargo UI](https://kargo.eodatahub.org.uk) and navigate to the `eodhp` project
+2. Click on the stage you want to roll back (e.g. `<app>-staging`)
+3. In the freight timeline, find the older freight that was previously running
+4. Click the freight and choose **Promote** to re-promote it to the stage
+
+#### Manual steps
+
+Some rollbacks may require additional manual steps beyond re-promoting freight — for example, reverting database migrations or restoring external state. Check your application's specific requirements before rolling back.
+
+> **Further reading:** See the [Kargo documentation](https://docs.kargo.io) for more details on freight management and promotions.
 
 ---
 
