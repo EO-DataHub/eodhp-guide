@@ -1,0 +1,10 @@
+[project]
+name = "eodatahub-technical-guide"
+version = "0.1.0"
+description = "Technical development guide for the EO Data Hub project"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "mkdocs-awesome-pages-plugin>=2.10.1",
+    "mkdocs-material>=9.5.43",
+]

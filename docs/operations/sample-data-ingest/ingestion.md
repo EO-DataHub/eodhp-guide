@@ -81,7 +81,7 @@ The harvest-transformer normalises STAC before ingestion. When preparing your ST
 | Item content | Yes | `id`, `type`, `stac_version`, `geometry`, `bbox`, `properties`, `assets`, etc. |
 | License | As needed | Valid SPDX id triggers license links; otherwise provide as appropriate. |
 
-For more detail, see [STAC records for harvest-transformer](stac-records-for-transformer.md).
+For more detail, see [STAC records for harvest-transformer](#stac-record-content-and-transformer-behaviour).
 
 ---
 

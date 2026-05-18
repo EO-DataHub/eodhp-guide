@@ -4,7 +4,7 @@ Dependencies between some services need to be managed carefully so that clusters
 
 If you need to debug a badly broken platform and you don't know why then this is a useful order to check things in - later items will not be the cause of problems in earlier items.
 
-See [Platform Deployment](Platform Deployment.md) for a step-by-step cluster creation guide.
+See [Platform Deployment](../Platform%20Deployment.md) for a step-by-step cluster creation guide.
 
 Some particular concerns:
 
