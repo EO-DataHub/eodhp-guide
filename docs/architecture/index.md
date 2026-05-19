@@ -1,6 +1,16 @@
 # EO Data Hub Platform System Design and Architecture Roadmap
 
-This documentation is a split of the master document for MkDocs. The complete single-file version remains at the repository root.
+This section splits the authoritative architecture design publication into MkDocs chapters. Keep the note below aligned with Drive/SharePoint when the canonical document changes.
+
+## Publication & traceability
+
+!!! note "Canonical source"
+    Identifiers and versioning follow the latest architecture design artefact circulated for the EO Data Hub platform programme:
+
+    - **Publication:** *UKDHUBP-TPZ-ADD-001* — Architecture Design Document (**TPZ** is part of the programme’s contract/delivery numbering; similar prefixes elsewhere usually refer to the same numbering scheme.)
+    - **Revision:** **1.4 (Final)** — as shared under the filename `UKDHUBP-TPZ-ADD-001_1.4_Final Architecture Design Document`.
+
+    This guide mirrors that document’s structure for reviews and day-to-day navigation; it is not a substitute for the controlled copy in Drive/SharePoint.
 
 ## Quick links
 
