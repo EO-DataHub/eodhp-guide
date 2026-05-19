@@ -2,7 +2,7 @@
 
 This contains guides to practical aspects of operating and developing the EO DataHub.
 
-The Architecture and Design Document and to a lesser extent the documentation repo provide more general architecture and design information.
+See the **Architecture** section in this guide (starting at [architecture/](architecture/index.md)) for system design and architecture. The broader documentation repo provides additional design context where needed.
 
 ## Deployment Repositories
 
