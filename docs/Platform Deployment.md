@@ -1,6 +1,6 @@
 ## Terraform
 
-The [Terraform CLI](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli), [kubectl]([Command line tool (kubectl) | Kubernetes](https://kubernetes.io/docs/reference/kubectl/)) and [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/) are required to deploy the infrastructure.
+The [Terraform CLI](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli), [kubectl](https://kubernetes.io/docs/reference/kubectl/), and [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/) are required to deploy the infrastructure.
 
 The Terraform deployments depend on AWS CLI profiles being configured for the respective target AWS account instances.
 
@@ -72,7 +72,7 @@ terraform apply -var-file envs/prod.tfvars
 
 ### Kubectl Context
 
-Create the `kubectl` context of the AWS EKS cluster. You will need the [aws-iam-authenticator]([kubernetes-sigs/aws-iam-authenticator: A tool to use AWS IAM credentials to authenticate to a Kubernetes cluster](https://github.com/kubernetes-sigs/aws-iam-authenticator)) to create the kubectl context.
+Create the `kubectl` context of the AWS EKS cluster. You will need [aws-iam-authenticator](https://github.com/kubernetes-sigs/aws-iam-authenticator) (AWS IAM credentials for Kubernetes clusters) to create the kubectl context.
 
 ```bash
 aws --profile $PROFILE eks --region $REGION update-kubeconfig --name $CLUSTER_NAME --role-arn $ROLE_ARN --alias $ALIAS
@@ -95,7 +95,7 @@ kubectl config use-context eodhp-prod
 
 The ArgoCD configuration deploys all of the EODH services.
 
-You will need [kubectl]([Command line tool (kubectl) | Kubernetes](https://kubernetes.io/docs/reference/kubectl/)), [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/), [Kustomize]([Kustomize - Kubernetes native configuration management](https://kustomize.io/)), [Helm]([Helm | Installing Helm](https://helm.sh/docs/intro/install/)) and [Gomplate]([gomplate - gomplate documentation](https://docs.gomplate.ca/)) to manage the ArgoCD deployment.
+You will need [kubectl](https://kubernetes.io/docs/reference/kubectl/), [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/), [Kustomize](https://kustomize.io/), [Helm](https://helm.sh/docs/intro/install/), and [Gomplate](https://docs.gomplate.ca/) to manage the ArgoCD deployment.
 
 ### Preparation
 

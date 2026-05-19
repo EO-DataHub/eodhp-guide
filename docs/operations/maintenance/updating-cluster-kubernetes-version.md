@@ -16,9 +16,16 @@ For these reasons, the platform should always aim to use the latest stable Kuber
 
 Use this procedure when you wish to update the platform AWS EKS version.
 
+## Cluster preparation
+
+Before starting the update:
+
+- Review **Purpose** and **When to Use** above.
+- Meet everything in **Requirements** (Terraform repo access, `kubectl`, and optionally the AWS console).
+
 ## Operation
 
-**Please read section [Cluster Preparation](#cluster-preparation) first before proceeding.**
+**Complete [Cluster preparation](#cluster-preparation) before following the steps below.**
 
 1. Open [Terraform Deployment](https://github.com/EO-DataHub/eodhp-deploy-infrastucture.git) repo in your preferred IDE
 2. In terminal, change directory into _terraform/_ dir (`cd terraform`)

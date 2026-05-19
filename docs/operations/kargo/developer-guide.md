@@ -385,7 +385,7 @@ apps/<app-name>/
       kustomization.yaml  # resources: [../../base]
 ```
 
-See [Section 10: Environment Overlays](#10-environment-overlays-kustomize) for details on the kustomization files.
+See [Section 9: Environment overlays (Kustomize)](#9-environment-overlays-kustomize) for details on the kustomization files.
 
 ### Step 2: Add an entry to `apps/kargo-eodhp-project/base/values.yaml`
 

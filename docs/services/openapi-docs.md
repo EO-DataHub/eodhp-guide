@@ -14,7 +14,7 @@ The HTML view of the docs are available at:
 ### Code Repositories and Artifacts
 
 - Microservice defined in [eodh-openapi](https://github.com/EO-DataHub/eodh-openapi)
-- Microservice container image published to [public.ecr.aws/eodh/eodh-openapi](public.ecr.aws/eodh/eodh-openapi) AWS ECR
+- Microservice container image published to [public.ecr.aws/eodh/eodh-openapi](https://gallery.ecr.aws/eodh/eodh-openapi) on AWS ECR Public
 - Deployment is configured in [ArgoCD Deployment](https://github.com/EO-DataHub/eodhp-argocd-deployment) repository, apps/docs directory
 
 ### Dependent Services
