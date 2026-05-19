@@ -19,8 +19,104 @@ An example of an AWS service not being used is SQS, with Pulsar used instead. Th
 
 ### 4.2 Cloud Platform
 
-![](figs/fig-4-01-aws-deployment-overview.png)
+```puml
+@startuml
 
+actor User
+[CloudFront] as CF
+[Network Load Balancer] as NLB
+node S3 {
+  artifact "Static Apps"
+  node "Workspace Bucket" {
+    artifact Data
+  }
+}
+
+node "AWS Lambda" {
+  [Object store access] as ObjStoreAccess
+}
+
+node Kubernetes {
+  node AZ1 {
+    node "Services Node Pool" as GenPool {
+      [IAM]
+      [Nginx Ingress] as nginx1
+      [Resource\nCatalogue]
+      [Supporting]
+      [ENS]
+      [Workflow\nRunner]
+      [Web\nPresence]
+      [Workspace\nMgmt]
+    }
+
+    node "TiTiler Node Pool" {
+      [TiTiler]
+    }
+
+    node "Notebooks Node Pool" {
+      [JupyterHub]
+      [User JupyterLab Instance] as Notebook
+      JupyterHub -[hidden]-> Notebook
+    }
+
+    node "Workflows Node Pool" {
+      [User workflow job] as Job
+    }
+  }
+  node AZ2 {
+    [...]
+  }
+
+  GenPool -[hidden]--> "TiTiler Node Pool"
+  GenPool -[hidden]--> "Notebooks Node Pool"
+  "TiTiler Node Pool" -[hidden]--> "Workflows Node Pool"
+
+}
+
+node "AWS EFS" {
+  artifact "Workspace Block Store Data" as WSBlockStore
+}
+
+[AWS IAM] --> IAM : IdP relying party to
+
+node "RDS" {
+}
+
+node "ECR" {
+
+}
+
+node "GitHub" {
+  artifact "OPA Policies"
+  artifact "Config control"
+}
+
+Kubernetes -[hidden]--> "AWS EFS"
+
+User --> CF : "https://eodatahub.org.uk\nhttps://*.eodatahub-workspaces.org.uk"
+User --> S3 : S3 protocol data access
+CF --> ObjStoreAccess : HTTPS data access
+ObjStoreAccess ---> Data
+CF --> NLB : Data, API and UI access
+CF --> "Static Apps"
+NLB --> nginx1
+NLB --> AZ2
+nginx1 ---> WSBlockStore
+Notebook ---> WSBlockStore
+Notebook ---> "Workspace Bucket"
+Job ---> WSBlockStore
+Job --> "Workspace Bucket"
+
+Kubernetes --> RDS : Service databases
+Kubernetes ---> ECR : Docker images
+
+S3 -[hidden]-> "AWS EFS"
+"AWS EFS" -[hidden]-> "S3"
+
+"Workspace Bucket" --> "AWS IAM" : S3 protocol\naccess control
+
+@enduml
+```
 **Figure 4-1 AWS Deployment Overview** 
 
 The platform uses AWS’s Elastic Kubernetes Service (EKS), within which all EODHP server-side software components run except for data access Lambdas, and AWS Controllers for Kubernetes (ACK). This provides a Kubernetes cluster, including a managed control plane and managed node groups with autoscaling. EKS and ACK provide integrations with AWS services such as linking Kubernetes Service Accounts to AWS IAM Roles and allowing the management of AWS resources using custom resources in Kubernetes. This increases the amount of infrastructure that can be managed by ArgoCD beyond just that inside Kubernetes to also include S3 buckets, IAM roles, EFS stores, etc. 
@@ -54,5 +150,4 @@ Finally, OPAL reads OPA policies from an authorization policy Git repository and
 
 Integration tests can be defined as Argo Workflows applied to the cluster by ArgoCD. These then show as successful or degraded resources in ArgoCD. 
 
-Four types of cluster are used based on position in the deployment pipeline: dev, test, staging and production. Dev and test are owned by developers and may be broken at any time. They are distinct because dev is used for work-in-progress whereas test contains only code which is complete and has passed developer peer-review. After peer-review and testing in test, the development team will decide when to release changes to staging for customer review. After customer agreement they are moved to the production cluster. 
-
+Four types of cluster are used based on position in the deployment pipeline: dev, test, staging and production. Dev and test are owned by developers and may be broken at any time. They are distinct because dev is used for work-in-progress whereas test contains only code which is complete and has passed developer peer-review. After peer-review and testing in test, the development team will decide when to release changes to staging for customer review. After customer agreement they are moved to the production cluster.

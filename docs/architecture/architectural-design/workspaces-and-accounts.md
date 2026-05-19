@@ -31,7 +31,57 @@ The EODH operator is responsible for calculating and issuing invoices and carryi
 
 #### 3.2.3 Workspace and Account Management Implementation
 
-![](../figs/fig-3-03-workspace-management-components.png)
+```puml
+@startuml
+
+
+package "Web Presence" {
+  [Workspace UI] as WorkspaceUI
+}
+
+package "Workspace Storage" as UserStorage {
+  [S3] as S3Storage
+  [NFS] as NFSStorage
+}
+  
+package "Workspace Management" as WSMGMT {
+  [Workspace Services] as WSServices
+  [Workspace Controller] as WSController
+  [Workspace Manager] as WSManager
+  database WorkspaceCR
+
+  WSServices .. WSManager : (via messaging)
+  WSManager -- WorkspaceCR
+  WSController -- WorkspaceCR
+  WSController --> UserStorage
+}
+
+interface WorkspacesAPI
+WorkspaceUI --> WorkspacesAPI : workspace CRUD
+WorkspacesAPI -- WSServices
+
+package "Resource Catalogue" as Catalogue {
+  [Workspace Catalogue Generator] as WSCatGen
+  [Transformers] as CatT
+  WSCatGen --> CatT
+  WSController --> WSCatGen : (via messaging)
+}
+
+package "Workflow and Analysis System" as WAS {
+  node "K8S Workspace Namespace" as WorkspaceNamespace {
+  }
+}
+
+WSController --> WorkspaceNamespace
+
+package IAM {
+  [Keycloak]
+}
+
+WSServices -> Keycloak
+
+@enduml
+```
 
 **Figure 3-3 Detail: Workspace Management Components**
 
@@ -51,5 +101,4 @@ The Workspace Controller is a Kubernetes controller and follows the usual contro
 - resources defined by ACK (Amazon Controller for Kubernetes) which create S3 and EFS resources in AWS itself, 
 - service accounts and other related Kubernetes configuration. 
 
-It also sends messages to another service, the Workspace Catalogue Generator, which creates the skeleton catalogue entries that each Workspace begins with. 
-
+It also sends messages to another service, the Workspace Catalogue Generator, which creates the skeleton catalogue entries that each Workspace begins with.

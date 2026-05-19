@@ -1,7 +1,76 @@
 ### 3.14 Accounting and Costing Services
 
-![](../figs/fig-3-19-accounting-service.png)
+```puml
+@startuml
 
+
+package "Web Presence" {
+  [Workspace UI] as WorkspaceUI
+}
+
+package "Workspace Storage" as UserStorage {
+  [S3] as S3Storage
+  [NFS] as NFSStorage
+}
+  
+package "Workspace Management" as WSMGMT {
+}
+
+package "Workflow and Analysis System" as WAS {
+  node "K8S Workspace\nNamespace" as WorkspaceNamespace {
+  }
+}
+
+node CloudFront {
+  [Workspaces CF\nDistribution] as WorkspaceCF
+}
+
+node S3 {
+  database "CloudFront\nAccess Logs" as CFLogs
+  database "S3\nAccess Logs" as S3Logs
+}
+
+S3Storage --> S3Logs
+WorkspaceCF --> CFLogs
+
+package "Accounting" {
+  [Accounting\nAPI] as API
+  [Accounting\nIngester] as Ingester
+  [EFS\nCollector] as EFSCollector
+  [S3\nCollector] as S3Collector
+  [Data Transfer\nCollector] as EgressCollector
+  [Compute\nCollector] as ComputeCollector
+
+  database AccountingData
+
+  API <-- AccountingData
+  Ingester --> AccountingData
+
+
+  database "Price Data\n(ConfigMap)" as PriceData
+  Ingester <-- PriceData
+}
+
+interface AccountingAPI
+WorkspaceUI <-- AccountingAPI : Price and consumption data
+AccountingAPI -- API
+
+Ingester <... WSMGMT : Workspace lifecycle data\n(via msg)
+ComputeCollector <-- WorkspaceNamespace
+ComputeCollector ..> Ingester : CPU/Memory data\n(via msg)
+
+CFLogs --> EgressCollector
+EgressCollector ..> Ingester : HTTPS-based bandwidth use data\n(via msg)
+
+S3Logs --> S3Collector : Access data
+S3Storage --> S3Collector : Size samples
+S3Collector ..> Ingester : S3 storage and API use data\n(via msg)
+
+NFSStorage --> EFSCollector : Size samples
+EFSCollector ..> Ingester : EFS storage use data\n(via msg)
+
+@enduml
+```
 **Figure 3-19 Accounting Service (arrows show data flows)** 
 
 The Accounting Service consists of 
@@ -39,5 +108,4 @@ Collectors are designed to recover after downtime by recording their last proces
 
 The Accounting API service serves product, price and Billing Event data via a read-only API. The Workspace UI uses this to display per-Workspace resource consumption and, if set, costs. 
 
-The Accounting Service listens for billing events on the messaging system – these events being output by platform components, such as the User Account Service (consumption of processing resources), Data Access services (consumption of data resources) and the Workspace Controller (workspace resources). The Accounting Service will maintain all such events in its database to support filtered queries \- used to report billing data, with this data being sufficient to generate invoices based on a UI provided by the web presence (invoice generation, payment records and payment processing are assumed external). 
-
+The Accounting Service listens for billing events on the messaging system – these events being output by platform components, such as the User Account Service (consumption of processing resources), Data Access services (consumption of data resources) and the Workspace Controller (workspace resources). The Accounting Service will maintain all such events in its database to support filtered queries \- used to report billing data, with this data being sufficient to generate invoices based on a UI provided by the web presence (invoice generation, payment records and payment processing are assumed external).

@@ -12,7 +12,43 @@ The data services allow users inside and outside the platform to access platform
 
 The main components used to access data which already exists as files accessible to the user are shown in the deployment diagram below. 
 
-![](../figs/fig-3-09-data-access-services.png)
+```puml
+actor User
+
+package "Workspace Storage" as UserStorage {
+  [S3] as S3
+  [EFS] as EFS
+}
+
+node "Data Stream" {
+  [Public Data] as PublicData
+}
+
+package "Resource Catalogue" {
+}
+
+package "Data Access Services" as DAS {
+  [TiTiler]
+  [EFS Proxy] as EFSProxy
+  [S3 Lambdas] as S3Lambdas
+}
+
+
+User --> PublicData : HTTPS
+
+User --> EFSProxy: HTTPS
+EFSProxy --> EFS
+
+User --> S3Lambdas : HTTPS
+S3Lambdas --> S3
+
+User --> S3 : S3 Protocol
+
+User --> TiTiler : OGC API
+TiTiler --> UserStorage
+TiTiler --> PublicData
+TiTiler --> "Resource Catalogue" : STAC
+```
 
 **Figure 3-9 Data Access Services**
 
@@ -46,10 +82,81 @@ TiTiler also mounts the workspaces EFS store and has been granted a Kubernetes s
 
 #### 3.9.4 Adaptors
 
-![](../figs/fig-3-10-adaptors-left.png)
-![](../figs/fig-3-10-account-linking-right.png)
+```puml
+actor User
 
-**Figure 3-10 Adaptors (left) and Account Linking (right)**
+package "Workflow and Analysis System" as WAS {
+  [Workspace Management] as WorkspaceMgmt
+
+  node "User Workspace" as UWorkspace {
+    [Crypto Key] as DSCredsKey
+  }
+
+  WorkspaceMgmt --> DSCredsKey : Writes
+}
+
+node "AWS Secrets Manager" as AWSSecrets {
+  [Data Stream Credentials] as DSCreds
+  WorkspaceMgmt --> DSCreds : Writes
+}
+
+User --> WorkspaceMgmt : Link Account
+```
+**Figure 3-10-a Account Linking**
+
+
+```puml
+actor User
+
+package "Workspace Storage" {
+}
+
+node "Data Stream" {
+  [Public Data] as PublicData
+  [Commercial Data API] as CommercialDataAPI
+
+  CommercialDataAPI -[hidden]-> PublicData
+}
+
+package "Resource Catalogue" as Catalogue {
+  [Commercial Data] as Ordering
+  [Ingesters]
+}
+
+package "Workflow Runner" as WR {
+  [ADES API] as AdaptorAPIs
+  [ADES]
+  [Adaptors] as Adaptors
+
+  AdaptorAPIs --> ADES
+  ADES --> Adaptors
+  Adaptors --> "Data Stream" : Orders
+  Ordering --> CommercialDataAPI : Quotes
+}
+
+
+node "User Workspace" as UWorkspace {
+  [Crypto Key] as DSCredsKey
+}
+
+node "AWS Secrets Manager" as AWSSecrets {
+  [Data Stream Credentials] as DSCreds
+}
+
+Adaptors --> "Workspace Storage" : "Ordered Data"
+
+User --> Ordering : Quotes and Orders
+Ordering ---> AdaptorAPIs : "Order Workflow Invocation"
+
+Adaptors --> DSCreds : Read Credentials
+Adaptors --> DSCredsKey : Read Credentials' Key
+
+Ingesters <-- WR : "Order Metadata"
+
+User -[hidden]-> AdaptorAPIs
+```
+
+**Figure 3-10-b Adaptors**
 
 Adaptors are a mechanism for using data in the platform which is not available from its upstream source over a simple file-based (HTTPS or S3) protocol by following asset links from STAC entries. For example, this may be necessary when: 
 
@@ -81,11 +188,39 @@ Adaptors are containerised workflows compatible with the Workflow Runner, most l
 
 Adaptors are invoked using the platform’s commercial data APIs, providing the required parameters such as processing options. These APIs are found by appending /order (or /quote) to the STAC Item URL for a commercial item. The ordering process is shown in Figure 3-11 Adaptor-based data retrieval data flow diagram.
 
-![](../figs/fig-3-11-adaptor-based-data-retrieval.png)
+```mermaid
+flowchart LR
+	user[User]
 
+    userRequest[Requesting user]
+    upstream[Data stream<br />data]
+    srcCatalog[STAC catalog<br />&#40commercial dataset&#41]
+    dstCatalog[STAC catalog<br />&#40workspace -<br />ordered data&#41]
+    userS3[Workspace<br />S3 store]
+    awsSecrets[AWS Secrets]
+    workspace[Workspace<br />K8s Secret]
+
+	commercialDataAPI((Commercial<br />data<br />API))
+    adesAPI((ADES Auth<br />&#40ADES API&#41))
+    workflowRun((Workflow<br />execute<br />&#40ADES&#41))
+    workflowData((Workflow data<br />access step))
+
+    userRequest --> |Parameters<br />STAC URL| commercialDataAPI
+    srcCatalog --> |Commercial STAC Item| commercialDataAPI
+    commercialDataAPI --> |Parameters<br />STAC| adesAPI
+    commercialDataAPI --> |state=Ordered<br />STAC Item| dstCatalog
+    adesAPI --> |Parameters<br />STAC| workflowRun
+    workflowRun --> |CWL execution| workflowData
+    upstream --> |Data| workflowData
+    awsSecrets --> |Provider credentials| workflowData
+    workspace --> |Credentials key| workflowData
+    workflowData --> |Data| userS3
+    workflowData --> |state=Completed<br />STAC Item| dstCatalog
+    workflowData --> |Creds<br />Options| upstream
+    userS3 --> |S3/HTTP| user
+```
 **Figure 3-11 Adaptor-based data retrieval data flow diagram** 
 
 The commercial data API (in resource-catalogue-fastapi) will authorize the request, validate it, retrieve the STAC Item for the ordered data and call the ADES API to run the adaptor workflow. It will also create an output STAC Item which is stored into an ‘ordered data’ catalogue in the calling workspace’s catalogue. This will become the metadata pointing to the data delivered by the provider but at this point has an ‘ordered’ status (compliant with the STAC Order extension) to say that the order has been placed but not yet delivered. 
 
-The ADES API calls the ADES which executes the adaptor as a workflow. This will retrieve the linked account credentials for the calling workspace so that it can call the upstream data provider’s API. It will then receive the ordered data in response. This mechanism varies by provider, but for the Airbus and Planet providers involves the provider pushing the data into an S3 bucket in the platform. The adaptor then produces this data as a workflow output (so that the workflow system stores it into a workspace object store) along with a final STAC Item for it. This final Item includes asset references to this data that the user can follow to access it. 
-
+The ADES API calls the ADES which executes the adaptor as a workflow. This will retrieve the linked account credentials for the calling workspace so that it can call the upstream data provider’s API. It will then receive the ordered data in response. This mechanism varies by provider, but for the Airbus and Planet providers involves the provider pushing the data into an S3 bucket in the platform. The adaptor then produces this data as a workflow output (so that the workflow system stores it into a workspace object store) along with a final STAC Item for it. This final Item includes asset references to this data that the user can follow to access it.

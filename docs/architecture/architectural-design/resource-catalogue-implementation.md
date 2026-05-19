@@ -6,7 +6,107 @@ This section describes the functioning of the components of the catalogue. The s
 
 #### 3.4.1 Harvest Pipeline Overview
 
-![](../figs/fig-3-04-harvest-pipeline-data-flow.png)
+```mermaid
+flowchart LR
+    %% Harvest/ingest
+	dsGitRepo[Data stream<br />git repo]
+	sourceSTAC[Data stream<br />external STAC]
+	sourceFiles[Data stream<br />workspace files]
+	sourceAirbus[Data stream<br />Airbus]
+	sourceDotDotDot[Data stream<br />...]
+
+
+    subgraph harvesters[Harvesters]
+        direction TB
+		gitHarvester((git<br />harvest))
+		stacHarvester((STAC<br />harvest))
+		fileHarvester((File<br />harvest))
+		airbusHarvester((Airbus<br />harvest))
+		dotdotdotHarvester((...))
+	end
+	
+    dsGitRepo --> |Raw metadata<br />STAC<br />config<br />defs<br />...| gitHarvester
+    sourceSTAC --> |Raw STAC| stacHarvester
+	sourceFiles --> |Raw metadata| fileHarvester
+	sourceAirbus --> |Airbus API<br />responses| airbusHarvester
+	sourceDotDotDot --> |Raw metadata| dotdotdotHarvester
+
+    subgraph harvestedTopics[Pulsar 'harvested*'<br />Topics]
+        direction TB
+        harvestedAnnotations[Annotations]
+	    harvestedBulkSTAC[Bulk<br />STAC]
+        harvestedSTAC[STAC]
+        harvestedWorkflows[Workflows]
+        harvestedDotDotDot[...]
+    end
+
+    gitHarvester --> harvestedTopics
+    %%stacHarvester --> harvestedSTAC
+    %%stacHarvester --> harvestedBulkSTAC
+    stacHarvester --> harvestedTopics
+    fileHarvester --> harvestedTopics
+    %%airbusHarvester --> harvestedBulkSTAC
+    airbusHarvester --> harvestedTopics
+    dotdotdotHarvester --> harvestedTopics
+    %%gitHarvester --> harvestedAnnotations
+
+    subgraph Transformers
+      direction TB
+      annotationsTransformer((Annotations<br />transformer))
+      stacTransformer((STAC<br />transformer))
+      workflowTransformer((Workflow<br />transformer))
+      dotdotdotTransformer((...))
+    end
+
+    harvestedAnnotations --> annotationsTransformer
+    harvestedBulkSTAC --> stacTransformer
+    harvestedSTAC --> stacTransformer
+    harvestedWorkflows --> workflowTransformer
+    harvestedDotDotDot --> dotdotdotTransformer
+
+    subgraph transformedTopics[Pulsar 'transformed*'<br />Topics]
+        direction TB
+        transformedAnnotations[Annotations]
+	    transformedBulkSTAC[Bulk<br />STAC]
+        transformedSTAC[STAC]
+        transformedWorkflows[Workflows]
+        transformedDotDotDot[...]
+    end
+
+    annotationsTransformer --> transformedAnnotations
+    stacTransformer --> transformedBulkSTAC
+    stacTransformer --> transformedSTAC
+    workflowTransformer --> transformedWorkflows
+    dotdotdotTransformer --> transformedDotDotDot
+
+    subgraph Ingesters
+      direction TB
+      annotationsIngester((Annotations<br />ingester))
+      stacAPIIngester((STAC<br />API<br />ingester))
+      adesIngester((ADES<br />populator))
+      dotdotdotIngester((...))
+    end
+
+    transformedAnnotations --> annotationsIngester
+    transformedSTAC --> annotationsIngester
+    transformedSTAC --> stacAPIIngester
+    transformedBulkSTAC --> stacAPIIngester
+    transformedWorkflows --> adesIngester
+    transformedTopics --> dotdotdotIngester
+
+    subgraph Services
+      direction TB
+      stacAPI[STAC API]
+      annotations[Annotations]
+      wr[ADES]
+      dotdotdotService[...]
+    end
+
+    stacAPIIngester --> stacAPI
+    adesIngester --> wr
+    annotationsIngester --> annotations
+    dotdotdotIngester --> dotdotdotService
+```
 
 **Figure 3-4 Harvest Pipeline Data Flow**
 
@@ -22,7 +122,59 @@ Each step in the pipeline may use multithreading and multiple replicas, subject 
 
 #### 3.4.2 Services and Ingest
 
-![](../figs/fig-3-05-catalogue-services-and-ingesters.png)
+```puml
+@startuml
+
+package WebPresence {
+  [Catalogue Browser] as STACB
+}
+
+package "STAC API" as STACAPI {
+  [STAC API\n(stac-fastapi)] as sfapi
+  [Elasticsearch] as es
+  [STAC API Ingester\n(stac-fastapi-ingester)] as sfapiingest
+
+  sfapi -> es
+  sfapi <-- sfapiingest
+}
+
+package "Annotations" as Annotations {
+  [Annotations API] as AnnotationsAPI <<future>>
+  [Annotations Ingester] as AnnotationsIngester <<future>>
+  [Annotations Store] as AnnotationsStore <<future>>
+
+  AnnotationsAPI -> AnnotationsStore
+  AnnotationsStore <-- AnnotationsIngester
+}
+
+[Planet's APIs] as Planet
+
+package "Commercial Data" as CommercialData {
+  [Commercial Data APIs\n(resource-catalogue-fastapi)] as CommercialAPIs
+  [Planet STAC proxy\n(stac-planet-api)] as PlanetSTAC
+
+  PlanetSTAC ---> Planet
+}
+
+node "Messaging" {
+  [STAC topics] as STACTopics
+  [Annotations topic] as AnnotationsTopic
+  [S3 - transformed metadata] as S3Transformed
+}
+
+sfapiingest ---> STACTopics
+sfapiingest ---> S3Transformed
+AnnotationsIngester ---> AnnotationsTopic
+AnnotationsIngester ---> STACTopics
+AnnotationsIngester ---> S3Transformed
+
+STACB --> sfapi : STAC
+STACB ..> AnnotationsAPI
+STACB --> CommercialAPIs : "Quotes\nOrders\nThumbnails"
+STACB --> PlanetSTAC : STAC
+
+@enduml
+```
 
 **Figure 3-5 Catalogue services and ingesters**
 
@@ -66,7 +218,95 @@ The annotations ingester also generates a basic DCAT representation of datasets 
 
 #### 3.4.3 Harvest and Transform
 
-![](../figs/fig-3-06-catalogue-harvest-layer.png)
+```puml
+@startuml
+
+node "Pulsar harvested Topics" {
+  [Bulk STAC] as BulkSTAC
+  [STAC]
+  [Workflow Defs] as WorkflowDefs
+  [Annotations]
+}
+
+[Git Harvester] as LocalI
+node git {
+  [Git Catalogues] as LocalCat
+}
+
+LocalI --> LocalCat
+STAC <--- LocalI
+Annotations <... LocalI
+WorkflowDefs <--- LocalI
+
+[STAC Harvester] as STACHarvester
+[Airbus Harvester] as AirbusHarvester
+[Planet Harvester] as PlanetHarvester
+node external {
+  [Upstream STAC] as ExtSTAC
+  [Airbus]
+  [Planet]
+}
+
+
+STACHarvester --> ExtSTAC
+BulkSTAC <--- STACHarvester
+
+AirbusHarvester --> Airbus
+BulkSTAC <--- AirbusHarvester
+
+PlanetHarvester --> Planet
+STAC <--- PlanetHarvester
+
+[Workflow Harvester\n(part of WR stage-out)] as WFHarvester
+package Workflows {
+  [QA Workflow] as QAWorkflow
+  [User Workflow] as DataWorkflow
+}
+
+STAC <--- WFHarvester
+Annotations <--- WFHarvester
+WFHarvester <-- QAWorkflow
+WFHarvester <-- DataWorkflow
+
+[File Harvester] as FileHarvester
+node EFS {
+  [Workspace Store] as WorkspaceStore
+}
+
+FileHarvester --> WorkspaceStore
+STAC <--- FileHarvester
+Annotations <... FileHarvester
+WorkflowDefs <... FileHarvester
+
+
+package Transformers {
+  [STAC Transformer] as STACTransformer
+  [Workflow Def Transformer] as WorkflowTransformer
+  [Annotations Transformer] as AnnotationsTransformer
+}
+
+STACTransformer --> STAC
+STACTransformer --> BulkSTAC
+WorkflowTransformer --> WorkflowDefs
+AnnotationsTransformer --> Annotations
+
+node "Pulsar transformed Topics" as Transformed {
+  [Bulk STAC] as BulkSTACT
+  [STAC] as STACT
+  [Workflow Defs] as WorkflowDefsT
+  [Annotations] as AnnotationsT
+}
+
+BulkSTACT <-- STACTransformer
+STACT <-- STACTransformer
+WorkflowDefsT <-- WorkflowTransformer
+AnnotationsT <-- AnnotationsTransformer
+
+[                     Ingest Layer                       ] as Ingest
+Ingest --> Transformed
+
+@enduml
+```
 
 **Figure 3-6 Catalogue harvest layer. Arrows are dependencies, dashed lines not currently implemented.**
 
@@ -116,5 +356,4 @@ The STAC API could be extended to also serve OGC Records API-compatible records 
 
 only APIs being ignored by OAR clients). See [this link](https://github.com/EO-DataHub/documentation/blob/main/APIs/01.%20Overview.md#correspondence-between-stac-ogc-records-and-ogc-features-api) for a more specific proposal. 
 
-Harvester definitions and the harvest mechanism could be extended sufficiently to allow user-defined harvesting. For example, a user might create a harvest configuration to harvest an external STAC Catalog into a sub-Catalog in their workspace catalogue. Making a ‘harvest configuration’ a more sophisticated object in EODH would also allow for harvest status and control pages and for log browsing. This would be particularly useful for system operators who would then have a GUI for managing harvesting. 
-
+Harvester definitions and the harvest mechanism could be extended sufficiently to allow user-defined harvesting. For example, a user might create a harvest configuration to harvest an external STAC Catalog into a sub-Catalog in their workspace catalogue. Making a ‘harvest configuration’ a more sophisticated object in EODH would also allow for harvest status and control pages and for log browsing. This would be particularly useful for system operators who would then have a GUI for managing harvesting.

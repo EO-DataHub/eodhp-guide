@@ -56,3 +56,5 @@ markdown_extensions:
 plugins:
   - search
   - awesome-pages
+  - plantuml:
+      puml_url: https://www.plantuml.com/plantuml/

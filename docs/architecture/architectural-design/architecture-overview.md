@@ -37,7 +37,125 @@ EODH data stream – for example, if EODH harvests a publicly available STAC Cat
 
 EODHP can be decomposed into components, each typically being a specific piece of software executing as one or more instances. These provide the functionality at layers 3, 4 and 5 above. 
 
-![](../figs/fig-3-02-architecture-components-arrows-denote-dependency.png)
+```puml
+@startuml
+
+'[                                                                                                                                                                            Messaging                                                                                                                                                                            ] as Messaging
+'[              Messaging              ] as Messaging
+
+package "Web Presence" {
+  [Wagtail] as CMS
+  [Workspace UI] as WorkspaceUI
+}
+
+
+[CloudFront]
+[K8s Proxy (nginx)] as Proxy
+CloudFront --> Proxy
+
+package IAM {
+  [Accounting\n& Costing] as Accounting
+
+  [OIDC Clients] as EODHOIDC
+  [Keycloak]
+  [OPA+OPAL] as OPA
+
+  Proxy --> EODHOIDC : Ext auth
+  EODHOIDC --> Keycloak : OIDC
+  EODHOIDC --> OPA
+}
+
+[Catalogue Browser] as CatBrowser
+
+package "Resource Catalogue" as Catalogue {
+  [User Policies] as AccessPolicies
+  [Annotations] as AnnCat
+  [Search] as CatS
+  [Ingesters] as CatI
+  [Transformers]
+  [Harvesters] as CatSource
+  [Commercial Data] as Ordering
+
+  CatBrowser --> AnnCat
+  CatBrowser --> CatS
+  CatBrowser --> Ordering
+  CatS --> CatI
+  AnnCat --> CatI
+  AccessPolicies --> CatI
+  CatI ..> Transformers : (via messaging)
+  Transformers ..> CatSource : (via messaging)
+}
+
+package "Data Access Services" as DAS {
+  [TiTiler]
+  TiTiler --> CatS
+
+  [HTTPS Download] as Download
+}
+
+package "Workflow Runner" as WR {
+  [Workflow API] as WFAPI
+  [ADES] as ADES
+
+  WFAPI --> ADES
+
+  [Workflow\nIngester] as ADESPop
+  ADES --> ADESPop
+  ADESPop ..> Transformers : (via msg)
+}
+
+package "Workflow and Analysis System" as WAS {
+  [Workspace Management] as WorkspaceMgmt
+  WorkspaceUI --> WorkspaceMgmt
+
+  
+  [JupyterHub]
+
+  node "User Workspace" as UWorkspace {
+    [JupyterLab]
+    [Workflow Job] as UserWFTask  
+    [Storage - S3 + NFS] as UserStorage
+  }
+  
+  JupyterHub --> JupyterLab
+  JupyterLab --> UserStorage
+  UserWFTask --> UserStorage
+  UserWFTask --> CatSource : New catalogue resources
+  CatSource --> UserStorage : Cat Entries
+  TiTiler --> UserStorage
+  Download --> UserStorage
+  WorkspaceMgmt --> UWorkspace
+}
+
+'Messaging <-- UWorkspace
+ADES --> UserWFTask : deploys task
+
+package ENS {
+  [Argo Events+Workflows] as Eventer
+
+  CatSource --> Eventer : Triggered by
+}
+
+package Supporting {
+  [ArgoCD]
+  [ELK]
+  [Messaging]
+  [...]
+}
+
+'Supporting --> Messaging
+
+
+'Accounting ---> Messaging
+'CatI ---> Messaging
+'CatSource --->  Messaging
+
+'IAM -[hidden]r->ENS
+WAS -[hidden]-->Supporting
+Catalogue -[hidden]-->Supporting
+'Catalogue -[hidden]-->CloudFront
+@enduml
+```
 
 **Figure 3-2 Architecture Components (arrows denote dependency)**
 
@@ -79,5 +197,4 @@ Figure 3-2 provides an overview of the main components comprising the architectu
   - **Keycloak** serves as an identity broker and repository of user data and roles. Roles are used only for administrative purposes such as allowing CMS editing and do not form a part of authorizing ordinary users’ activities. 
   - **OPA+OPAL** provides coarse-grained authorization decisions using Open Policy Agent. ‘Coarse-grained’ decisions are those that can be made using only information in caller’s tokens (primarily workspace memberships and scopes) and basic knowledge of the HTTP paths used in EODH. 
   - **Accounting and Costing** receives and stores resource consumption data about user workspaces, stores pricing data, and provides this data to users via APIs. 
-- **Supporting** components provide various internal and system functions such as configuration control and monitoring. 
-
+- **Supporting** components provide various internal and system functions such as configuration control and monitoring.

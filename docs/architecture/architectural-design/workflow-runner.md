@@ -4,7 +4,47 @@ The Workflow Runner manages workflow-based user computational activity and capac
 
 Note: a component called the ‘Workflow and Analysis System’ used to exist and contain Jupyter, Workspace Management and the workflow pods (but not the rest of the workflow system). The first two are now their own components and workflow pods are now here. This change has no practical effect on users or developers. 
 
-![](../figs/fig-3-08-workflow-runner.png)
+```puml
+@startuml
+
+actor User
+
+[Workflow API\n(ades-fastapi)] as WorkflowAPI
+User --> WorkflowAPI : List, deploy or execute request
+
+[Workflow Ingester] as WFIngest
+
+[Workflow Runner\n(EOEPCA ADES)] as WR
+
+WorkflowAPI --> WR : Authorized list, deploy or execute request
+WFIngest -> WR : Deploy
+
+package "Resource Catalogue" as RC {
+}
+
+package WSStorage as "Workspace Stores" {
+	node S3 {
+	}
+
+	node "NFS Volume" as WNFS {
+	}
+}
+
+node "User Workspace (K8s namespace)" as UserWorkspace {
+    [Workflow pods] as UserWorkflowPods
+    [Workflow stage-in/out\n(includes workflow harvester)] as SystemWorkflowPods
+    SystemWorkflowPods ---> WSStorage : results and inputs
+    UserWorkflowPods ---> WSStorage : results,\ninputs,\nfiles
+}
+
+SystemWorkflowPods --> RC : "Output metadata"
+WR --> SystemWorkflowPods : Creates
+WR --> UserWorkflowPods : Creates
+WR -[hidden]-> UserWorkspace
+
+'WorkflowAPI -[hidden]-> UserWorkflowPods
+@enduml
+```
 
 **Figure 3-8 Workflow runner**
 
@@ -77,5 +117,4 @@ This EMS, if integrated, could also integrate with AWS/Kubernetes APIs to automa
 
 Should execution latency become problematic, for example because of interactive applications running short executions waiting for Workflow and pod startup, alternative executors to the ADES could be added which run persistently. The EMS would select the appropriate one. This is more similar to the current Copernicus CDS execution model. 
 
-The EMS could implement quality-of-service rules such as ‘users of type X are permitted only Y simultaneous executions’ or ‘requests from priority users Z are treated as if they were 5 minutes older’, which both prevent overload situations and provide for fair access to resources. This could also provide for more sophisticated rules, such as prioritising interactive applications or limiting parallel access to certain upstream data sources. We successfully used such a QoS system for a similar purpose in the Copernicus Climate Data Store. 
-
+The EMS could implement quality-of-service rules such as ‘users of type X are permitted only Y simultaneous executions’ or ‘requests from priority users Z are treated as if they were 5 minutes older’, which both prevent overload situations and provide for fair access to resources. This could also provide for more sophisticated rules, such as prioritising interactive applications or limiting parallel access to certain upstream data sources. We successfully used such a QoS system for a similar purpose in the Copernicus Climate Data Store.

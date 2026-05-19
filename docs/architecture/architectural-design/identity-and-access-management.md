@@ -8,7 +8,24 @@ Users will use external identities in the platform, current GitHub and Google id
 
 Machine identities are anticipated to also exist in the future, for example for use when workflows are triggered by events. These identities will either be internal identities used by EODHP software components or will be linked to the workspace responsible for them. Users with sufficient privileges can create machine identities and assign privileges to them but they will always remain scoped to a specific workspace and unable to act outside it. Those users will also be able to obtain credentials used for access on behalf of that Machine User in the same ways as they can for their own User. 
 
-![](../figs/fig-3-12-model-for-identities.png)
+```mermaid 
+classDiagram 
+  class IdentityProvider 
+  class IdPIdentity 
+ 
+  class User 
+  class MachineUser
+  <<future>> MachineUser
+  
+  class HumanUser 
+  class Workspace
+  User <|-- MachineUser 
+  User <|-- HumanUser 
+ 
+  IdentityProvider *-- IdPIdentity 
+  IdPIdentity "1..n" -- "1" HumanUser 
+  MachineUser "0..n" --* Workspace
+``` 
 
 **Figure 3-12 Model for Identities**
 
@@ -23,8 +40,43 @@ Workspaces, defined below, can also be used as part of the identity with which a
 
 A logical view of these concepts is shown below: 
 
-![](../figs/fig-3-13-workspaces-and-accounts.png)
-
+```mermaid 
+classDiagram 
+  class Account {
+    User contact
+  }
+  note for Account "Bill payer"
+  
+  class Workspace
+  note for Workspace "Resource isolation and namespacing<br />Billing unit"
+  
+  class WorkspaceResource
+  class Store
+  class CatalogueEntry 
+  class Harvester
+  class MoreWorkspaceResources["..."]
+  class MoreExternalWorkspaceResources["..."]
+  
+  WorkspaceResource <|-- Store
+  WorkspaceResource <|-- CatalogueEntry
+  WorkspaceResource <|-- Harvester
+  WorkspaceResource <|-- MoreWorkspaceResources
+  
+  class WorkspaceExternalResource 
+  <<future>> WorkspaceExternalResource
+  WorkspaceResource <|-- WorkspaceExternalResource
+  
+  class VersionControl 
+  <<future>> VersionControl
+  class ExternalComputation 
+  <<future>> ExternalComputation
+  WorkspaceExternalResource <|-- VersionControl 
+  WorkspaceExternalResource <|-- ExternalComputation 
+  WorkspaceExternalResource <|-- MoreExternalWorkspaceResources
+ 
+  Account "1" *-- "n" Workspace
+  Workspace *-- WorkspaceResource 
+``` 
 **Figure 3-13 Workspaces and Accounts**
 
 ###### 3.13.1.2.1 Accounts
@@ -70,7 +122,56 @@ In the future workspaces could also be linked to external resources, such as Git
 
 The platform has a large set of possible interactions which require authentication and authorization and which the IAM architecture must support \- these are analyzed in detail in [03\. Data Flow and AuthZ, AuthN and Access Control Points and Methods.md](https://github.com/EO-DataHub/documentation/blob/deliveryversion/mvp/Architecture/IAM/03.%20Data%20Flow%20and%20AuthZ%2C%20AuthN%20and%20Access%20Control%20Points%20and%20Methods.md). The mechanism for access control varies, for example between services running in the Kubernetes cluster and for download access directly to object stores. However, there are general patterns and common elements which are described here. The components are shown in this diagram (arrows indicate dependency): 
 
-![](../figs/fig-3-14-iam-architecture-overview.png)
+```puml
+@startuml
+
+[API client / Browser] as Client
+node "EODHP Service" as EODHPServiceN {
+  [EODHP Service] as EODHPService
+  [OPA] as EODHPServiceOPA
+  EODHPService -> EODHPServiceOPA
+}
+
+node "Catalogue" {
+  [User access policies] as UAPs
+}
+
+[OPAL Server] as OPALServer
+[OPAL Client] as OPALClient
+
+node "GitHub" {
+  [OPA repo] as OPARepo
+}
+
+[Keycloak] as Keycloak
+[Upstream IDP] as IDP
+
+node auth as authagentN {
+  [OAuth2 Proxy] as oauth2proxy
+  [Authagent] as authagent
+  [OPA] as authagentOPA
+  authagent -> authagentOPA
+  authagent -left-> oauth2proxy
+}
+
+[Kubernetes Proxy] as k8sproxy
+
+Client --> k8sproxy : API/UI http request\nmay have session credential
+k8sproxy --> EODHPService : API/UI http request\nmay have session credential and identity
+k8sproxy --> authagent : auth request
+k8sproxy --> oauth2proxy
+oauth2proxy --> Keycloak : OIDC
+Keycloak --> IDP : OIDC/SAML
+Client --> Keycloak : login
+
+OPALServer --> OPARepo
+OPALClient --> OPALServer
+EODHPServiceOPA --> OPALClient
+EODHPServiceN --> UAPs
+authagentOPA --> OPALClient
+
+@enduml
+```
 
 **Figure 3-14 IAM Architecture Overview**
 
@@ -110,8 +211,49 @@ For details on the claims and scopes used in EODH tokens see [iam section of the
 
 The data flow for the typical 2-party case with valid session credentials is shown in this data flow diagram: 
 
-![](../figs/fig-3-15-typical-iam-integration.png)
+```mermaid
+flowchart LR
+    APIClient[API Client]
+    Browser[Browser]
+    Keycloak[Keycloak]
 
+    subgraph proxying[Proxying]
+      direction TB
+      Proxy[K8s Proxy]
+      authagent[authagent]
+      authagentOPA[OPA]
+      oauth2proxy[OAuth2 Proxy]
+      
+      Proxy --> |Request headers| authagent
+      authagent --> |Accept/reject| Proxy
+      authagent --> |Path+login state| authagentOPA
+      authagentOPA --> |Accept/reject| authagent
+      authagent --> |Cookie or token| oauth2proxy
+      oauth2proxy --> |Token| authagent
+    end
+
+	authagent <--> |Refresh| Keycloak
+	oauth2proxy <--> |Refresh| Keycloak
+
+	subgraph EODHPServiceSG[EODHPService]
+      direction TB
+      EODHPService[EODHP Service]
+      OPA[OPA]
+    end
+    
+    OPALClient[OPAL Client]
+    OPALServer[OPAL Server]
+    OPAGit[OPA Git Repo]
+    
+    APIClient <--> |API Request<br>&lpar;with API token&rpar;| Proxy
+    Browser <--> |UI Request<br>&lpar;with session cookie&rpar;| Proxy
+    Proxy <---> |API/UI Request<br>&lpar;mTLS with access token&rpar;| EODHPService
+    EODHPService --> |Decoded request data+<br>access token| OPA
+    OPA --> |Accept/reject| EODHPService
+    OPAGit --> |System<br>policies| OPALServer
+    OPALServer --> |System<br>policies| OPALClient
+    OPALClient --> |System<br>policies| OPA    
+```
 **Figure 3-15 Typical IAM Interaction \- Data Flow** 
 
 This data flow diagram shows the data flow in a 2-party case in which: 
@@ -133,14 +275,116 @@ information) but will be enough to detect if a login is required but not present
 
 This is also shown as the first case in the interaction diagram below, which shows an API request for various cases of valid, invalid, optional and required API token authentication: 
 
-![](../figs/fig-3-16-iam-integration-diagram.png)
+```mermaid
+sequenceDiagram
+  participant API Client
 
+  participant K8S Proxy
+  participant authagent
+  participant authagent OPA
+  participant OAuth2 Proxy
+
+  participant EODHP Service
+  participant Service OPA
+  
+  participant User access policies
+
+  alt API token valid
+	  API Client->>K8S Proxy : API Request<br>(with API token)
+	  K8S Proxy->>authagent : Auth Request<br>(mTLS, with API token)
+	  authagent->>OAuth2 Proxy : Auth request<br>(with access token)
+	  OAuth2 Proxy->>authagent : Auth result<br>(with access token)
+	  authagent->>authagent OPA : Request headers<br>Validated claims
+	  authagent OPA->>authagent : Accepted
+	  authagent->>K8S Proxy : Accepted<br>(with access token)
+	  K8S Proxy->>+EODHP Service : API Request<br>(mTLS, with access token)
+	  EODHP Service->>Service OPA : Authorization Request<br>(with full auth data)
+	  Service OPA->>User access policies : S3 or HTTP fetch
+	  User access policies->>Service OPA : User-defined access policy<br>(JSON file)
+	  Service OPA->>EODHP Service : Authorization Result<br>May be accepted or rejected
+	  EODHP Service->>-K8S Proxy : API Response<br>May be 401
+	  K8S Proxy->>API Client : API Response<br>May be 401
+  else API token invalid or not present (and no cookie or Keycloak token) and not always required for service path
+	  API Client->>K8S Proxy : API Request<br>(no API token)
+	  K8S Proxy->>authagent : Auth Request<br>(mTLS, no API token)
+	  authagent->>OAuth2 Proxy : Request headers<br>No token
+	  OAuth2 Proxy->>authagent : Authentication failed
+	  authagent->>authagent OPA : Request headers<br>No claims
+	  authagent OPA->>authagent : Accepted
+	  authagent->>K8S Proxy : Accepted<br>(no access token)
+	  K8S Proxy->>+EODHP Service : API Request<br>(mTLS, no access token)
+	  EODHP Service->>Service OPA : Authorization Request<br>(with request-specific data)
+	  Service OPA->>User access policies : S3 or HTTP fetch
+	  User access policies->>Service OPA : User-defined access policy<br>(JSON file)
+	  Service OPA->>EODHP Service : Authorization Result<br>May be accepted or rejected
+	  EODHP Service->>-K8S Proxy : API Response<br>May be 401
+	  K8S Proxy->>API Client : API Response<br>May be 401
+  else API token invalid or not present (and no cookie or Keycloak token) and always required for service path
+	  API Client->>K8S Proxy : API Request<br>(invalid/missing API token)
+	  K8S Proxy->>authagent : Auth Request<br>(mTLS)
+	  authagent->>OAuth2 Proxy : Request headers<br>No token
+	  OAuth2 Proxy->>authagent : Authentication failed
+	  authagent->>authagent OPA : Request headers<br>No claims
+	  authagent OPA->>authagent : Rejected
+	  authagent->>K8S Proxy : HTTP 401
+	  K8S Proxy->>API Client : HTTP 401
+  end
+```
 **Figure 3-16 IAM Interaction Diagrams for API Access** 
 
 Where a browser is used and the browser already has a valid cookie the interaction is identical to that above (the cookie replaces the API token and the access token being sent from Authagent to OAuth2 Proxy). Where a browser is calling API endpoints, for example from JavaScript, the interaction is identical in the other cases as well. For requests for pages where there is no valid cookie, the cases are shown below (service OPA step is omitted to reduce the size of the diagram but still occurs): 
 
-![](../figs/fig-3-17-iam-browser-based.png)
+```mermaid
+sequenceDiagram
+  participant Browser
+  participant Keycloak
+  participant Upstream IdP
+  participant K8S Proxy
+  participant authagent
+  participant authagent OPA
+  participant OAuth2 Proxy
+  participant EODHP Service
 
+  alt Session cookie not present or invalid and not always required for service page
+	  Browser->>K8S Proxy : Request<br>(no/invalid cookie)
+	  K8S Proxy->>authagent : Auth Request<br>(mTLS, no/invalid cookie)
+	  authagent->>OAuth2 Proxy : AuthN Request<br>(no/invalid cookie, no token)
+	  OAuth2 Proxy->>authagent : Unauthenticated
+	  authagent->>authagent OPA : Request headers<br>No claims
+	  authagent OPA->>authagent : Accepted
+	  authagent->>K8S Proxy : Authenticated<br>(no access token)
+	  K8S Proxy->>+EODHP Service : Request<br>(mTLS, no access token)
+	  EODHP Service->>-K8S Proxy : Response<br>Page may omit some content<br>Page has a Login button
+	  K8S Proxy->>Browser : Response<br>Page may omit some content<br>Page has a Login button
+  else Session cookie not present or invalid and always required for service path
+	  Browser->>K8S Proxy : Request<br>(invalid/missing cookie)
+	  K8S Proxy->>authagent : Auth Request<br>(mTLS)
+	  authagent->>OAuth2 Proxy : AuthN Request<br>(no/invalid cookie, no token)
+	  OAuth2 Proxy->>authagent : Unauthenticated
+	  authagent->>authagent OPA : Request headers<br>No claims
+	  authagent OPA->>authagent : Rejected
+	  authagent->>K8S Proxy : HTTP 401
+	  K8S Proxy->>Browser : Redirect to OAuth2 Proxy
+	  Browser->>OAuth2 Proxy : GET /oauth2/start
+	  OAuth2 Proxy->>Browser : Redirect to Keycloak for login
+	  Browser->>Keycloak : May be several requests<br>to choose IdP
+	  Keycloak->>Browser : Redirect to IdP
+	  Browser->>Upstream IdP : Login interaction
+	  Upstream IdP->>Browser : IdP authorization code
+	  Browser->>Keycloak : IdP authorization code
+	  Keycloak->>Upstream IdP : IdP authorization code
+	  Upstream IdP->>Keycloak : IdP identity token
+	  Keycloak->>Browser : Keycloak authorization code
+	  Browser->>K8S Proxy : Keycloak authorization code
+	  K8S Proxy->>OAuth2 Proxy : Keycloak authorization code
+	  OAuth2 Proxy->>Keycloak : Keycloak authorization code
+	  Keycloak->>OAuth2 Proxy : Access and refresh tokens
+	  OAuth2 Proxy->>K8S Proxy : Redirect with cookie
+	  K8S Proxy->>Browser : Redirect with cookie
+	  Browser->>K8S Proxy : Request<br>(valid cookie)
+	  Note over Browser: Continues as in 'API Key valid' case above
+  end
+```
 **Figure 3-17 IAM Browser-Based Interaction** 
 
 ###### 3.13.2.1.4 Relationship to EOEPCA
@@ -153,8 +397,30 @@ Keycloak is used for identity federation and is the IdP to internal services, ie
 
 We use a Keycloak identity, which may be linked to multiple federated identities, to identify users internally. Workspace membership is implemented as Keycloak group membership. Keycloak can also be used for manual management of user permissions, particularly for permissions used by service administrators which are implemented through Keycloak roles. 
 
-![](../figs/fig-3-18-keycloak-integration-overview.png)
+```puml
+@startuml
 
+[Browser] as Browser
+[Keycloak] as Keycloak
+[Upstream OIDC IDP] as OIDCIDP
+[SATOSA\n<<future>>] as SaToSa
+[pyFF\n<<future>>] as pyFF
+[authagent] as authagent
+[OAuth2 Proxy] as oauth2proxy
+[Edugain\n<<future>>] as edugain
+
+oauth2proxy --> Keycloak : OIDC
+authagent --> Keycloak : Token requests
+Keycloak --> OIDCIDP : OIDC
+Keycloak --> SaToSa : OIDC
+SaToSa --> pyFF : recive aggregated SAML data
+SaToSa --> edugain : SAML
+pyFF --> edugain : fetch SAML metadata
+Browser --> Keycloak : registration\nOIDC
+Browser --> OIDCIDP : Login
+
+@enduml
+```
 **Figure 3-18 Keycloak Integration Overview** 
 
 In order to support Edugain in the future, a SAML-based federation of federations of multiple thousand identity providers, Keycloak could also be a relying party on SATOSA. pyFF (Python federation feeder) would then be used to aggregate the Edugain providers' SAML metadata in order to maintain SATOSA's knowledge of the Edugain IdPs. Proxying identity via SATOSA is required for this case because, although Keycloak supports SAML, Keycloak is not able to effectively register and manage the thousands of Edugain SAML entities or to discover the frequent changes which occur in a federation of this size. SATOSA and pyFF are used and maintained by Edugain users and should have better interoperability with it. 
@@ -257,5 +523,4 @@ The user-provided access policies are loaded into stac-fastapi by the catalogue 
 
 ###### 3.13.2.11.2 Wagtail
 
-Wagtail is a client to Keycloak so that platform identities can be used for content editing – any hub user with the hub\_admin role can access the Wagtail content editor interface. However, fine-grained access permissions for editing content are managed inside Wagtail using its own permission model. 
-
+Wagtail is a client to Keycloak so that platform identities can be used for content editing – any hub user with the hub\_admin role can access the Wagtail content editor interface. However, fine-grained access permissions for editing content are managed inside Wagtail using its own permission model.
