@@ -1,3 +1,10 @@
+---
+title: Bootstrap Dependencies
+doc_status: unreviewed
+last_reviewed:
+reviewed_by:
+review_notes:
+---
 # Bootstrap Dependencies
 
 Dependencies between some services need to be managed carefully so that clusters can be bootstrapped. This describes some of those dependencies and the order we require. These are mostly configured into ArgoCD and do not need to be explicitly handled by a system operator.

@@ -1,3 +1,10 @@
+---
+title: 3.8 Workflow Runner
+doc_status: unreviewed
+last_reviewed:
+reviewed_by:
+review_notes:
+---
 ### 3.8 Workflow Runner
 
 The Workflow Runner manages workflow-based user computational activity and capacity utilisation on the platform, including some download services activity. Workflows are OGC Best Practice for EO Application Packages comprising CWL and container images for each step. The Workflow Runner makes them available for execution via API calls using the OGC Processes API. 

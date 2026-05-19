@@ -1,3 +1,10 @@
+---
+title: Authentication and Authorization
+doc_status: unreviewed
+last_reviewed:
+reviewed_by:
+review_notes:
+---
 # Authentication and Authorization
 
 The EO DataHub platform has different ways to authenticate for different use cases. This guide will describe the methodology for each.

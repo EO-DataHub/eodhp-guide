@@ -1,3 +1,10 @@
+---
+title: Sample Data Ingestion Process
+doc_status: unreviewed
+last_reviewed:
+reviewed_by:
+review_notes:
+---
 # Sample Data Ingestion Process
 
 This guide describes the process for ingesting sample STAC catalog data into the EODHP system. The workflow involves uploading STAC metadata files to S3, triggering a harvest process via Pulsar messages, and copying the actual data files.

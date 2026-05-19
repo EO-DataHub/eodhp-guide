@@ -1,3 +1,10 @@
+---
+title: 3.3 Messaging System
+doc_status: unreviewed
+last_reviewed:
+reviewed_by:
+review_notes:
+---
 ### 3.3 Messaging System
 
 Messaging pervades system structure, allowing components to collaborate with loose coupling. It provides scalability and higher availability, for example by allowing multiple instances of services to operate independently by processing the same messages. It allows greater extensibility and replaceability of components. It makes development of components more independent so that multiple sub-teams can contribute to different areas simultaneously and release at different times. 

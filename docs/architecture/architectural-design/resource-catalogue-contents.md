@@ -1,3 +1,10 @@
+---
+title: 3.5 Resource Catalogue Contents
+doc_status: unreviewed
+last_reviewed:
+reviewed_by:
+review_notes:
+---
 ### 3.5 Resource Catalogue Contents
 
 #### 3.5.1 Catalogue Paths

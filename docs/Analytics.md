@@ -1,3 +1,10 @@
+---
+title: EODH Analytics Guide
+doc_status: unreviewed
+last_reviewed:
+reviewed_by:
+review_notes:
+---
 # EODH Analytics Guide
 
 ## Google Analytics Integration

@@ -1,3 +1,10 @@
+---
+title: 3.7 Jupyter
+doc_status: unreviewed
+last_reviewed:
+reviewed_by:
+review_notes:
+---
 ### 3.7 Jupyter
 
 ```puml

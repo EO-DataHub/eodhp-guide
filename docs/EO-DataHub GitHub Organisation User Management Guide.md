@@ -1,3 +1,10 @@
+---
+title: How to Manage Users in the EODH GitHub Organisation
+doc_status: unreviewed
+last_reviewed:
+reviewed_by:
+review_notes:
+---
 # How to Manage Users in the EODH GitHub Organisation
 
 **Organisation:** [github.com/EO-DataHub](https://github.com/EO-DataHub)  

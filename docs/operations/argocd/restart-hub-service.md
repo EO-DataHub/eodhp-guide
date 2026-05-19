@@ -1,3 +1,10 @@
+---
+title: Restart a Hub Service using ArgoCD
+doc_status: unreviewed
+last_reviewed:
+reviewed_by:
+review_notes:
+---
 # Restart a Hub Service using ArgoCD
 
 ## Purpose

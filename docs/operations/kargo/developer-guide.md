@@ -1,3 +1,10 @@
+---
+title: Kargo Developer Guide
+doc_status: unreviewed
+last_reviewed:
+reviewed_by:
+review_notes:
+---
 # Kargo Developer Guide
 
 ## TL;DR -- Quick Deployment Guide

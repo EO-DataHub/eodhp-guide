@@ -1,3 +1,10 @@
+---
+title: 4. CLOUD ARCHITECTURE
+doc_status: unreviewed
+last_reviewed:
+reviewed_by:
+review_notes:
+---
 ## 4. CLOUD ARCHITECTURE
 
 The EO Data Hub Platform is hosted in Amazon Web Services (AWS). One AWS account is used for development and another for staging (user acceptance testing) and production. 

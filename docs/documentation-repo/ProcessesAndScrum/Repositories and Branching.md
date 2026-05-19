@@ -1,4 +1,10 @@
-
+---
+title: Software Repositories
+doc_status: unreviewed
+last_reviewed:
+reviewed_by:
+review_notes:
+---
 We use one repository per component (not a monorepo). Two types of repository are defined, with different branching strategies.
 
 

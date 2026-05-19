@@ -1,3 +1,10 @@
+---
+title: Rotating LinkerD Trust Anchor
+doc_status: unreviewed
+last_reviewed:
+reviewed_by:
+review_notes:
+---
 # Rotating LinkerD Trust Anchor
 
 ## Purpose

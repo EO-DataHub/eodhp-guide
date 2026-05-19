@@ -1,3 +1,10 @@
+---
+title: "5. OPEN-SOURCE SOFTWARE REUSE"
+doc_status: unreviewed
+last_reviewed:
+reviewed_by:
+review_notes:
+---
 ## 5. OPEN-SOURCE SOFTWARE REUSE
 
 This section identifies the most important open-source software used in the system and their respective licences.

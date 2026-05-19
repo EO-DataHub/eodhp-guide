@@ -1,3 +1,10 @@
+---
+title: EO Data Hub Platform System Design and Architecture Roadmap
+doc_status: unreviewed
+last_reviewed:
+reviewed_by:
+review_notes:
+---
 # EO Data Hub Platform System Design and Architecture Roadmap
 
 This section splits the authoritative architecture design publication into MkDocs chapters. Keep the note below aligned with Drive/SharePoint when the canonical document changes.

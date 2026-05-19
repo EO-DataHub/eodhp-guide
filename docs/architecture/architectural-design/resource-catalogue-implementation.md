@@ -1,3 +1,10 @@
+---
+title: 3.4 Resource Catalogue Implementation
+doc_status: unreviewed
+last_reviewed:
+reviewed_by:
+review_notes:
+---
 ### 3.4 Resource Catalogue Implementation
 
 The Resource Catalogue can be considered in four layers: services, ingest, transform and harvest. Harvesters, transformers and ingesters are known together as the harvest pipeline. Harvesters obtain catalogue metadata from its original sources, transformers modify it, ingesters load it into services and services provide functionality to users. 

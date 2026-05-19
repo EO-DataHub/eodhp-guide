@@ -1,3 +1,10 @@
+---
+title: "instructions are for prod workspace, update as necessary for other workspaces"
+doc_status: unreviewed
+last_reviewed:
+reviewed_by:
+review_notes:
+---
 ## Terraform
 
 The [Terraform CLI](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli), [kubectl](https://kubernetes.io/docs/reference/kubectl/), and [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/) are required to deploy the infrastructure.

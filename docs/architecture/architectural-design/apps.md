@@ -1,3 +1,10 @@
+---
+title: 3.12 Apps
+doc_status: unreviewed
+last_reviewed:
+reviewed_by:
+review_notes:
+---
 ### 3.12 Apps
 
 Apps are user-provided software that integrate with EODH in some fashion. An app provided by one user may act on behalf of another, it’s ‘end user’. 

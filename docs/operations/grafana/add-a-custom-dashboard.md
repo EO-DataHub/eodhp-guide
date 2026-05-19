@@ -1,3 +1,10 @@
+---
+title: Adding a Custom Dashboard to Grafana
+doc_status: unreviewed
+last_reviewed:
+reviewed_by:
+review_notes:
+---
 # Adding a Custom Dashboard to Grafana
 
 ## Purpose

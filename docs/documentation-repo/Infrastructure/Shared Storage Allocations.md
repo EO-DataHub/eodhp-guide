@@ -1,3 +1,10 @@
+---
+title: Shared Storage Allocations
+doc_status: unreviewed
+last_reviewed:
+reviewed_by:
+review_notes:
+---
 # Shared Storage Allocations
 
 EODHP needs various object stores and shared file systems, which may be allocated by Terraform, manually or automatically by the platform. For practicality and due to quotas in AWS some of these will be shared.

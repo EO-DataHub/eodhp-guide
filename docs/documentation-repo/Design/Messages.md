@@ -1,3 +1,10 @@
+---
+title: Pulsar Messages
+doc_status: unreviewed
+last_reviewed:
+reviewed_by:
+review_notes:
+---
 # Pulsar Messages
 
 Python definitions for some messages are present in eodhp-utils, in `eodhp_utils/pulsar/messages.py`. These are suitable for use with Pulsar Schemas.

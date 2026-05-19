@@ -1,3 +1,10 @@
+---
+title: Build and Publish a Documentation Site with Material for MkDocs
+doc_status: unreviewed
+last_reviewed:
+reviewed_by:
+review_notes:
+---
 # Build and Publish a Documentation Site with Material for MkDocs
 
 This document explains everything that I did to set up a Python environment, install and use the Material theme for MkDocs, and publish the wireframe documentation website using GitHub. The same setup can be used for future maintenance and development. It assumes basic familiarity with the command line and GitHub.

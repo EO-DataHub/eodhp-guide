@@ -1,3 +1,10 @@
+---
+title: EODH Repositories
+doc_status: unreviewed
+last_reviewed:
+reviewed_by:
+review_notes:
+---
 # EODH Repositories
 
 This document is a working inventory of repositories related to the EO Data Hub (EODH). Entries summarise each repository's purpose and, where applicable, note Docker images and ArgoCD locations to help operators and developers find the right code and deployment artifacts quickly.

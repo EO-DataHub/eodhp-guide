@@ -1,3 +1,10 @@
+---
+title: 3.6 Workspace Storage
+doc_status: unreviewed
+last_reviewed:
+reviewed_by:
+review_notes:
+---
 ### 3.6 Workspace Storage
 
 Workspaces may contain some number of private object and block stores. The architecture supports any number of these in each workspace, but the current implementation requires one of each type. Later extensions may allow multiple object and block stores so that different types may be offered, for example reduced-redundancy object stores or Lustre based block stores. 

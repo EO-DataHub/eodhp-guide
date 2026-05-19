@@ -1,3 +1,10 @@
+---
+title: 3. ARCHITECTURAL DESIGN
+doc_status: unreviewed
+last_reviewed:
+reviewed_by:
+review_notes:
+---
 ## 3. ARCHITECTURAL DESIGN
 
 This section presents our architectural design in the form of a high-level overview followed by subsections that provide details of the architecture components. 

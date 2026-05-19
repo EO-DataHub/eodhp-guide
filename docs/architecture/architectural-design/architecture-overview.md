@@ -1,3 +1,10 @@
+---
+title: 3.1 Architecture Overview
+doc_status: unreviewed
+last_reviewed:
+reviewed_by:
+review_notes:
+---
 ### 3.1 Architecture Overview
 
 The architecture adopts a microservice approach for Kubernetes deployment – which is designed for scalability and service resilience. 

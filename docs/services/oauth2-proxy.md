@@ -1,3 +1,10 @@
+---
+title: Oauth2 Proxy and Redis
+doc_status: unreviewed
+last_reviewed:
+reviewed_by:
+review_notes:
+---
 # Oauth2 Proxy and Redis
 
 ## Summary

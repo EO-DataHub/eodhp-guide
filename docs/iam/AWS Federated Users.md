@@ -1,3 +1,10 @@
+---
+title: AWS Federated Users
+doc_status: unreviewed
+last_reviewed:
+reviewed_by:
+review_notes:
+---
 # AWS Federated Users
 
 ## AWS OIDC Provider

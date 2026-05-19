@@ -1,3 +1,10 @@
+---
+title: Purchased Data Types
+doc_status: unreviewed
+last_reviewed:
+reviewed_by:
+review_notes:
+---
 # Purchased Data Types
 
 ## Overview

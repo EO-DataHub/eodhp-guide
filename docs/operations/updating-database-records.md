@@ -1,3 +1,10 @@
+---
+title: Updating Database Records
+doc_status: unreviewed
+last_reviewed:
+reviewed_by:
+review_notes:
+---
 # Updating Database Records
 There might be a reason for needing to access the database directly and querying data / updating records. For example, manually disabling a billing account, changing the account owner associated with workspaces etc.
 

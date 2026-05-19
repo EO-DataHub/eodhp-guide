@@ -1,3 +1,10 @@
+---
+title: Updating Kubernetes Cluster Version
+doc_status: unreviewed
+last_reviewed:
+reviewed_by:
+review_notes:
+---
 # Updating Kubernetes Cluster Version
 
 ## Purpose

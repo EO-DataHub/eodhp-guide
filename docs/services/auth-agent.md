@@ -1,3 +1,10 @@
+---
+title: Auth Agent
+doc_status: unreviewed
+last_reviewed:
+reviewed_by:
+review_notes:
+---
 # Auth Agent
 
 ## Summary

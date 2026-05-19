@@ -1,3 +1,10 @@
+---
+title: 3.10 Web Presence
+doc_status: unreviewed
+last_reviewed:
+reviewed_by:
+review_notes:
+---
 ### 3.10 Web Presence
 
 Many pieces of the web presence consist of UIs provided by other components, such as JupyterHub as described in 3.7 Jupyter, and we reuse existing interfaces as much as possible. In order to provide navigation, tie components into a cohesive site, provide static content and serve as a launch-point for client-side apps, an instance of the Wagtail CMS will be installed. 

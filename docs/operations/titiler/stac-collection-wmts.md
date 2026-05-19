@@ -1,3 +1,10 @@
+---
+title: Adding STAC Collection to TiTiler WMTS using the Renders Extension
+doc_status: unreviewed
+last_reviewed:
+reviewed_by:
+review_notes:
+---
 # Adding STAC Collection to TiTiler WMTS using the Renders Extension
 
 ## Purpose

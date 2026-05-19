@@ -1,3 +1,10 @@
+---
+title: Workflow Output Processing
+doc_status: unreviewed
+last_reviewed:
+reviewed_by:
+review_notes:
+---
 # Workflow Output Processing
 
 This proposes a way to map from the STAC records produced by workflows to records created in the catalogue in a way which allows simple workflows not to care about catalogue structure and more complex ones to control where exactly the output will go. Note that this proposal is not currently fully implemented.

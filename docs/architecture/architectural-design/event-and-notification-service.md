@@ -1,3 +1,10 @@
+---
+title: 3.11 Event and Notification Service (ENS)
+doc_status: unreviewed
+last_reviewed:
+reviewed_by:
+review_notes:
+---
 ### 3.11 Event and Notification Service (ENS)
 
 Argo Events and Argo Workflows are installed as part of the incomplete ENS. Using Kubernetes custom resources, event sources and sensors can be configured which receive event triggers and trigger downstream actions. The possible event sources include GitHub and GitLab webhooks, Pulsar messages and calendar events. The actions that can be triggered include Argo Workflows and Kubernetes Jobs. 

@@ -1,3 +1,10 @@
+---
+title: EO DataHub Platform Guide
+doc_status: unreviewed
+last_reviewed:
+reviewed_by:
+review_notes:
+---
 # EO DataHub Platform Guide
 
 This contains guides to practical aspects of operating and developing the EO DataHub.

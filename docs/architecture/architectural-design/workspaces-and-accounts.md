@@ -1,3 +1,10 @@
+---
+title: 3.2 Workspaces and Accounts
+doc_status: unreviewed
+last_reviewed:
+reviewed_by:
+review_notes:
+---
 ### 3.2 Workspaces and Accounts
 
 #### 3.2.1 Workspaces Concept
