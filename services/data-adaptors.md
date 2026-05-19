@@ -19,6 +19,12 @@ Each adaptor interfaces with its respective provider to place an order for a sin
 - Container image:
   - `public.ecr.aws/eodh/planet-adaptor`
 
+**Open Cosmos:**
+- Container image:
+  - `public.ecr.aws/eodh/open-cosmos-adaptor`
+- Documentation:
+  - [Open Cosmos Commercial Data Adaptor](open-cosmos-commercial-adaptor.md)
+
 ### Dependent Services
 
 There are no services that depend on the adaptors.
