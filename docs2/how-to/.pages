@@ -1,0 +1,10 @@
+title: How-to guides
+
+nav:
+  - Overview: index.md
+  - Deployments: deployments
+  - Kubernetes and GitOps: kubernetes-gitops
+  - Observability and logging: observability-logging
+  - Data and catalogues: data-and-catalogues
+  - Identity and access: identity-access
+  - Notebooks and workspaces: notebooks-and-workspaces

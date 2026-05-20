@@ -5,3 +5,4 @@ venv/
 .venv/
 uv.lock
 site/
+.cursor/

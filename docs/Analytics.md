@@ -1,9 +1,9 @@
 ---
 title: EODH Analytics Guide
 doc_status: unreviewed
-last_reviewed: 2026-05-19
+last_reviewed: 2026-05-20
 reviewed_by: geodowd
-review_notes: Needs to be moved into a folder
+review_notes: "Needs to be moved into a folder and split up"
 ---
 # EODH Analytics Guide
 
