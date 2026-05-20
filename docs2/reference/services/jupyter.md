@@ -1,15 +1,15 @@
 ---
 title: Jupyter Notebooks
-doc_status: moved
+doc_status: ok
 last_reviewed:
 reviewed_by:
-review_notes:
+review_notes: Migrated from docs/services/jupyter.md.
 ---
 # Jupyter Notebooks
 
 ## Summary
 
-The JupyterHub allows hub users to perform data analysis server side in the platform. JupyuterHub provides an web UI to start user notebooks. Notebooks are scoped to workspaces, allowing access to workspace data.
+The JupyterHub allows hub users to perform data analysis server side in the platform. JupyterHub provides a web UI to start user notebooks. Notebooks are scoped to workspaces, allowing access to workspace data.
 
 Users can choose from a range of notebook servers to perform their analysis in. Through the notebook they can access files in the workspace file and S3 storage through the Jupyter file browser.
 
@@ -50,14 +50,16 @@ To stop service, the service must be removed from ArgoCD configuration.
 
 ### Backups
 
-Jupyter manages its own SQLite database as part of its deployment, which is in a self mounted Kubernetes volume. Even if this were to perish, no significant state is lost as user's are automatically added back into the database when they successfully log in through the EO DataHub IAM.
+Jupyter manages its own SQLite database as part of its deployment, which is in a self mounted Kubernetes volume. Even if this were to perish, no significant state is lost as users are automatically added back into the database when they successfully log in through the EO DataHub IAM.
 
 Workspace data is mounted from EFS and S3 stores and do not require to be backed up by Jupyter.
 
 ## Development
 
-JupyterHub is an 3rd-party open-source project, https://github.com/jupyterhub/jupyterhub. Stock images are available at quay.io/jupyterhub/k8s-hub.
+JupyterHub is a 3rd-party open-source project, https://github.com/jupyterhub/jupyterhub. Stock images are available at quay.io/jupyterhub/k8s-hub.
 
-This project has developed custom hub image for Jupyter, which is managed at https://github.com/EO-DataHub/eodh-jupyter-images. This custom image is published to AWS ECR public.ecr.aws/eodh/eodh-jupyter-hub. The custom image includes a custom auth module to allow for workspace scoped Jupyter notebooks. New hub images can be created by released by following README.md in the repo for the _hub/_ image.
+This project has developed custom hub image for Jupyter, which is managed at https://github.com/EO-DataHub/eodh-jupyter-images. This custom image is published to AWS ECR public.ecr.aws/eodh/eodh-jupyter-hub. The custom image includes a custom auth module to allow for workspace scoped Jupyter notebooks. New hub images can be created by releasing following README.md in the repo for the _hub/_ image.
 
 Updates to the custom JupyterHub plugins can be made in https://github.com/EO-DataHub/eodh-jpyauth repo and incorporated into new eodh-jupyter-images.
+
+**Related:** [Releasing new notebook images](../../how-to/notebooks-and-workspaces/releasing-new-notebook-images.md).

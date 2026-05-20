@@ -1,9 +1,9 @@
 ---
 title: Build and Publish a Documentation Site with Material for MkDocs
-doc_status: moved
+doc_status: unreviewed
 last_reviewed:
 reviewed_by:
-review_notes:
+review_notes: Migrated from docs/services/documentation-site.md.
 ---
 # Build and Publish a Documentation Site with Material for MkDocs
 

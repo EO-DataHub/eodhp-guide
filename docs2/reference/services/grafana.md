@@ -1,9 +1,9 @@
 ---
 title: Grafana
-doc_status: moved
+doc_status: ok
 last_reviewed:
 reviewed_by:
-review_notes:
+review_notes: Migrated from docs/services/grafana.md.
 ---
 # Grafana
 
@@ -21,7 +21,7 @@ None
 
 ### Configuration
 
-Grafana is configured in [ArgoCD deployment repo](https://github.com/EO-DataHub/eodhp-argocd-deployment) repository, apps/grafana directory.
+Grafana is configured in the [ArgoCD deployment repo](https://github.com/EO-DataHub/eodhp-argocd-deployment), `apps/grafana` directory.
 
 ### Control
 
@@ -32,3 +32,5 @@ To stop service, the service must be removed from ArgoCD configuration.
 ### Dependencies
 
 Prometheus and Keycloak.
+
+**Related:** [Monitor resources](../../how-to/observability-logging/monitor-resources.md), [Add a custom Grafana dashboard](../../how-to/observability-logging/add-a-custom-dashboard.md).

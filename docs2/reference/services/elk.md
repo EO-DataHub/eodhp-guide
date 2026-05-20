@@ -1,9 +1,9 @@
 ---
 title: ELK / Elastic Stack
-doc_status: moved
+doc_status: ok
 last_reviewed:
 reviewed_by:
-review_notes:
+review_notes: Migrated from docs/services/elk.md.
 ---
 # ELK / Elastic Stack
 
@@ -21,7 +21,7 @@ None
 
 ### Configuration
 
-The Elastic Stack is configured in [ArgoCD deployment repo](https://github.com/EO-DataHub/eodhp-argocd-deployment) repository, apps/elk directory.
+The Elastic Stack is configured in the [ArgoCD deployment repo](https://github.com/EO-DataHub/eodhp-argocd-deployment), `apps/elk` directory.
 
 ### Control
 
@@ -32,3 +32,5 @@ To stop service, the service must be removed from ArgoCD configuration.
 ### Dependencies
 
 None
+
+**Related:** [Access Kibana logs](../../how-to/observability-logging/access-kibana-logs.md), [Discover logs](../../how-to/observability-logging/discover-logs.md).

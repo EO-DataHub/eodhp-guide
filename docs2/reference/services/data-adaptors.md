@@ -1,9 +1,9 @@
 ---
 title: Data Adaptors
-doc_status: moved
+doc_status: ok
 last_reviewed:
 reviewed_by:
-review_notes:
+review_notes: Migrated from docs/services/data-adaptors.md.
 ---
 # Data Adaptors
 

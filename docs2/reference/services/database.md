@@ -1,9 +1,9 @@
 ---
 title: Database
-doc_status: moved
+doc_status: ok
 last_reviewed:
 reviewed_by:
-review_notes:
+review_notes: Migrated from docs/services/database.md.
 ---
 # Database
 
@@ -24,7 +24,7 @@ Databases are then defined in the base directory, including configmaps to define
 
 ### Dependent Services
 
-Many services rely on databases being created and maintained, so if this services fails, there a re a number of dependent services that may face issues:
+Many services rely on databases being created and maintained, so if this service fails, there are a number of dependent services that may face issues:
 - Workflow Runner - stores workflow details and request information, handled by the ADES
 - Auth Agent
 - Keycloak
@@ -50,7 +50,7 @@ To restart the controller service run `kubectl rollout restart -n databases depl
 You should not delete any databases in this namespace, as this can cause data loss.
 
 ### Client Access
-If you need to connect directly to the Postgres SQL database (e.g. for debugging or manual queries), you can do so using a number of different clients, e.g. PGAdmin. The database credentials are stored in a Kubernetes secret. 
+If you need to connect directly to the Postgres SQL database (e.g., for debugging or manual queries), you can do so using a number of different clients, e.g. PGAdmin. The database credentials are stored in a Kubernetes secret. 
 
 To extract the credentials apply the following command within the cluster:
 ```bash 

@@ -10,7 +10,7 @@ review_notes: "Copied from docs/operations/updating-database-records.md"
 
 There might be a reason for needing to access the database directly and querying data / updating records. For example, manually disabling a billing account, changing the account owner associated with workspaces etc.
 
-Please see [Database client access details](../../../docs/services/database.md#client-access) for more information on connecting to one of the platform's databases.
+Please see [Database — client access](../../reference/services/database.md#client-access) for more information on connecting to one of the platform's databases.
 
 ### Update Billing Account Owner
 

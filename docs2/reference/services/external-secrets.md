@@ -1,9 +1,9 @@
 ---
 title: External Secrets
-doc_status: moved
+doc_status: ok
 last_reviewed:
 reviewed_by:
-review_notes:
+review_notes: Migrated from docs/services/external-secrets.md.
 ---
 # External Secrets
 
@@ -24,7 +24,7 @@ Once secrets have been imported and the cluster is running these services no lon
 
 ### Configuration
 
-External Secrets is configured in [ArgoCD deployment repo](https://github.com/EO-DataHub/eodhp-argocd-deployment) repository, apps/external-secrets directory.
+External Secrets is configured in the [ArgoCD deployment repo](https://github.com/EO-DataHub/eodhp-argocd-deployment), `apps/external-secrets` directory.
 
 ### Control
 

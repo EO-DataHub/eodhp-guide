@@ -14,6 +14,16 @@ Migrate the whole directory:
 | Legacy | `docs2` page |
 |--------|----------------|
 | `docs/services/accounting.md` | [accounting.md](accounting.md) (migrated) |
+| `docs/services/argo-workflows-events.md` | [argo-workflows-events.md](argo-workflows-events.md) (migrated) |
+| `docs/services/auth-agent.md` | [auth-agent.md](auth-agent.md) (migrated) |
+| `docs/services/data-adaptors.md` | [data-adaptors.md](data-adaptors.md) (migrated) |
+| `docs/services/database.md` | [database.md](database.md) (migrated) |
+| `docs/services/elk.md` | [elk.md](elk.md) (migrated) |
+| `docs/services/external-secrets.md` | [external-secrets.md](external-secrets.md) (migrated) |
+| `docs/services/grafana.md` | [grafana.md](grafana.md) (migrated) |
+| `docs/services/jupyter.md` | [jupyter.md](jupyter.md) (migrated) |
+| `docs/services/keycloak.md` | [keycloak.md](keycloak.md) (migrated) |
+| `docs/services/linkerd.md` | [linkerd.md](linkerd.md) (migrated) |
 
 After files live here:
 

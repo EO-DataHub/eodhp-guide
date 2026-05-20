@@ -1,9 +1,9 @@
 ---
 title: Keycloak
-doc_status: moved
+doc_status: ok
 last_reviewed:
 reviewed_by:
-review_notes:
+review_notes: Migrated from docs/services/keycloak.md.
 ---
 # Keycloak
 
@@ -21,7 +21,7 @@ Keycloak is the OIDC IdP for the platform. It is the authentication service and 
 
 ### Dependent Services
 
-- Oauth2 Proxy will fail authenticate requests
+- Oauth2 Proxy will fail to authenticate requests
 - Sign-in to hub will fail
 - Keycloak admin panel will be unavailable
 - Any service that calls Keycloak API will fail (e.g. Auth Agent, Workflow Runner, Workspace Services)
@@ -36,7 +36,7 @@ Keycloak runs as a stateful set, `keycloak`, in Kubernetes in the `keycloak` nam
 
 ### Configuration
 
-Keycloak is configured in [ArgoCD deployment repo](https://github.com/EO-DataHub/eodhp-argocd-deployment) repository, apps/keycloak directory.
+Keycloak is configured in the [ArgoCD deployment repo](https://github.com/EO-DataHub/eodhp-argocd-deployment), `apps/keycloak` directory.
 
 ### Control
 
@@ -61,3 +61,5 @@ This project has developed custom plugins for Keycloak, which are managed at htt
 New plugin versions, or updates to the Keycloak base image, should be released by creating a new release in https://github.com/EO-DataHub/eodh-keycloak using GitHub web UI with a version tag following the pattern v<keycloak-base-version>-<plugin-version> The commit tag will trigger the GitHub action release process.
 
 Alternately, releases may be published directly from the code repository with `make publish version=v26.0.4-1.2.3`, but this should only be used for test releases as the Git commit will not be properly tagged.
+
+**Related:** [Keycloak initial admin access](../../how-to/identity-access/keycloak-initial-admin-access.md).

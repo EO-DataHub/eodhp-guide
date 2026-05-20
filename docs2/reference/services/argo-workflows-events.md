@@ -1,9 +1,9 @@
 ---
 title: Argo Workflows and Argo Events.
-doc_status: moved
+doc_status: ok
 last_reviewed:
 reviewed_by:
-review_notes:
+review_notes: Migrated from docs/services/argo-workflows-events.md.
 ---
 # Argo Workflows and Argo Events.
 
@@ -19,7 +19,7 @@ Airbus harvesting depends on Argo Events to trigger it.
 
 ### Configuration
 
-They are configured in the [ArgoCD deployment repo](https://github.com/EO-DataHub/eodhp-argocd-deployment) repository, apps/argo-workflows and argo-events directories.
+They are configured in the [ArgoCD deployment repo](https://github.com/EO-DataHub/eodhp-argocd-deployment), under `apps/argo-workflows` and `apps/argo-events`.
 
 ### Control
 
