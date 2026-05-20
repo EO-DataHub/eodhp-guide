@@ -1,10 +1,11 @@
 ---
 title: ArgoCD Web UI
-doc_status: moved
+doc_status: ok
 last_reviewed:
 reviewed_by:
-review_notes:
+review_notes: "Copied from docs/operations/argocd/web-ui.md"
 ---
+
 # ArgoCD Web UI
 
 ## Purpose

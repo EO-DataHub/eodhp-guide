@@ -1,10 +1,11 @@
 ---
 title: Restart a Hub Service using ArgoCD
-doc_status: moved
+doc_status: ok
 last_reviewed:
 reviewed_by:
-review_notes:
+review_notes: "Copied from docs/operations/argocd/restart-hub-service.md"
 ---
+
 # Restart a Hub Service using ArgoCD
 
 ## Purpose
@@ -17,7 +18,7 @@ Use this procedure when a manual restart of a hub service is required, for insta
 
 ## Operation
 
-This procedure assumes you already havev access to the ArgoCD web UI.
+This procedure assumes you already have access to the Argo CD web UI. See [Argo CD web UI](argocd-web-ui.md) for access instructions.
 
 1. From the /applications page in the ArgoCD web UI, click into the ArgoCD app containing the service you wish to restart.
 2. Find the service to restart in the dependency tree
@@ -29,4 +30,4 @@ This procedure assumes you already havev access to the ArgoCD web UI.
 
 ## Useful Information
 
-- Care should be taken when restarting platform services. It is recommended only thos sufficiently familiar with the platform operation carry out this procedure.
+- Care should be taken when restarting platform services. It is recommended only those sufficiently familiar with the platform operation carry out this procedure.

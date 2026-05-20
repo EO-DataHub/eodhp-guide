@@ -9,13 +9,13 @@ Cluster operations tied to Kubernetes, Argo CD, Kargo, and similar tooling.
 
 Migrate from `docs/operations/`:
 
-| Source | Suggested filename here |
-|--------|-------------------------|
-| `operations/argocd/web-ui.md` | `argocd-web-ui.md` |
-| `operations/argocd/restart-hub-service.md` | `argocd-restart-hub-service.md` |
-| `operations/kargo/developer-guide.md` | `kargo-developer-guide.md` |
-| `operations/maintenance/updating-cluster-kubernetes-version.md` | `updating-cluster-kubernetes-version.md` |
-| `operations/maintenance/rotating-linkerd-trust-anchor.md` | `rotating-linkerd-trust-anchor.md` |
+| Source | Notes |
+|--------|-------|
+| `operations/argocd/web-ui.md` | [argocd-web-ui.md](argocd-web-ui.md) (migrated) |
+| `operations/argocd/restart-hub-service.md` | [argocd-restart-hub-service.md](argocd-restart-hub-service.md) (migrated) |
+| `operations/kargo/developer-guide.md` | `kargo-developer-guide.md` (pending) |
+| `operations/maintenance/updating-cluster-kubernetes-version.md` | `updating-cluster-kubernetes-version.md` (pending) |
+| `operations/maintenance/rotating-linkerd-trust-anchor.md` | `rotating-linkerd-trust-anchor.md` (pending) |
 
 Migrated from `docs/Development.md` (tasks):
 
