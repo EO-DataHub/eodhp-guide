@@ -17,4 +17,11 @@ Migrate from `docs/operations/`:
 | `operations/maintenance/updating-cluster-kubernetes-version.md` | `updating-cluster-kubernetes-version.md` |
 | `operations/maintenance/rotating-linkerd-trust-anchor.md` | `rotating-linkerd-trust-anchor.md` |
 
-Link to narrative context (GitOps branch model, warehouses) from [Explanation: Development and governance](../../explanation/development-and-governance/index.md).
+Migrated from `docs/Development.md` (tasks):
+
+| Guide | Notes |
+|-------|-------|
+| [Deploy via Argo CD dev branch](deploy-via-argocd-dev-branch.md) | Dev cluster workflow |
+| [Debug EKS nodes (SSH via Instance Connect)](debug-eks-node-ssh-instance-connect.md) | EC2 Instance Connect against private subnets |
+
+Link to narrative context (GitOps branch model, warehouses) from [GitOps branching and Kargo promotion](../../explanation/development-and-governance/gitops-branching-and-kargo-promotion.md) ([section index](../../explanation/development-and-governance/index.md)).

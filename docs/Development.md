@@ -1,8 +1,8 @@
 ---
 title: EODHP Development Guide
-doc_status: unreviewed
-last_reviewed:
-reviewed_by:
+doc_status: moved
+last_reviewed: 2026-05-20
+reviewed_by: geodowd
 review_notes:
 ---
 # EODHP Development Guide

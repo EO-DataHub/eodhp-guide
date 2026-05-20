@@ -1,9 +1,9 @@
 ---
-title: "Platform Deployment"
-doc_status: moved
-last_reviewed: 2026-05-20
-reviewed_by: geodowd
-review_notes: Moved across
+title: Platform deployment
+doc_status: needs-verification
+last_reviewed:
+reviewed_by:
+review_notes: "Instructions often use prod workspace; adapt for others. Copied from docs/Platform Deployment.md."
 ---
 ## Terraform
 
@@ -237,7 +237,7 @@ make deploy env=<env>
 
 Applications use [Kargo](https://kargo.io) for progressive delivery. Each application tracks a dedicated branch in the format `kargo/<app-name>/<env>` (e.g., `kargo/accounting-service/test`). When Kargo promotes an application, it renders the manifests from `main`, commits them to the `kargo/<app>/<env>` branch, and ArgoCD syncs from that branch.
 
-For full details on how Kargo and ArgoCD work together, warehouses, stages, promotion pipelines, and developer workflows, see the [Kargo Developer Guide](operations/kargo/developer-guide.md).
+For full details on how Kargo and ArgoCD work together, warehouses, stages, promotion pipelines, and developer workflows, see the [Kargo Developer Guide](../../../docs/operations/kargo/developer-guide.md).
 
 ### Keycloak EODHP Realm Configuration
 

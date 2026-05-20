@@ -11,6 +11,6 @@ Migrate and split carefully:
 
 | Source | Action |
 |--------|--------|
-| `docs/Development.md` | Move **conceptual** sections here (branch model narrative, warehouses overview). Move **tasks** into [Kubernetes and GitOps](../../how-to/kubernetes-gitops/index.md) alongside Kargo docs. |
+| `docs/Development.md` | **Concept:** [GitOps branching and Kargo promotion](gitops-branching-and-kargo-promotion.md). **PR workflow:** [Developer branching and PR workflow](../../contributing/processes/development-branching-and-pr-workflow.md). **Tasks:** [Deploy via dev branch](../../how-to/kubernetes-gitops/deploy-via-argocd-dev-branch.md), [Debug EKS nodes](../../how-to/kubernetes-gitops/debug-eks-node-ssh-instance-connect.md) under Kubernetes and GitOps. |
 
 Link out to procedural detail rather than nesting full runbooks inside this quadrant.
