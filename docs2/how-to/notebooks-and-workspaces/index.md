@@ -11,6 +11,6 @@ Migrate from `docs/operations/`:
 
 | Source | Suggested filename here |
 |--------|-------------------------|
-| `operations/notebooks/releasing-new-notebook-images.md` | `releasing-new-notebook-images.md` |
+| `operations/notebooks/releasing-new-notebook-images.md` | [releasing-new-notebook-images.md](releasing-new-notebook-images.md) (migrated) |
 
 Design of workspaces belongs in **Explanation → Architecture** (`architectural-design/workspaces-and-accounts.md`, etc.). Factual descriptions of deployed components belong in **Reference → Services**.

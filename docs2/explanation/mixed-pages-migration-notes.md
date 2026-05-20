@@ -16,5 +16,6 @@ Some existing Markdown mixes Diátaxis modes. During migration **split**, **cros
 | `docs/services/*.md` | Some service pages drift into architectural essays. | Top of page: factual reference; relocate long rationale to explanation (architecture/design-and-decisions) with back-links. |
 | `docs/operations/maintenance/updating-cluster-kubernetes-version.md` | **Purpose** block explains upgrade policy; remainder is procedural. | Stay one how-to under [Deployments](../how-to/deployments/updating-cluster-kubernetes-version.md); headings already separate rationale from steps. |
 | `docs/operations/maintenance/rotating-linkerd-trust-anchor.md` | Failure-mode paragraph is risk context ahead of rollout steps. | Stay one how-to under [Kubernetes and GitOps](../how-to/kubernetes-gitops/rotating-linkerd-trust-anchor.md). |
+| `docs/operations/notebooks/releasing-new-notebook-images.md` | Short Purpose + Jupyter/Argo context before concrete Git/Makefile/Helm steps. | Single how-to under [Notebooks and workspaces](../how-to/notebooks-and-workspaces/releasing-new-notebook-images.md). |
 
 Revisit after moves: search for long **Note**/`!!!` sections that explain rather than prescribe—those belong in Explanation.
