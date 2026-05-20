@@ -1,10 +1,11 @@
 ---
-title: Keycloak Initial Admin Access
-doc_status: moved
+title: Keycloak initial admin access
+doc_status: ok
 last_reviewed:
 reviewed_by:
-review_notes:
+review_notes: "Copied from docs/operations/keycloak/initial-admin-access.md"
 ---
+
 # Keycloak Initial Admin Access
 
 ## Purpose
@@ -40,3 +41,7 @@ Execute this procedure when a fresh installation of Keycloak has occurred.
 ## Useful Information
 
 - The default Keycloak user should be deleted after initial access has been achieved. This procedure will only allow access while the default user still exists.
+
+**Related:** During a full cluster bring-up these steps overlap with **[Platform deployment](../deployments/platform-deployment.md)** (Keycloak subsection); use this guide as the standalone IAM runbook when you already have cluster access.
+
+**Context:** [Authentication and authorization](../../explanation/iam/authentication-and-authorization.md).
