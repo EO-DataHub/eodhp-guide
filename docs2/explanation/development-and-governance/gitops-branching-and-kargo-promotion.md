@@ -31,7 +31,7 @@ Each environment reads from a dedicated `kargo/<app>/<env>` branch (e.g. `kargo/
 
 **Important:** Container image versions and Helm chart versions are managed by Kargo warehouses, which automatically detect new tags and versions from their respective registries. Manually editing image tags or chart versions in the deployment repo will not deploy those versions — they will be overwritten on the next Kargo promotion. To deploy a new image or chart version, push the artifact to its registry and let Kargo pick it up (see the developer guide for details).
 
-For full details on Kargo warehouses, stages, promotion pipelines, and developer workflows (including deploying images and dev/feature branches), see the [Kargo Developer Guide](../../../docs/operations/kargo/developer-guide.md).
+For how Kargo and Argo CD fit together end-to-end, see [Kargo and Argo CD — design on EO Data Hub](kargo-argoc-integration.md). For warehouses, pipelines, overlays, and day-to-day developer tasks, see the [Kargo developer guide](../../how-to/kubernetes-gitops/kargo-developer-guide.md).
 
 ## Applications and packages
 

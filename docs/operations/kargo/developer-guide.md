@@ -1,6 +1,6 @@
 ---
 title: Kargo Developer Guide
-doc_status: unreviewed
+doc_status: moved
 last_reviewed:
 reviewed_by:
 review_notes:

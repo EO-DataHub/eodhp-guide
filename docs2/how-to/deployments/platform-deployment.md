@@ -237,7 +237,7 @@ make deploy env=<env>
 
 Applications use [Kargo](https://kargo.io) for progressive delivery. Each application tracks a dedicated branch in the format `kargo/<app-name>/<env>` (e.g., `kargo/accounting-service/test`). When Kargo promotes an application, it renders the manifests from `main`, commits them to the `kargo/<app>/<env>` branch, and ArgoCD syncs from that branch.
 
-For full details on how Kargo and ArgoCD work together, warehouses, stages, promotion pipelines, and developer workflows, see the [Kargo Developer Guide](../../../docs/operations/kargo/developer-guide.md).
+For how Kargo and Argo CD relate in this platform, see [Kargo and Argo CD — design on EO Data Hub](../../explanation/development-and-governance/kargo-argoc-integration.md); for warehouses, stages, overlays, and developer workflows, see the [Kargo developer guide](../../how-to/kubernetes-gitops/kargo-developer-guide.md).
 
 ### Keycloak EODHP Realm Configuration
 
