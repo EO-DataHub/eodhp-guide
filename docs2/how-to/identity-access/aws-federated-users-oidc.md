@@ -1,10 +1,11 @@
 ---
-title: AWS Federated Users
-doc_status: moved
+title: AWS federated users (OIDC and IAM)
+doc_status: ok
 last_reviewed:
 reviewed_by:
-review_notes:
+review_notes: "Copied from docs/iam/AWS Federated Users.md"
 ---
+
 # AWS Federated Users
 
 ## AWS OIDC Provider
@@ -181,3 +182,5 @@ Reference: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_session-tags.html
    Aggregate attribute values: No<br>
 7. Save
 8. You can evaluate a user token from Clients > {{your-client}} > Client scopes tab > Evaluate tab > select a user and Generate access token (right sidebar) to ensure the token appears as expected.
+
+**Context:** IAM clients and scopes in [Platform IAM — OIDC clients and scopes](../../explanation/iam/oidc-scope-design.md).

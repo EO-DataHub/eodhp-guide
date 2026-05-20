@@ -1,10 +1,11 @@
 ---
-title: Platform IAM
-doc_status: moved
+title: Platform IAM — OIDC clients and scopes
+doc_status: ok
 last_reviewed:
 reviewed_by:
-review_notes:
+review_notes: "Copied from docs/iam/OIDC Scope Design.md"
 ---
+
 # Platform IAM
 
 ## OIDC Clients
@@ -246,3 +247,5 @@ The scope also contains an additional AWS scope to allow for parameterised AWS p
   }
 }
 ```
+
+For how hub and workspace authentication use these primitives in practice, see [Authentication and authorization](authentication-and-authorization.md).

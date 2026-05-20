@@ -1,6 +1,6 @@
 ---
 title: Authentication and Authorization
-doc_status: unreviewed
+doc_status: moved
 last_reviewed:
 reviewed_by:
 review_notes:
