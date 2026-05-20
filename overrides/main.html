@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+  {% if page and page.meta and page.meta.doc_status %}
+    {% set status_raw = page.meta.doc_status | string | trim %}
+    {% if status_raw %}
+      {% set known = (
+        "unreviewed",
+        "ok",
+        "needs-update",
+        "outdated",
+        "needs-expansion",
+        "needs-verification",
+        "deprecated",
+        "remove-candidate"
+      ) %}
+      {% set slug = status_raw if status_raw in known else "unknown" %}
+      {% if status_raw == "ok" %}
+        {% set label = "OK" %}
+      {% else %}
+        {% set label =
+          (
+            status_raw
+            | replace("_", "-")
+            | replace("-", " ")
+            | trim
+            | title
+          )
+        %}
+      {% endif %}
+      <aside class="doc-status-row md-typeset" aria-label="Documentation review status">
+        <span class="doc-status-badge doc-status-badge--{{ slug }}">{{ label }}</span>
+      </aside>
+    {% endif %}
+  {% endif %}
+  {% include "partials/content.html" %}
+{% endblock %}

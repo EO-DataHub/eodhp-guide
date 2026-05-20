@@ -2,6 +2,7 @@ site_name: EO Data Hub Technical Guide
 site_author: Sparkgeo
 theme:
   name: material
+  custom_dir: overrides
   font:
     text: Fira Sans #Atkinson Hyperlegible
   logo: assets/icon_eodh_logo_white_grey.png
