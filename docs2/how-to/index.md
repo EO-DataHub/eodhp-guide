@@ -15,3 +15,4 @@ Migrate existing runbooks here from [`docs/operations/`](../docs/operations/) an
 - [Data and catalogues](data-and-catalogues/index.md) — STAC/Titiler, ingestion, selective DB fixes
 - [Identity and access](identity-access/index.md) — Keycloak bootstrap, IAM operations, elevated access
 - [Notebooks and workspaces](notebooks-and-workspaces/index.md) — Notebook images, workspace onboarding
+- [Analytics](analytics/index.md) — Google Analytics 4 audiences, dimensions, and exploration recipes

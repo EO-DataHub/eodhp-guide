@@ -15,6 +15,6 @@ Migrate into this tree:
 | Repositories catalogue | Root `docs/repositories.md` → `reference/repositories.md` |
 | [APIs](apis/index.md) | `docs/documentation-repo/APIs/` |
 | [Data](data/index.md) | `docs/data/` |
-| Analytics | Root `docs/Analytics.md` if primarily descriptive |
+| [Analytics (Google Analytics 4)](analytics-google-analytics.md) | Migrated from `docs/Analytics.md`; procedures under [How-to / Analytics](../how-to/analytics/index.md) |
 
 How-to routines stay under [How-to](../how-to/index.md).

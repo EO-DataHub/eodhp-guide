@@ -11,6 +11,7 @@ Migrate design and governance narrative material here—not step-by-step runbook
 
 Links:
 
+- [Google Analytics integration (GA4)](analytics-google-analytics-integration.md) — Frontend tracking strategy and coupling to routing
 - [Architecture](architecture/index.md)
 - [Design and decisions](design-and-decisions/index.md)
 - [Development and governance](development-and-governance/index.md)
