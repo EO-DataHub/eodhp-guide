@@ -1,0 +1,342 @@
+{
+    "type": "Feature",
+    "stac_version": "1.1.0",
+    "stac_extensions": [
+        "https://stac-extensions.github.io/eo/v2.0.0/schema.json",
+        "https://stac-extensions.github.io/view/v1.0.0/schema.json",
+        "https://stac-extensions.github.io/order/v1.1.0/schema.json"
+    ],
+    "id": "ds_phr1a_201805011119343_fr1_px_e000n52_0420_02024_7331855101",
+    "collection": "airbus_phr_data",
+    "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+            [
+                [
+                    0.08232526793512802,
+                    52.70336970520813
+                ],
+                [
+                    0.41983518481442755,
+                    52.70336970520813
+                ],
+                [
+                    0.41983518481442755,
+                    52.92098871762504
+                ],
+                [
+                    0.08232526793512802,
+                    52.92098871762504
+                ],
+                [
+                    0.08232526793512802,
+                    52.70336970520813
+                ]
+            ]
+        ]
+    },
+    "bbox": [
+        0.08232526793512802,
+        52.70336970520813,
+        0.41983518481442755,
+        52.92098871762504
+    ],
+    "properties": {
+        "title": "Order: DS_PHR1A_201805011119343_FR1_PX_E000N52_0420_02024 (Clipped)",
+        "datetime": "2018-05-01T11:20:11Z",
+        "created": "2025-11-24T15:16:23Z",
+        "updated": "2025-11-24T15:16:23Z",
+        "platform": "PHR1A",
+        "constellation": "PHR",
+        "access": [
+            "HTTPServer"
+        ],
+        "eo:cloud_cover": 0,
+        "eo:snow_cover": 0,
+        "view:azimuth": 179.958997933027,
+        "view:sun_azimuth": 165.8132235055896,
+        "view:sun_elevation": 51.8525142143962,
+        "view:incidence_angle": 13.17630557459951,
+        "acquisition_identifier": "DS_PHR1A_201805011119343_FR1_PX_E000N52_0420_02024",
+        "acquisition_station": "FR1",
+        "archive_identifier": "DS_PHR1A_201805011119343_FR1_PX_E000N52_0420_02024",
+        "archiving_center": "FCMUGC",
+        "format": "image/tiff",
+        "incidence_angle_across_track": -7.707319882957116,
+        "incidence_angle_along_track": -10.81493267363764,
+        "organisation_name": "AIRBUS DS GEO",
+        "parent_identifier": "DS_PHR1A_201805011119343_FR1_PX_E000N52_0420_02024",
+        "processing_center": "FCMUGC",
+        "processing_level": "ORTHO",
+        "processor_name": "DRS-MM V2.9",
+        "product_category": "image",
+        "product_type": "mono",
+        "production_status": "ARCHIVED",
+        "qualified": false,
+        "sensor_type": "OPTICAL",
+        "source_identifier": "DS_PHR1A_201805011119343_FR1_PX_E000N52_0420_02024",
+        "spectral_range": "VISIBLE",
+        "order:status": "succeeded",
+        "order_options": [
+            {
+                "productBundle": "General Use",
+                "coordinates": [
+                    [
+                        [
+                            0.08232526793512802,
+                            52.70336970520813
+                        ],
+                        [
+                            0.41983518481442755,
+                            52.70336970520813
+                        ],
+                        [
+                            0.41983518481442755,
+                            52.92098871762504
+                        ],
+                        [
+                            0.08232526793512802,
+                            52.92098871762504
+                        ],
+                        [
+                            0.08232526793512802,
+                            52.70336970520813
+                        ]
+                    ]
+                ],
+                "endUser": {
+                    "country": null,
+                    "endUserName": "pzaborowski"
+                },
+                "licence": "standard_1_5"
+            }
+        ],
+        "order:id": "7331855101",
+        "order:date": "2025-06-10T08:05:19.125959Z",
+        "published": "2025-06-10T16:59:06.577989Z",
+        "gsd_across_track": 0.7284804458578732,
+        "gsd_along_track": 0.731846766505243
+    },
+    "links": [
+        {
+            "rel": "self",
+            "type": "application/geo+json",
+            "href": "catalogs/commercial-data/catalogs/airbus/collections/airbus_phr_data/items/ds_phr1a_201805011119343_fr1_px_e000n52_0420_02024_7331855101.json"
+        },
+        {
+            "rel": "parent",
+            "type": "application/json",
+            "href": "catalogs/commercial-data/catalogs/airbus/collections/airbus_phr_data"
+        },
+        {
+            "rel": "collection",
+            "type": "application/json",
+            "href": "catalogs/commercial-data/catalogs/airbus/collections/airbus_phr_data"
+        }
+    ],
+    "assets": {
+        "delivery": {
+            "href": "https://exampleworkspace.eodatahub-workspaces.org.uk/files/workspaces-eodhp/commercial-data/airbus/airbus_phr_data/7331855101/DELIVERY.PDF",
+            "type": "application/pdf",
+            "title": "Delivery note"
+        },
+        "DIMAP": {
+            "href": "https://exampleworkspace.eodatahub-workspaces.org.uk/files/workspaces-eodhp/commercial-data/airbus/airbus_phr_data/7331855101/IMG_PHR1A_PMS-N_001/DIM_PHR1A_PMS-N_201805011120113_ORT_7331855101.XML",
+            "type": "text/xml",
+            "title": "Main product metadata file"
+        },
+        "thumbnail": {
+            "href": "https://exampleworkspace.eodatahub-workspaces.org.uk/files/workspaces-eodhp/commercial-data/airbus/airbus_phr_data/7331855101/IMG_PHR1A_PMS-N_001/ICON_PHR1A_PMS-N_201805011120113_ORT_7331855101.JPG",
+            "type": "image/jpeg",
+            "title": "Thumbnail raster file"
+        },
+        "georeference_R1C1": {
+            "href": "https://exampleworkspace.eodatahub-workspaces.org.uk/files/workspaces-eodhp/commercial-data/airbus/airbus_phr_data/7331855101/IMG_PHR1A_PMS-N_001/IMG_PHR1A_PMS-N_201805011120113_ORT_7331855101_R1C1.TFW",
+            "type": "application/octet-stream",
+            "title": "Simple assembling/georeferencing file, possibly tiled. Row (R) and Col (C) image tile indexes"
+        },
+        "primaryAsset_R1C1": {
+            "href": "https://exampleworkspace.eodatahub-workspaces.org.uk/files/workspaces-eodhp/commercial-data/airbus/airbus_phr_data/7331855101/IMG_PHR1A_PMS-N_001/IMG_PHR1A_PMS-N_201805011120113_ORT_7331855101_R1C1.TIF",
+            "type": "image/tiff",
+            "title": "Full resolution image file, possibly tiled. Row (R) and Col (C) image tile indexes"
+        },
+        "georeference_R1C2": {
+            "href": "https://exampleworkspace.eodatahub-workspaces.org.uk/files/workspaces-eodhp/commercial-data/airbus/airbus_phr_data/7331855101/IMG_PHR1A_PMS-N_001/IMG_PHR1A_PMS-N_201805011120113_ORT_7331855101_R1C2.TFW",
+            "type": "application/octet-stream",
+            "title": "Simple assembling/georeferencing file, possibly tiled. Row (R) and Col (C) image tile indexes"
+        },
+        "primaryAsset_R1C2": {
+            "href": "https://exampleworkspace.eodatahub-workspaces.org.uk/files/workspaces-eodhp/commercial-data/airbus/airbus_phr_data/7331855101/IMG_PHR1A_PMS-N_001/IMG_PHR1A_PMS-N_201805011120113_ORT_7331855101_R1C2.TIF",
+            "type": "image/tiff",
+            "title": "Full resolution image file, possibly tiled. Row (R) and Col (C) image tile indexes"
+        },
+        "georeference_R1C3": {
+            "href": "https://exampleworkspace.eodatahub-workspaces.org.uk/files/workspaces-eodhp/commercial-data/airbus/airbus_phr_data/7331855101/IMG_PHR1A_PMS-N_001/IMG_PHR1A_PMS-N_201805011120113_ORT_7331855101_R1C3.TFW",
+            "type": "application/octet-stream",
+            "title": "Simple assembling/georeferencing file, possibly tiled. Row (R) and Col (C) image tile indexes"
+        },
+        "primaryAsset_R1C3": {
+            "href": "https://exampleworkspace.eodatahub-workspaces.org.uk/files/workspaces-eodhp/commercial-data/airbus/airbus_phr_data/7331855101/IMG_PHR1A_PMS-N_001/IMG_PHR1A_PMS-N_201805011120113_ORT_7331855101_R1C3.TIF",
+            "type": "image/tiff",
+            "title": "Full resolution image file, possibly tiled. Row (R) and Col (C) image tile indexes"
+        },
+        "georeference_R2C1": {
+            "href": "https://exampleworkspace.eodatahub-workspaces.org.uk/files/workspaces-eodhp/commercial-data/airbus/airbus_phr_data/7331855101/IMG_PHR1A_PMS-N_001/IMG_PHR1A_PMS-N_201805011120113_ORT_7331855101_R2C1.TFW",
+            "type": "application/octet-stream",
+            "title": "Simple assembling/georeferencing file, possibly tiled. Row (R) and Col (C) image tile indexes"
+        },
+        "primaryAsset_R2C1": {
+            "href": "https://exampleworkspace.eodatahub-workspaces.org.uk/files/workspaces-eodhp/commercial-data/airbus/airbus_phr_data/7331855101/IMG_PHR1A_PMS-N_001/IMG_PHR1A_PMS-N_201805011120113_ORT_7331855101_R2C1.TIF",
+            "type": "image/tiff",
+            "title": "Full resolution image file, possibly tiled. Row (R) and Col (C) image tile indexes"
+        },
+        "georeference_R2C2": {
+            "href": "https://exampleworkspace.eodatahub-workspaces.org.uk/files/workspaces-eodhp/commercial-data/airbus/airbus_phr_data/7331855101/IMG_PHR1A_PMS-N_001/IMG_PHR1A_PMS-N_201805011120113_ORT_7331855101_R2C2.TFW",
+            "type": "application/octet-stream",
+            "title": "Simple assembling/georeferencing file, possibly tiled. Row (R) and Col (C) image tile indexes"
+        },
+        "primaryAsset_R2C2": {
+            "href": "https://exampleworkspace.eodatahub-workspaces.org.uk/files/workspaces-eodhp/commercial-data/airbus/airbus_phr_data/7331855101/IMG_PHR1A_PMS-N_001/IMG_PHR1A_PMS-N_201805011120113_ORT_7331855101_R2C2.TIF",
+            "type": "image/tiff",
+            "title": "Full resolution image file, possibly tiled. Row (R) and Col (C) image tile indexes"
+        },
+        "georeference_R2C3": {
+            "href": "https://exampleworkspace.eodatahub-workspaces.org.uk/files/workspaces-eodhp/commercial-data/airbus/airbus_phr_data/7331855101/IMG_PHR1A_PMS-N_001/IMG_PHR1A_PMS-N_201805011120113_ORT_7331855101_R2C3.TFW",
+            "type": "application/octet-stream",
+            "title": "Simple assembling/georeferencing file, possibly tiled. Row (R) and Col (C) image tile indexes"
+        },
+        "primaryAsset_R2C3": {
+            "href": "https://exampleworkspace.eodatahub-workspaces.org.uk/files/workspaces-eodhp/commercial-data/airbus/airbus_phr_data/7331855101/IMG_PHR1A_PMS-N_001/IMG_PHR1A_PMS-N_201805011120113_ORT_7331855101_R2C3.TIF",
+            "type": "image/tiff",
+            "title": "Full resolution image file, possibly tiled. Row (R) and Col (C) image tile indexes"
+        },
+        "georeference_R3C1": {
+            "href": "https://exampleworkspace.eodatahub-workspaces.org.uk/files/workspaces-eodhp/commercial-data/airbus/airbus_phr_data/7331855101/IMG_PHR1A_PMS-N_001/IMG_PHR1A_PMS-N_201805011120113_ORT_7331855101_R3C1.TFW",
+            "type": "application/octet-stream",
+            "title": "Simple assembling/georeferencing file, possibly tiled. Row (R) and Col (C) image tile indexes"
+        },
+        "primaryAsset_R3C1": {
+            "href": "https://exampleworkspace.eodatahub-workspaces.org.uk/files/workspaces-eodhp/commercial-data/airbus/airbus_phr_data/7331855101/IMG_PHR1A_PMS-N_001/IMG_PHR1A_PMS-N_201805011120113_ORT_7331855101_R3C1.TIF",
+            "type": "image/tiff",
+            "title": "Full resolution image file, possibly tiled. Row (R) and Col (C) image tile indexes"
+        },
+        "georeference_R3C2": {
+            "href": "https://exampleworkspace.eodatahub-workspaces.org.uk/files/workspaces-eodhp/commercial-data/airbus/airbus_phr_data/7331855101/IMG_PHR1A_PMS-N_001/IMG_PHR1A_PMS-N_201805011120113_ORT_7331855101_R3C2.TFW",
+            "type": "application/octet-stream",
+            "title": "Simple assembling/georeferencing file, possibly tiled. Row (R) and Col (C) image tile indexes"
+        },
+        "primaryAsset_R3C2": {
+            "href": "https://exampleworkspace.eodatahub-workspaces.org.uk/files/workspaces-eodhp/commercial-data/airbus/airbus_phr_data/7331855101/IMG_PHR1A_PMS-N_001/IMG_PHR1A_PMS-N_201805011120113_ORT_7331855101_R3C2.TIF",
+            "type": "image/tiff",
+            "title": "Full resolution image file, possibly tiled. Row (R) and Col (C) image tile indexes"
+        },
+        "georeference_R3C3": {
+            "href": "https://exampleworkspace.eodatahub-workspaces.org.uk/files/workspaces-eodhp/commercial-data/airbus/airbus_phr_data/7331855101/IMG_PHR1A_PMS-N_001/IMG_PHR1A_PMS-N_201805011120113_ORT_7331855101_R3C3.TFW",
+            "type": "application/octet-stream",
+            "title": "Simple assembling/georeferencing file, possibly tiled. Row (R) and Col (C) image tile indexes"
+        },
+        "primaryAsset_R3C3": {
+            "href": "https://exampleworkspace.eodatahub-workspaces.org.uk/files/workspaces-eodhp/commercial-data/airbus/airbus_phr_data/7331855101/IMG_PHR1A_PMS-N_001/IMG_PHR1A_PMS-N_201805011120113_ORT_7331855101_R3C3.TIF",
+            "type": "image/tiff",
+            "title": "Full resolution image file, possibly tiled. Row (R) and Col (C) image tile indexes"
+        },
+        "index": {
+            "href": "https://exampleworkspace.eodatahub-workspaces.org.uk/files/workspaces-eodhp/commercial-data/airbus/airbus_phr_data/7331855101/IMG_PHR1A_PMS-N_001/INDEX.HTM",
+            "type": "text/html",
+            "title": "Index file"
+        },
+        "logo": {
+            "href": "https://exampleworkspace.eodatahub-workspaces.org.uk/files/workspaces-eodhp/commercial-data/airbus/airbus_phr_data/7331855101/IMG_PHR1A_PMS-N_001/LIBRARY/LOGO.JPG",
+            "type": "image/jpeg",
+            "title": "Logo file"
+        },
+        "styleSheet": {
+            "href": "https://exampleworkspace.eodatahub-workspaces.org.uk/files/workspaces-eodhp/commercial-data/airbus/airbus_phr_data/7331855101/IMG_PHR1A_PMS-N_001/LIBRARY/STYLE.XSL",
+            "type": "application/xml",
+            "title": "Short metadata content for discovering purpose"
+        },
+        "Thumbs.db": {
+            "href": "https://exampleworkspace.eodatahub-workspaces.org.uk/files/workspaces-eodhp/commercial-data/airbus/airbus_phr_data/7331855101/IMG_PHR1A_PMS-N_001/LIBRARY/Thumbs.db",
+            "type": "application/octet-stream"
+        },
+        "GROUND": {
+            "href": "https://exampleworkspace.eodatahub-workspaces.org.uk/files/workspaces-eodhp/commercial-data/airbus/airbus_phr_data/7331855101/IMG_PHR1A_PMS-N_001/LINEAGE/GROUND_R3D_OR_SPOTView_N52E000_DIM.XML",
+            "type": "text/xml",
+            "title": "DIMAP, Ground Source metadata file"
+        },
+        "HEIGHT": {
+            "href": "https://exampleworkspace.eodatahub-workspaces.org.uk/files/workspaces-eodhp/commercial-data/airbus/airbus_phr_data/7331855101/IMG_PHR1A_PMS-N_001/LINEAGE/HEIGHT_R3D_DT2_N52E000_DIM.XML",
+            "type": "text/xml",
+            "title": "DIMAP, Height Source metadata file"
+        },
+        "PROCESSING": {
+            "href": "https://exampleworkspace.eodatahub-workspaces.org.uk/files/workspaces-eodhp/commercial-data/airbus/airbus_phr_data/7331855101/IMG_PHR1A_PMS-N_001/LINEAGE/PROCESSING_PHR1A_PMS-N_201805011120113_ORT_7331855101_DIM.XML",
+            "type": "text/xml",
+            "title": "DIMAP, Processing lineage file"
+        },
+        "STRIP": {
+            "href": "https://exampleworkspace.eodatahub-workspaces.org.uk/files/workspaces-eodhp/commercial-data/airbus/airbus_phr_data/7331855101/IMG_PHR1A_PMS-N_001/LINEAGE/STRIP_DS_PHR1A_201805011120113_FR1_PX_E000N52_0320_02032_DIM.XML",
+            "type": "text/xml",
+            "title": "DIMAP, Data Strip Source metadata file"
+        },
+        "CLDMask": {
+            "href": "https://exampleworkspace.eodatahub-workspaces.org.uk/files/workspaces-eodhp/commercial-data/airbus/airbus_phr_data/7331855101/IMG_PHR1A_PMS-N_001/MASKS/CLD_PHR1A_PMS-N_201805011120113_ORT_7331855101_MSK.GML",
+            "type": "application/octet-stream",
+            "title": "GML, Cloud vector mask"
+        },
+        "DETMask": {
+            "href": "https://exampleworkspace.eodatahub-workspaces.org.uk/files/workspaces-eodhp/commercial-data/airbus/airbus_phr_data/7331855101/IMG_PHR1A_PMS-N_001/MASKS/DET_PHR1A_PMS-N_201805011120113_ORT_7331855101_MSK.GML",
+            "type": "application/octet-stream",
+            "title": "GML, Out of order detectors vector mask"
+        },
+        "QTEMask": {
+            "href": "https://exampleworkspace.eodatahub-workspaces.org.uk/files/workspaces-eodhp/commercial-data/airbus/airbus_phr_data/7331855101/IMG_PHR1A_PMS-N_001/MASKS/QTE_PHR1A_PMS-N_201805011120113_ORT_7331855101_MSK.GML",
+            "type": "application/octet-stream",
+            "title": "GML, Synthetic technical quality vector mask"
+        },
+        "ROIMask": {
+            "href": "https://exampleworkspace.eodatahub-workspaces.org.uk/files/workspaces-eodhp/commercial-data/airbus/airbus_phr_data/7331855101/IMG_PHR1A_PMS-N_001/MASKS/ROI_PHR1A_PMS-N_201805011120113_ORT_7331855101_MSK.GML",
+            "type": "application/octet-stream",
+            "title": "GML, Region of interest vector mask"
+        },
+        "SLTMask": {
+            "href": "https://exampleworkspace.eodatahub-workspaces.org.uk/files/workspaces-eodhp/commercial-data/airbus/airbus_phr_data/7331855101/IMG_PHR1A_PMS-N_001/MASKS/SLT_PHR1A_PMS-N_201805011120113_ORT_7331855101_MSK.GML",
+            "type": "application/octet-stream",
+            "title": "GML, Straylight vector mask"
+        },
+        "SNWMask": {
+            "href": "https://exampleworkspace.eodatahub-workspaces.org.uk/files/workspaces-eodhp/commercial-data/airbus/airbus_phr_data/7331855101/IMG_PHR1A_PMS-N_001/MASKS/SNW_PHR1A_PMS-N_201805011120113_ORT_7331855101_MSK.GML",
+            "type": "application/octet-stream",
+            "title": "GML, Snow vector mask"
+        },
+        "VISMask": {
+            "href": "https://exampleworkspace.eodatahub-workspaces.org.uk/files/workspaces-eodhp/commercial-data/airbus/airbus_phr_data/7331855101/IMG_PHR1A_PMS-N_001/MASKS/VIS_PHR1A_PMS-N_201805011120113_ORT_7331855101_MSK.GML",
+            "type": "application/octet-stream",
+            "title": "GML, Hidden area vector mask"
+        },
+        "quicklook": {
+            "href": "https://exampleworkspace.eodatahub-workspaces.org.uk/files/workspaces-eodhp/commercial-data/airbus/airbus_phr_data/7331855101/IMG_PHR1A_PMS-N_001/PREVIEW_PHR1A_PMS-N_201805011120113_ORT_7331855101.JPG",
+            "type": "image/jpeg",
+            "title": "Quicklook raster file"
+        },
+        "quicklookKMZ": {
+            "href": "https://exampleworkspace.eodatahub-workspaces.org.uk/files/workspaces-eodhp/commercial-data/airbus/airbus_phr_data/7331855101/IMG_PHR1A_PMS-N_001/PREVIEW_PHR1A_PMS-N_201805011120113_ORT_7331855101.KMZ",
+            "type": "application/octet-stream",
+            "title": "Quicklook KMZ file"
+        },
+        "index_1": {
+            "href": "https://exampleworkspace.eodatahub-workspaces.org.uk/files/workspaces-eodhp/commercial-data/airbus/airbus_phr_data/7331855101/INDEX.HTM",
+            "type": "text/html",
+            "title": "Index file"
+        },
+        "logo_1": {
+            "href": "https://exampleworkspace.eodatahub-workspaces.org.uk/files/workspaces-eodhp/commercial-data/airbus/airbus_phr_data/7331855101/LIBRARY/LOGO.JPG",
+            "type": "image/jpeg",
+            "title": "Logo file"
+        },
+        "VOL_STYL.XSL": {
+            "href": "https://exampleworkspace.eodatahub-workspaces.org.uk/files/workspaces-eodhp/commercial-data/airbus/airbus_phr_data/7331855101/LIBRARY/VOL_STYL.XSL",
+            "type": "application/xml"
+        }
+    }
+}

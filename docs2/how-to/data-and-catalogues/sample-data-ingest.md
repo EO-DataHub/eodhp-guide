@@ -1,9 +1,9 @@
 ---
 title: Sample Data Ingestion Process
-doc_status: moved
+doc_status: ok
 last_reviewed:
 reviewed_by:
-review_notes:
+review_notes: Migrated from docs/operations/sample-data-ingest/ingestion.md; fixtures in sample-data-ingest/samples/.
 ---
 # Sample Data Ingestion Process
 
@@ -30,12 +30,13 @@ The ingestion process consists of four main steps:
 
 ## Step 1: Upload STAC Metadata Files
 
-In the samples data folder, you'll find examples of:
-- **STAC sub-catalog** files (e.g., `airbus.json`)
-- **Collection** files (e.g., `airbus_phr.json`)
-- **Item** files (e.g., `item1.json`)
+Example STAC payloads for this workflow live next to this page under **`sample-data-ingest/samples/`**:
 
-There can be multiple files of each type. These need to be uploaded to the `catalogue-population-eodhp` S3 bucket in the correct folder structure.
+- **Sub-catalog:** [samples/airbus.json](sample-data-ingest/samples/airbus.json)
+- **Collection:** [samples/airbus_phr.json](sample-data-ingest/samples/airbus_phr.json)
+- **Item:** [samples/item1.json](sample-data-ingest/samples/item1.json)
+
+There can be multiple files of each type. Upload them (or your own equivalents) to the `catalogue-population-eodhp` S3 bucket in the folder structure described below.
 
 ### S3 Path Structure
 
@@ -81,14 +82,12 @@ The harvest-transformer normalises STAC before ingestion. When preparing your ST
 **What to include**
 
 | Aspect | Include? | Notes |
-|--------|----------|--------|
+|--------|----------|-------|
 | Path / folder structure | Yes | Dictates where the record ends up in the catalogue. |
 | `collection` (property) | Yes | Should match the collection id in the path. |
 | Links (self, root, parent, collection) | Optional | Can be blank; catalogue-structure links are added or rewritten. |
 | Item content | Yes | `id`, `type`, `stac_version`, `geometry`, `bbox`, `properties`, `assets`, etc. |
 | License | As needed | Valid SPDX id triggers license links; otherwise provide as appropriate. |
-
-For more detail, see [STAC records for harvest-transformer](#stac-record-content-and-transformer-behaviour).
 
 ---
 
@@ -131,7 +130,7 @@ Create a JSON file (e.g., `message.json`) with the following structure:
 - `id`: Replace `exampleworkspace` with your workspace name
 - `workspace`: Replace `exampleworkspace` with your workspace name
 - `source`: Replace `exampleworkspace-eodhp-config/` with your workspace prefix
-- `added_keys`: List all S3 paths to the STAC files you uploaded in Step 1 *but you must remove the leading `s3://catalogue-population-eodhp/` from the URL*.
+- `added_keys`: List all S3 paths to the STAC files you uploaded in Step 1 *but remove the leading `s3://catalogue-population-eodhp/` from each key*.
 
 ### 2.3 Send the Message
 
@@ -146,7 +145,7 @@ bin/pulsar-client produce persistent://public/default/harvested \
   -f /tmp/one-line.json
 ```
 
-**Note:** Ensure the `pulsar-client` binary is in your PATH or provide the full path to it.
+**Note:** Ensure the `pulsar-client` binary is in your `PATH`, or invoke it with its full install path.
 
 ---
 
@@ -160,20 +159,20 @@ aws s3 cp --recursive \
   s3://workspaces-eodhp/exampleworkspace/commercial-data/airbus/airbus_phr_data/
 ```
 
-**Note:** Adjust the source and destination paths to match your specific data location and workspace name.
+**Note:** Adjust the source and destination paths for your specific data layout and workspace name.
 
 ---
 
 ## Step 4: Create `.s3keep` Files for Jupyter Visibility
 
-When copying files using `aws s3 cp`, empty directories are not created in S3, which means they won't be visible in Jupyter notebooks. To ensure directories are visible, you need to create `.s3keep` files in each directory.
+When copying files using `aws s3 cp`, empty directories are not created in S3, which means they will not appear in Jupyter notebooks unless you place an object under them. Create `.s3keep` sentinel objects in directories you need visible.
 
-You can do this by either:
+Either:
 
-1. **Manually creating `.s3keep` files** in the S3 console for each directory
-2. **Using a script** to automatically create `.s3keep` files in all directories
+1. **Manually create `.s3keep` objects** for each directory in the S3 console, or  
+2. **Use a script** to create `.s3keep` in every directory touched by uploads.
 
-Example script to create `.s3keep` files:
+Example:
 
 ```bash
 # List all directories and create .s3keep files
@@ -188,7 +187,9 @@ aws s3 ls s3://workspaces-eodhp/exampleworkspace/commercial-data/airbus/airbus_p
 
 ## Troubleshooting
 
-- **Port forwarding issues**: Ensure you have the correct cluster access and the Pulsar service is running
-- **Pulsar client not found**: Check that the Pulsar client tools are installed and in your PATH
-- **S3 upload failures**: Verify your AWS credentials have write access to the target buckets
-- **Harvest not triggering**: Check that the Pulsar message was sent successfully and verify the topic name
+- **Port forwarding issues:** Confirm cluster access and that the `pulsar-proxy` Service is reachable.
+- **Pulsar client not found:** Confirm the Apache Pulsar client is installed on your workstation and callable from the terminal.
+- **S3 upload failures:** Confirm AWS credentials and write access on the catalogue and workspace buckets.
+- **Harvest not triggering:** Confirm the compact JSON message landed on topic `persistent://public/default/harvested` with the paths you uploaded.
+
+For Pulsar dashboards and backlog checks in Grafana, see [Monitor resources with Grafana](../observability-logging/monitor-resources.md).

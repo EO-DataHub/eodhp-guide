@@ -20,5 +20,5 @@ Some existing Markdown mixes Diátaxis modes. During migration **split**, **cros
 | `docs/operations/observability/access-kibana-logs.md` | **Purpose** describes ELK role; remainder is kubectl + UI login. | Single how-to under [Observability and logging](../how-to/observability-logging/access-kibana-logs.md). |
 | `docs/operations/observability/discover-logs.md` | Guided Kibana Discover recipe with Argo/`kubectl` context. | Single how-to under [Observability and logging](../how-to/observability-logging/discover-logs.md). |
 | `docs/operations/observability/monitor-resources.md` | Multiple use cases merged; **Operation** is dense prose rather than numbered steps. | Single how-to under [Observability and logging](../how-to/observability-logging/monitor-resources.md); optional future split only if Grafana vs Pulsar readers diverge sharply. |
-
+| `docs/operations/sample-data-ingest/ingestion.md` | Long **transformer behaviour** subsection reads reference-like beside Pulsar/S3 steps. | Single how-to under [Data and catalogues](../how-to/data-and-catalogues/sample-data-ingest.md); extract harvest-transformer rules to Reference only if they outgrow this runbook. |
 Revisit after moves: search for long **Note**/`!!!` sections that explain rather than prescribe—those belong in Explanation.
