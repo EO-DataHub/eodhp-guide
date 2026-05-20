@@ -1,6 +1,6 @@
 ---
 title: Discover Logs
-doc_status: unreviewed
+doc_status: remove-candidate
 last_reviewed:
 reviewed_by:
 review_notes:

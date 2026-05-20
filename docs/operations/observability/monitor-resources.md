@@ -1,6 +1,6 @@
 ---
 title: Monitoring Resource Usage Using Grafana
-doc_status: unreviewed
+doc_status: moved
 last_reviewed:
 reviewed_by:
 review_notes:
