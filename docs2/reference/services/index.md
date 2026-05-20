@@ -11,6 +11,10 @@ Migrate the whole directory:
 
 - Source: `docs/services/*.md` in the repo root (legacy path until migration completes).
 
+| Legacy | `docs2` page |
+|--------|----------------|
+| `docs/services/accounting.md` | [accounting.md](accounting.md) (migrated) |
+
 After files live here:
 
 - Prefer **tabular or list facts** at the top of each page

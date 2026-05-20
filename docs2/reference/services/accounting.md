@@ -1,15 +1,15 @@
 ---
 title: Accounting
-doc_status: moved
+doc_status: ok
 last_reviewed:
 reviewed_by:
-review_notes:
+review_notes: Migrated from docs/services/accounting.md (no split).
 ---
 # Accounting
 
 ## Summary
 
-This
+The accounting subsystem:
 
 - Collects/generates and stores resource use data relevant to billing.
 - Knows product and price settings.
@@ -58,7 +58,7 @@ The API Service depends on the Ingester adding data to the database but will sti
 The Ingester depends on Collectors to send it data and the Collectors on the Ingester to store it. These are linked by Pulsar (asynchronous persistent messaging) and none will fail due to temporary downtime of any other.
 
 The ingester uses a Pulsar schema for the workspace-settings topic whereas the workspace-manager which writes to this topic does
-not. If a schema compatibility error is observerd then the following may solve it:
+not. If a schema compatibility error is observed then the following may solve it:
 
 ```
 kubectl port-forward service/pulsar-proxy -n pulsar 8080:8080 &
@@ -203,7 +203,7 @@ This:
 
 #### Configuration
 
-The sampling frequency can be set with the `--interval` command line option in the Deployment in ArgoCD repo (apps/accounting-service/base/efs-sampler-deployment.yaml).
+The sampling frequency can be set with the `--interval` command line option on the Deployment for `accounting-s3-collector` under `apps/accounting-service/base/` in `eodhp-argocd-deployment` (see that repository for the current manifest filename—the older doc copy mistakenly referenced `efs-sampler-deployment.yaml` here).
 
 The backfill time can be set with the `--backfill` option. This causes the Collector to start collecting this many intervals prior to its start time, relying on UUID-based deduplication.
 
@@ -240,7 +240,7 @@ The run frequency can be set in the CronJob in the ArgoCD repo (apps/accounting-
 
 #### Control
 
-The Job can be triggered using the 'Create Job' in the ArgoCD UI, shown for the cronjob in the Accounting app. Jobs can deleted there or using `kubectl` to abandon them.
+The Job can be triggered using the 'Create Job' in the ArgoCD UI, shown for the cronjob in the Accounting app. Jobs can be deleted there or using `kubectl` to abandon them.
 
 This Collector records its progress into the volume attached to the `accounting-logs-cache-claim-efs` PVC. It will restart at the last log file it successfully processed. A locking mechanism is used to prevent race conditions.
 
