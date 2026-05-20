@@ -1,10 +1,11 @@
 ---
 title: Adding a Custom Dashboard to Grafana
-doc_status: moved
+doc_status: ok
 last_reviewed:
 reviewed_by:
-review_notes:
+review_notes: "Copied from docs/operations/grafana/add-a-custom-dashboard.md"
 ---
+
 # Adding a Custom Dashboard to Grafana
 
 ## Purpose
@@ -23,7 +24,7 @@ We recommend developing and testing dashboards in the UI before adding them perm
 
 ### Step 1: Ensure You Have Admin Access
 
-All administrative access to Grafana is managed through Keycloak. To create or edit dashboards, your user account must have the `admin` role assigned in Keycloak.
+All administrative access to Grafana is managed through Keycloak. To create or edit dashboards, your user account must have the `admin` realm role assigned in Keycloak (see [Elevate user](../identity-access/elevate-user.md) if an operator must grant it).
 
 1. Log in to the EO DataHub Keycloak instance.
 2. Assign the `admin` role to your user profile.
@@ -35,7 +36,7 @@ All administrative access to Grafana is managed through Keycloak. To create or e
 2. From the left-hand menu, go to **Dashboards**.
 3. In the top right, click **New** to create a new dashboard or **Import** to add one from a JSON file or Grafana.com ID.
     - **New**: Build your dashboard from scratch by adding panels and choosing the Prometheus data source to write queries.
-    - **Import**: Paste the dashboard JSON or the Grafana.com dashboard ID. 
+    - **Import**: Paste the dashboard JSON or the Grafana.com dashboard ID.
 4. Save the dashboard.
 
 ### Step 3: Adding a Dashboard via Provisioning (Permanent)
@@ -45,21 +46,21 @@ This ensures your dashboard is version-controlled and automatically deployed wit
 1. **Export the Dashboard JSON:** If you built your dashboard in the UI, you must first export it.
 
     - Open the dashboard you want to save.
-    - elect the 'Export' tab.
+    - Select the 'Export' tab.
     - Click 'Export as JSON' to download the dashboard.
 
-2. **Add the Dashboard to the Grafana Deployment:** The platform's Grafana dashboards are managed as part of its deployment configuration. Add a new entry to the dashboards section of the configuration file, pointing to your dashboard's URL.For example: 
+2. **Add the Dashboard to the Grafana Deployment:** The platform's Grafana dashboards are managed as part of its deployment configuration. Add a new entry to the dashboards section of the configuration file, pointing to your dashboard's URL. For example:
 
-```yaml 
-dashboards:  
-    ... existing kubernetes dashboards  
-    grafana-dashboards-custom:  
-        my-new-app-overview:  
-        url: <https://raw.githubusercontent.com/your-org/your-repo/main/dashboards/my-new-app.json>  
-        token: "" # Add auth token if the repo is private  
+```yaml
+dashboards:
+    ... existing kubernetes dashboards
+    grafana-dashboards-custom:
+        my-new-app-overview:
+        url: <https://raw.githubusercontent.com/your-org/your-repo/main/dashboards/my-new-app.json>
+        token: "" # Add auth token if the repo is private
 ```
 
-3. **Deploy the Changes:** Commit your configuration changes to the platform's Git repository. The ArgoCD GitOps pipeline should then automatically redeploy Grafana, which will provision your new dashboard.
+3. **Deploy the Changes:** Commit your configuration changes to the platform's Git repository. The Argo CD GitOps pipeline should then automatically redeploy Grafana, which will provision your new dashboard.
 
 ## Requirements
 
