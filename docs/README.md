@@ -1,6 +1,6 @@
 ---
 title: EO DataHub Platform Guide
-doc_status: needs-update
+doc_status: moved
 last_reviewed: 2026-05-20
 reviewed_by: geodowd
 review_notes: "Needs a more general introduction and links to various sections"

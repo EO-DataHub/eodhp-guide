@@ -7,6 +7,8 @@ doc_status: unreviewed
 
 Infrastructure rollout and prerequisites for environments.
 
+**Related lookup:** Core Git repos for cloud and deployment automation are listed under [Deployment repositories](../../reference/deployment-repositories.md).
+
 When migrating from `docs/`:
 
 | Source (current location) | Target (place under this folder after move) |

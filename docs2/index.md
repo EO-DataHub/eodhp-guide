@@ -1,13 +1,21 @@
 ---
 title: EO Data Hub Technical Guide (Diátaxis)
 doc_status: unreviewed
-last_reviewed:
-reviewed_by:
-review_notes: Portal for docs2 scaffold; migrate content from docs/ incrementally.
+last_reviewed: 2026-05-20
+reviewed_by: geodowd
+review_notes: "Portal for docs2 scaffold; migrate content from docs/ incrementally."
 ---
 # EO Data Hub Technical Guide
 
-This tree follows [Diátaxis](https://diataxis.fr/): tutorials, how-to guides, reference, and explanation—as **modes of engagement**, not separate audiences.
+These guides focus on practical aspects of **operating** and **developing** the EO Data Hub—runbooks for delivery as well as design context for builders.
+
+For **system design and architecture**, start under [Explanation → Architecture](explanation/architecture/index.md). Additional historical design narrative may still live adjacent documentation repositories referenced from those sections.
+
+**Deployment infrastructure** is described repository-by-repository in [Deployment repositories](reference/deployment-repositories.md); step-by-rollout procedures move into [Deployments how-to](how-to/deployments/index.md).
+
+The **catalogue of EODH-related GitHub repositories** is in [Repositories](reference/repositories.md).
+
+This tree follows [Diátaxis](https://diátaxis.fr/): tutorials, how-to guides, reference, and explanation—as **modes of engagement**, not separate audiences.
 
 | Section | Purpose |
 |---------|---------|
