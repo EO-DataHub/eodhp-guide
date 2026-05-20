@@ -9,11 +9,11 @@ Operational tasks touching catalogues, STAC, Titiler usage, ingestion, or databa
 
 Migrate from `docs/`:
 
-| Source | Suggested filename here |
-|--------|-------------------------|
+| Source | Target |
+|--------|--------|
 | `operations/titiler/stac-collection-wmts.md` | `titiler-stac-collection-wmts.md` |
 | `operations/sample-data-ingest/ingestion.md` | `sample-data-ingest.md` |
-| `operations/updating-database-records.md` | `updating-database-records.md` |
+| `operations/updating-database-records.md` | [updating-database-records.md](updating-database-records.md) (migrated) |
 | `data/purchased_data_types.md` | Prefer **moving data shape to** [`reference/data`](../../reference/data/index.md) if factual only; retain a how-to stub here if workflows exist |
 
 Reference-style material remains under [Reference](../../reference/index.md).

@@ -1,10 +1,11 @@
 ---
 title: Onboard an Application Developer
-doc_status: moved
+doc_status: ok
 last_reviewed:
 reviewed_by:
-review_notes:
+review_notes: "Copied from docs/operations/onboard-app-dev.md"
 ---
+
 # Onboard an Application Developer
 
 ## Purpose
@@ -57,3 +58,5 @@ The Keycloak Content-Security-Policy needs to be updated to allow the app OIDC c
 
 - Keycloak admin panel access
 - Keycloak realm role "admin"
+
+**Context:** [Authentication and authorization](../../explanation/iam/authentication-and-authorization.md) · [Platform IAM — OIDC clients and scopes](../../explanation/iam/oidc-scope-design.md).

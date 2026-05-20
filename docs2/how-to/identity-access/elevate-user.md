@@ -1,10 +1,11 @@
 ---
 title: Elevate User
-doc_status: moved
+doc_status: ok
 last_reviewed:
 reviewed_by:
-review_notes:
+review_notes: "Copied from docs/operations/elevate-user.md"
 ---
+
 # Elevate User
 
 ## Purpose
@@ -38,3 +39,5 @@ The user will now have the new realm role included in their claims, which will a
 ## Useful Information
 
 - Users will need to log out and log in again to refresh their OIDC claims with the new role(s).
+
+**Context:** [Authentication and authorization](../../explanation/iam/authentication-and-authorization.md).
