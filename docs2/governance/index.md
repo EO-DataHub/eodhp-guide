@@ -11,4 +11,4 @@ Migrate:
 
 | Source | Target |
 |--------|--------|
-| `docs/EO-DataHub GitHub Organisation User Management Guide.md` | Place Markdown in this folder (short filename preferred, e.g. `github-organisation-users.md`). |
+| `docs/EO-DataHub GitHub Organisation User Management Guide.md` | [GitHub organisation user management](github-organisation-users.md) (migrated) |

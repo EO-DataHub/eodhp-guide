@@ -1,10 +1,11 @@
 ---
 title: How to Manage Users in the EODH GitHub Organisation
-doc_status: moved
+doc_status: ok
 last_reviewed: 2026-05-20
 reviewed_by: geodowd
-review_notes:
+review_notes: "Copied from docs/EO-DataHub GitHub Organisation User Management Guide.md"
 ---
+
 # How to Manage Users in the EODH GitHub Organisation
 
 **Organisation:** [github.com/EO-DataHub](https://github.com/EO-DataHub)  
@@ -63,7 +64,7 @@ When a new organisation/supplier joins the project and multiple people need acce
 
 ### Steps
 
-1. Go to [github.com/eo-data-hub](https://github.com/eo-data-hub) → **Teams** tab → **New team**
+1. Go to [github.com/EO-DataHub](https://github.com/EO-DataHub) → **Teams** tab → **New team**
 2. Name the team in lowercase with hyphens, no spaces (e.g. `new-supplier-dev`)
    - If the supplier has contractors needing narrower access, consider creating a second nested team (e.g. `new-supplier-readonly`)
 3. Set a **Team Maintainer** from the supplier side — they can then manage their own team membership (but cannot invite people to the org themselves)
