@@ -1,9 +1,9 @@
 ---
 title: Web Presence
-doc_status: moved
+doc_status: ok
 last_reviewed:
 reviewed_by:
-review_notes:
+review_notes: Migrated from docs/services/web-presence.md.
 ---
 # Web Presence
 

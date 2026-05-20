@@ -1,9 +1,9 @@
 ---
 title: EO DataHub OpenAPI Docs
-doc_status: moved
+doc_status: ok
 last_reviewed:
 reviewed_by:
-review_notes:
+review_notes: Migrated from docs/services/openapi-docs.md.
 ---
 # EO DataHub OpenAPI Docs
 

@@ -5,11 +5,11 @@ doc_status: unreviewed
 
 # Services
 
-One Markdown file per deployed **component** or integration point (reuse `docs/services/.template.md` when adding pages).
+One Markdown file per deployed **component** or integration point (reuse [`.template.md`](.template.md) when adding pages).
 
 Migrate the whole directory:
 
-- Source: `docs/services/*.md` in the repo root (legacy path until migration completes).
+- Source: `docs/services/*.md` in the repo root (legacy paths remain until formally retired).
 
 | Legacy | `docs2` page |
 |--------|----------------|
@@ -24,6 +24,22 @@ Migrate the whole directory:
 | `docs/services/jupyter.md` | [jupyter.md](jupyter.md) (migrated) |
 | `docs/services/keycloak.md` | [keycloak.md](keycloak.md) (migrated) |
 | `docs/services/linkerd.md` | [linkerd.md](linkerd.md) (migrated) |
+| `docs/services/nginx.md` | [nginx.md](nginx.md) (migrated) |
+| `docs/services/oauth2-proxy.md` | [oauth2-proxy.md](oauth2-proxy.md) (migrated) |
+| `docs/services/open-policy-agent.md` | [open-policy-agent.md](open-policy-agent.md) (migrated) |
+| `docs/services/openapi-docs.md` | [openapi-docs.md](openapi-docs.md) (migrated) |
+| `docs/services/prometheus.md` | [prometheus.md](prometheus.md) (migrated) |
+| `docs/services/pulsar.md` | [pulsar.md](pulsar.md) (migrated) |
+| `docs/services/replicator.md` | [replicator.md](replicator.md) (migrated) |
+| `docs/services/resource-catalogue-ui.md` | [resource-catalogue-ui.md](resource-catalogue-ui.md) (migrated) |
+| `docs/services/resource-catalogue.md` | [resource-catalogue.md](resource-catalogue.md) (migrated) |
+| `docs/services/secret-generator.md` | [secret-generator.md](secret-generator.md) (migrated) |
+| `docs/services/stac-fastapi.md` | [stac-fastapi.md](stac-fastapi.md) (migrated) |
+| `docs/services/titiler.md` | [titiler.md](titiler.md) (migrated) |
+| `docs/services/web-presence.md` | [web-presence.md](web-presence.md) (migrated) |
+| `docs/services/workflow-runner.md` | [workflow-runner.md](workflow-runner.md) (migrated) |
+| `docs/services/workspaces.md` | [workspaces.md](workspaces.md) (migrated) |
+| `docs/services/.template.md` | [.template.md](.template.md) (migrated) |
 
 After files live here:
 

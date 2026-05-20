@@ -1,9 +1,9 @@
 ---
 title: Oauth2 Proxy and Redis
-doc_status: moved
+doc_status: ok
 last_reviewed:
 reviewed_by:
-review_notes:
+review_notes: Migrated from docs/services/oauth2-proxy.md.
 ---
 # Oauth2 Proxy and Redis
 

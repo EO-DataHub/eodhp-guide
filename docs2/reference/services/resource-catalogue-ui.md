@@ -1,9 +1,9 @@
 ---
 title: Resource Catalogue User Interface
-doc_status: moved
+doc_status: ok
 last_reviewed:
 reviewed_by:
-review_notes:
+review_notes: Migrated from docs/services/resource-catalogue-ui.md.
 ---
 # Resource Catalogue User Interface
 
