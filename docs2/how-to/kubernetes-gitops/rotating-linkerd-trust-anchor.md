@@ -1,27 +1,27 @@
 ---
-title: Rotating LinkerD Trust Anchor
-doc_status: moved
+title: Rotating Linkerd Trust Anchor
+doc_status: ok
 last_reviewed:
 reviewed_by:
-review_notes:
+review_notes: Migrated from docs/operations/maintenance/rotating-linkerd-trust-anchor.md.
 ---
-# Rotating LinkerD Trust Anchor
+# Rotating Linkerd Trust Anchor
 
 ## Purpose
 
-LinkerD is the service mesh for the platform. Among other things, it provides mTLS between services. It uses a trust anchor certificate to create a Certificate Authority to issue certificates to services. The trust anchor should be rotated approximately every year, but this process is not automatic. While the certificate will rotate every year there is no mechanism to refresh the certificate issuer when the trust anchor is changed, so this process requires manual intervention. System administrators should set reminders when to rotate the certificate.
+Linkerd is the service mesh for the platform. Among other things, it provides mTLS between services. It uses a trust anchor certificate to create a Certificate Authority to issue certificates to services. The trust anchor should be rotated approximately every year, but this process is not automatic. While the certificate will rotate every year there is no mechanism to refresh the certificate issuer when the trust anchor is changed, so this process requires manual intervention. System administrators should set reminders when to rotate the certificate.
 
-The consequence of not rotating the certificate issuer is that the certificate issuer will continue to user the previous trust anchor, which will eventually expire. This will result in "Bad Certificate" errors from all LinkerD proxies and will result in services failing to communicate with each other, bringing the whole platform down.
+The consequence of not rotating the certificate issuer is that the certificate issuer will continue to use the previous trust anchor, which will eventually expire. This will result in "Bad Certificate" errors from all Linkerd proxies and will result in services failing to communicate with each other, bringing the whole platform down.
 
 ## When to Use
 
-Monitor the LinkerD trust anchor certificate renewal time. You can view the certificate renewal time by inspecting the trust anchor certificate in Kubernetes.
+Monitor the Linkerd trust anchor certificate renewal time. You can view the certificate renewal time by inspecting the trust anchor certificate in Kubernetes.
 
 ```sh
 echo Renewal time: $(kubectl get cert linkerd-trust-anchor -n certs -o jsonpath="{.status.renewalTime}")\n
 ```
 
-Platform operators should put a reminder into to rotate the trust certificate **before** it automatically rotates.
+Platform operators should put a reminder in place to rotate the trust certificate **before** it automatically rotates.
 
 ## Operation
 
@@ -59,9 +59,9 @@ Step by step instructions to execute the procedure.
          linkerd.io/is-control-plane: "true"
    ```
 
-   This will add the current trust anchor certificate to the trust bundle. Commit the change to ArgoCD.
+   This will add the current trust anchor certificate to the trust bundle. Commit the change to Argo CD.
 
-3. Use Cert Manage CLI to renew the trust anchor certificate in the cluster.
+3. Use the cert-manager `cmctl` CLI to renew the trust anchor certificate in the cluster.
 
    Required: [cmctl](https://cert-manager.io/docs/reference/cmctl/#installation).
 
@@ -141,7 +141,7 @@ Step by step instructions to execute the procedure.
    kubectl get pods -A -w
    ```
 
-9. Once everything has restarted, recomment the lines from step 2, commit to ArgoCD and delete the `linkerd-trust-anchor-previous` secret in `certs` namespace. This will generate a new trust bundle containing only the new trust anchor certificate.
+9. Once everything has restarted, recomment the lines from step 2, commit to Argo CD and delete the `linkerd-trust-anchor-previous` secret in `certs` namespace. This will generate a new trust bundle containing only the new trust anchor certificate.
 
    ```sh
    # After recommenting the lines from step 2
@@ -154,4 +154,6 @@ Step by step instructions to execute the procedure.
 
 ## Useful Information
 
-If the certificate rotates automatically and you need to resolve the issue, steps 5-8 above are sufficient.
+If the certificate rotates automatically and you need to resolve the issue, steps 5–8 above are sufficient.
+
+**Related:** [Argo CD — restart a Hub service](argocd-restart-hub-service.md), [Bootstrap dependencies](../deployments/bootstrap-dependencies.md) (sync-wave order including Linkerd).

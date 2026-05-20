@@ -14,8 +14,9 @@ Migrate from `docs/operations/`:
 | `operations/argocd/web-ui.md` | [argocd-web-ui.md](argocd-web-ui.md) (migrated) |
 | `operations/argocd/restart-hub-service.md` | [argocd-restart-hub-service.md](argocd-restart-hub-service.md) (migrated) |
 | `operations/kargo/developer-guide.md` | Split: **[Kargo developer guide](kargo-developer-guide.md)** + [design → Explanation](../../explanation/development-and-governance/kargo-argoc-integration.md) |
-| `operations/maintenance/updating-cluster-kubernetes-version.md` | `updating-cluster-kubernetes-version.md` (pending) |
-| `operations/maintenance/rotating-linkerd-trust-anchor.md` | `rotating-linkerd-trust-anchor.md` (pending) |
+| `operations/maintenance/rotating-linkerd-trust-anchor.md` | [rotating-linkerd-trust-anchor.md](rotating-linkerd-trust-anchor.md) (migrated) |
+
+Terraform/EKS **cluster version bumps** (`operations/maintenance/updating-cluster-kubernetes-version.md`) belong under **[Deployments](../deployments/updating-cluster-kubernetes-version.md)**.
 
 Migrated from `docs/Development.md` (tasks):
 

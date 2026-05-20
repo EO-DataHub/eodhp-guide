@@ -11,6 +11,8 @@ Infrastructure rollout and prerequisites for environments.
 
 **Bootstrap dependency order:** [Bootstrap dependencies](bootstrap-dependencies.md) (sync waves and troubleshooting order).
 
+**Kubernetes / EKS version:** [Updating Kubernetes Cluster Version](updating-cluster-kubernetes-version.md) (Terraform `eodhp-deploy-infrastucture`, node groups, one minor bump at a time).
+
 **Related lookup:** Core Git repos for cloud and deployment automation are listed under [Deployment repositories](../../reference/deployment-repositories.md).
 
 When migrating from `docs/`:
@@ -19,5 +21,6 @@ When migrating from `docs/`:
 |---------------------------|---------------------------------------------|
 | `docs/Platform Deployment.md` | [platform-deployment.md](platform-deployment.md) (migrated) |
 | `docs/operations/bootstrap-dependencies.md` | [bootstrap-dependencies.md](bootstrap-dependencies.md) (migrated) |
+| `docs/operations/maintenance/updating-cluster-kubernetes-version.md` | [updating-cluster-kubernetes-version.md](updating-cluster-kubernetes-version.md) (migrated; Terraform/EKS) |
 
-Operational notes for **applications and GitOps** live under [Kubernetes and GitOps](../kubernetes-gitops/index.md).
+Operational notes for **applications and GitOps** (Argo CD, Kargo, Linkerd manifests) live under [Kubernetes and GitOps](../kubernetes-gitops/index.md).
