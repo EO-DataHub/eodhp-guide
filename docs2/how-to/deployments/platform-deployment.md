@@ -6,6 +6,7 @@ tags:
   - aws
   - kubernetes
   - terraform
+  - needs-verification
 last_reviewed:
 reviewed_by:
 review_notes: "Instructions often use prod workspace; adapt for others. Copied from docs/Platform Deployment.md."

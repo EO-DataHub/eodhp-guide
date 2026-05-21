@@ -65,3 +65,24 @@ md-header {
     height: 100%;
     border: 0;
 }
+
+:root {
+    --md-admonition-icon--todo: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>');
+}
+
+.md-typeset .admonition.todo,
+.md-typeset details.todo {
+    border-color: rgb(255, 145, 0); /* orange border */
+}
+
+.md-typeset .todo > .admonition-title,
+.md-typeset .todo > summary {
+    background-color: rgba(255, 145, 0, 0.1); /* light orange background */
+}
+
+.md-typeset .todo > .admonition-title::before,
+.md-typeset .todo > summary::before {
+    background-color: rgb(255, 145, 0); /* icon colour */
+    -webkit-mask-image: var(--md-admonition-icon--todo);
+    mask-image: var(--md-admonition-icon--todo);
+}

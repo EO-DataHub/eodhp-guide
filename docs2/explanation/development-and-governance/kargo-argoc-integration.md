@@ -5,6 +5,7 @@ tags:
   - kargo
   - argo-cd
   - gitops
+  - needs-verification
 last_reviewed:
 reviewed_by:
 review_notes: "Split from docs/operations/kargo/developer-guide.md (sections 1–6)"

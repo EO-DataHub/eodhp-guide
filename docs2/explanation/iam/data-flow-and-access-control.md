@@ -4,6 +4,7 @@ doc_status: needs-verification
 tags:
   - identity
   - open-policy-agent
+  - needs-verification
 last_reviewed:
 reviewed_by:
 review_notes:

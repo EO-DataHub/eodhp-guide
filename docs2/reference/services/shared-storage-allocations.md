@@ -7,6 +7,7 @@ review_notes:
 tags:
   - workspaces
   - aws
+  - needs-verification
 ---
 # Shared Storage Allocations
 

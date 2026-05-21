@@ -1,12 +1,13 @@
 ---
 title: 1. INTRODUCTION
-doc_status: unreviewed
+doc_status: needs-update
 last_reviewed:
 reviewed_by:
 review_notes:
 tags:
   - aws
   - kubernetes
+  - needs-update
 ---
 ## 1. INTRODUCTION
 
@@ -20,9 +21,11 @@ This document provides the system design and architectural roadmap for the EO Da
 
 ### 1.3 Applicable Documents
 
+!!! todo "Update"
+    Update this section
+
 The following documents are contractually applicable to the content of this plan and are denoted AD-n, where 'n' is the number in the list below: 
 
 AD-1. Appendix A \- UKRI-3142 \- Specification Document (referred to as ‘ITT’ in this document) 
 
-AD-2. KPT92073 EO Data Hub Question 6.2 Technical Answer v1.0 (Telespazio technical proposal in response to ITT) 
-
+AD-2. KPT92073 EO Data Hub Question 6.2 Technical Answer v1.0 (Telespazio technical proposal in response to ITT)

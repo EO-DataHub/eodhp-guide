@@ -7,6 +7,7 @@ review_notes:
 tags:
   - stac
   - data-catalogues
+  - needs-verification
 ---
 Overview diagram:
 ```mermaid

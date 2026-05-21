@@ -1,6 +1,6 @@
 ---
 title: 2. OVERVIEW
-doc_status: unreviewed
+doc_status: ok
 last_reviewed:
 reviewed_by:
 review_notes:
@@ -16,9 +16,7 @@ Federation of national data sets, information sources and processing facilities 
 
 The EODHP offers a solution to a well-recognised need for more findable, accessible, interoperable and re-usable (FAIR) EO, climate and other data. The number of data platforms currently used by UK stakeholders is vast and can be broadly categorised into data archives and data processing services. In time, the EODHP can act as a conduit to these existing services, massively simplifying the user journey. 
 
-Through the EODHP, the UK has an incredible opportunity to grow its EO space economy by providing federated access to quality assured data products, stimulating collaboration across the UK, and forming international partnerships with key organisations across Europe, the Commonwealth and the USA. There is an international trend towards cloud 
-
-hosted platforms and data lakes, which provides opportunities for collaboration within those environments. However, there is a danger that each effectively becomes an isolated silo. The challenge is therefore how to interact with other initiatives. 
+Through the EODHP, the UK has an incredible opportunity to grow its EO space economy by providing federated access to quality assured data products, stimulating collaboration across the UK, and forming international partnerships with key organisations across Europe, the Commonwealth and the USA. There is an international trend towards cloud hosted platforms and data lakes, which provides opportunities for collaboration within those environments. However, there is a danger that each effectively becomes an isolated silo. The challenge is therefore how to interact with other initiatives. 
 
 In response, the EODHP design relies, where possible, on common open interface/API standards for software services, and so enables improved interoperability and federation between platforms. This approach facilitates federated data discovery & access, data processing – with authorized access to protected resources through federated user identity. 
 
@@ -36,5 +34,4 @@ To take account of these varying use-cases we identify some high-level design go
 - **Data Quality** - Establish the UK Data Hub Platform as a trusted data source, providing a toolset to cleanse, filter, decode, de-duplicate and validate to improve overall quality. Provide product quality, uncertainty and instrument health metrics and/or reports for data, offering data sets and derived information with readily interpretable quality metrics for users to assess confidence and ‘fitness for purpose’. 
 - **Scalable Storage & Compute** - Rapidly scalable data storage for online, near-line and cold storage and user access to highly flexible and scalable, cloud-based compute infrastructure. 
 - **Highly Available** - Supporting service providers to deliver reliable operational services, through a design that provides business continuity and disaster recovery. 
-- **Accounting and Costing** - Facilitate platform uptake by provision of a clear platform cost model through resource consumption accounting. 
-
+- **Accounting and Costing** - Facilitate platform uptake by provision of a clear platform cost model through resource consumption accounting.

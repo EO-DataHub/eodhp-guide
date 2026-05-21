@@ -1,9 +1,8 @@
 ---
 title: 01. Overview
 doc_status: needs-verification
-last_reviewed:
-reviewed_by:
-review_notes:
+tags:
+  - needs-verification
 ---
 # 01. Overview
 
