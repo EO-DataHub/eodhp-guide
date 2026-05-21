@@ -1,6 +1,6 @@
 ---
 title: Jira
-doc_status: unreviewed
+doc_status: outdated
 last_reviewed:
 reviewed_by:
 review_notes:

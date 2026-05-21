@@ -1,6 +1,6 @@
 ---
 title: Pulsar Messages
-doc_status: moved
+doc_status: needs-verification
 last_reviewed:
 reviewed_by:
 review_notes:

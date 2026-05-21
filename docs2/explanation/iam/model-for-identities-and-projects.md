@@ -1,6 +1,6 @@
 ---
 title: "IAM: Model for Identities and Projects"
-doc_status: moved
+doc_status: needs-verification
 last_reviewed:
 reviewed_by:
 review_notes:
