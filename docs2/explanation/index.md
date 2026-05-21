@@ -19,6 +19,7 @@ Narrative and design rationale for the EO Data Hub platform — how it is built,
 
 - [GitOps branching and Kargo promotion](development-and-governance/gitops-branching-and-kargo-promotion.md)
 - [Kargo and Argo CD — design on EO Data Hub](development-and-governance/kargo-argoc-integration.md)
+- [Developer branching and PR workflow](development-and-governance/development-branching-and-pr-workflow.md)
 
 ## Identity and access management
 

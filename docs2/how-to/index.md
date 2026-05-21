@@ -38,6 +38,7 @@ Argo CD, Kargo, and cluster maintenance tasks.
 - [Elevate a user](identity-access/elevate-user.md)
 - [Create a Data Hub API token](identity-access/create-datahub-api-token.md)
 - [AWS federated users (OIDC and IAM)](identity-access/aws-federated-users-oidc.md)
+- [Manage users in the EODH GitHub organisation](identity-access/github-organisation-users.md)
 
 ## Notebooks & workspaces
 
@@ -46,3 +47,7 @@ Argo CD, Kargo, and cluster maintenance tasks.
 ## [Analytics (Google Analytics 4)](analytics/index.md)
 
 GA4 audiences, dimensions, and exploration recipes.
+
+## Documentation
+
+- [Build and publish a documentation site with Material for MkDocs](documentation/mkdocs-material-site.md)

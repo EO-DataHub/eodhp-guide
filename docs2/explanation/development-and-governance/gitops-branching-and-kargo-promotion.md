@@ -10,7 +10,7 @@ review_notes: "Conceptual sections from docs/Development.md"
 
 How application configuration flows from `main` into environments via Argo CD and Kargo—not step-by-step runbooks.
 
-For day-to-day branching habits and PRs on `eodhp-argocd-deployment`, see [Developer branching and PR workflow](../../contributing/processes/development-branching-and-pr-workflow.md). For tasks (dev cluster deploy, EKS node SSH), see [Kubernetes and GitOps how-to](../../how-to/kubernetes-gitops/index.md).
+For day-to-day branching habits and PRs on `eodhp-argocd-deployment`, see [Developer branching and PR workflow](development-branching-and-pr-workflow.md). For tasks (dev cluster deploy, EKS node SSH), see [Kubernetes and GitOps how-to](../../how-to/kubernetes-gitops/index.md).
 
 ## Argo CD deployment
 
