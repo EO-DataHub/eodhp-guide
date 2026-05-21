@@ -6,3 +6,4 @@ venv/
 uv.lock
 site/
 .cursor/
+.claude/
