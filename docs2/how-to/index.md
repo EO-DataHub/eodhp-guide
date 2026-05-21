@@ -18,27 +18,17 @@ Terraform, AWS cluster rollout, and bootstrap prerequisites.
 
 Argo CD, Kargo, and cluster maintenance tasks.
 
-## Observability & logging
+## [Observability & logging](observability-logging/index.md)
 
-- [Adding a custom dashboard to Grafana](observability-logging/add-a-custom-dashboard.md)
-- [Monitor resource usage using Grafana](observability-logging/monitor-resources.md)
-- [Access Kibana logs](observability-logging/access-kibana-logs.md)
-- [Discover logs](observability-logging/discover-logs.md)
+Grafana dashboards, resource monitoring, and log access.
 
-## Data & catalogues
+## [Data & catalogues](data-and-catalogues/index.md)
 
-- [Sample data ingestion process](data-and-catalogues/sample-data-ingest.md)
-- [Add a STAC collection to TiTiler WMTS using the renders extension](data-and-catalogues/titiler-stac-collection-wmts.md)
-- [Updating database records](data-and-catalogues/updating-database-records.md)
+Data ingestion, catalogue management, and tile services.
 
-## Identity & access
+## [Identity & access](identity-access/index.md)
 
-- [Keycloak initial admin access](identity-access/keycloak-initial-admin-access.md)
-- [Onboard an application developer](identity-access/onboard-app-dev.md)
-- [Elevate a user](identity-access/elevate-user.md)
-- [Create a Data Hub API token](identity-access/create-datahub-api-token.md)
-- [AWS federated users (OIDC and IAM)](identity-access/aws-federated-users-oidc.md)
-- [Manage users in the EODH GitHub organisation](identity-access/github-organisation-users.md)
+Keycloak, user management, tokens, and federation.
 
 ## Notebooks & workspaces
 
