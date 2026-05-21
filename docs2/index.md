@@ -9,6 +9,10 @@ reviewed_by: geodowd
 
 Technical documentation for the EO Data Hub platform.
 
+## [Architecture](architecture/index.md)
+
+The formal architecture design document — system overview, component design, and the rationale behind key technology choices.
+
 ## [How-to guides](how-to/index.md)
 
 Step-by-step guides for operating and developing the platform — deploying clusters, managing services, configuring identity, working with catalogues, and more.

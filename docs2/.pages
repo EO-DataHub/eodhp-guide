@@ -1,5 +1,6 @@
 nav:
   - Home: index.md
+  - Architecture: architecture
   - How-to guides: how-to
   - Reference: reference
   - Explanation: explanation
