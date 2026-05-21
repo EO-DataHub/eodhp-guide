@@ -1,6 +1,9 @@
 ---
 title: "IAM: Model for Identities and Projects"
 doc_status: needs-verification
+tags:
+  - identity
+  - oidc
 last_reviewed:
 reviewed_by:
 review_notes:

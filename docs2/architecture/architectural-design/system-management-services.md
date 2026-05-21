@@ -4,6 +4,9 @@ doc_status: unreviewed
 last_reviewed:
 reviewed_by:
 review_notes:
+tags:
+  - kubernetes
+  - deployment
 ---
 ### 3.15 System Management Services
 

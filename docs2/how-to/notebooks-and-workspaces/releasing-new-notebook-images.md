@@ -1,6 +1,9 @@
 ---
 title: Releasing New Notebook Images
 doc_status: unreviewed
+tags:
+  - jupyter
+  - notebooks
 last_reviewed:
 reviewed_by:
 review_notes: Migrated from docs/operations/notebooks/releasing-new-notebook-images.md.

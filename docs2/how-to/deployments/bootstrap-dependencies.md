@@ -1,6 +1,9 @@
 ---
 title: Bootstrap Dependencies
 doc_status: unreviewed
+tags:
+  - deployment
+  - kubernetes
 last_reviewed:
 reviewed_by:
 review_notes: "Copied from docs/operations/bootstrap-dependencies.md"

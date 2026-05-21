@@ -1,6 +1,9 @@
 ---
 title: Debug EKS nodes (SSH via EC2 Instance Connect)
 doc_status: ok
+tags:
+  - aws
+  - kubernetes
 last_reviewed: 2024-05-20
 reviewed_by: geodowd
 review_notes: "From docs/Development.md (Debugging EKS Nodes)"

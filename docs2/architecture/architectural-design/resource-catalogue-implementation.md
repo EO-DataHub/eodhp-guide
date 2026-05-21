@@ -4,6 +4,9 @@ doc_status: unreviewed
 last_reviewed:
 reviewed_by:
 review_notes:
+tags:
+  - stac
+  - data-catalogues
 ---
 ### 3.4 Resource Catalogue Implementation
 

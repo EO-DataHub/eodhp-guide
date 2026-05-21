@@ -1,6 +1,9 @@
 ---
 title: Access Kibana Logs
 doc_status: remove-candidate
+tags:
+  - elk
+  - observability
 last_reviewed:
 reviewed_by:
 review_notes: Migrated from docs/operations/observability/access-kibana-logs.md (legacy doc_status retained).

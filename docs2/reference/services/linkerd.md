@@ -1,6 +1,9 @@
 ---
 title: Linkerd
 doc_status: ok
+tags:
+  - linkerd
+  - security
 last_reviewed:
 reviewed_by:
 review_notes: Migrated from docs/services/linkerd.md.

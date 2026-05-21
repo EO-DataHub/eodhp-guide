@@ -1,6 +1,9 @@
 ---
 title: ELK / Elastic Stack
 doc_status: ok
+tags:
+  - elk
+  - observability
 last_reviewed:
 reviewed_by:
 review_notes: Migrated from docs/services/elk.md.

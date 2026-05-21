@@ -1,6 +1,9 @@
 ---
 title: Elevate User
 doc_status: ok
+tags:
+  - keycloak
+  - identity
 last_reviewed:
 reviewed_by:
 review_notes: "Copied from docs/operations/elevate-user.md"

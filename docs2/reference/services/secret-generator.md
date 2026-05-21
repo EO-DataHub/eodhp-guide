@@ -4,6 +4,9 @@ doc_status: ok
 last_reviewed:
 reviewed_by:
 review_notes: Migrated from docs/services/secret-generator.md.
+tags:
+  - security
+  - kubernetes
 ---
 # Secret Generator
 

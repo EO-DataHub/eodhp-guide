@@ -1,6 +1,9 @@
 ---
 title: Keycloak
 doc_status: ok
+tags:
+  - keycloak
+  - identity
 last_reviewed:
 reviewed_by:
 review_notes: Migrated from docs/services/keycloak.md.

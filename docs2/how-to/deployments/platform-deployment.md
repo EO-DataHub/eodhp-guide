@@ -1,6 +1,11 @@
 ---
 title: Platform deployment
 doc_status: needs-verification
+tags:
+  - deployment
+  - aws
+  - kubernetes
+  - terraform
 last_reviewed:
 reviewed_by:
 review_notes: "Instructions often use prod workspace; adapt for others. Copied from docs/Platform Deployment.md."

@@ -1,6 +1,10 @@
 ---
 title: Updating Kubernetes Cluster Version
 doc_status: ok
+tags:
+  - kubernetes
+  - aws
+  - maintenance
 last_reviewed:
 reviewed_by:
 review_notes: Migrated from docs/operations/maintenance/updating-cluster-kubernetes-version.md.

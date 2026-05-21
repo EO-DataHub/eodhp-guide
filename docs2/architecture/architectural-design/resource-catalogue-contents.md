@@ -4,6 +4,9 @@ doc_status: unreviewed
 last_reviewed:
 reviewed_by:
 review_notes:
+tags:
+  - stac
+  - data-catalogues
 ---
 ### 3.5 Resource Catalogue Contents
 

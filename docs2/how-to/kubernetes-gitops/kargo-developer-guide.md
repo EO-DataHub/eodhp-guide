@@ -1,6 +1,10 @@
 ---
 title: Kargo developer guide
 doc_status: needs-verification
+tags:
+  - kargo
+  - argo-cd
+  - gitops
 last_reviewed:
 reviewed_by:
 review_notes: "Split from docs/operations/kargo/developer-guide.md (TL;DR + sections 7–9)"

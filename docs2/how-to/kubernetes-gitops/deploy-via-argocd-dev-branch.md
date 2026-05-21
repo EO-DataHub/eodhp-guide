@@ -1,6 +1,9 @@
 ---
 title: Deploy via Argo CD dev branch
 doc_status: ok
+tags:
+  - argo-cd
+  - gitops
 last_reviewed: 2026-05-20
 reviewed_by: geodowd
 review_notes: "From docs/Development.md (Deploying to a Development Cluster)"

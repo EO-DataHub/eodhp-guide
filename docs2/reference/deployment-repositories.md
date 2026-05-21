@@ -4,6 +4,9 @@ doc_status: ok
 last_reviewed: 2026-05-20
 reviewed_by: geodowd
 review_notes: "Adapted from docs/README.md (Deployment Repositories)"
+tags:
+  - deployment
+  - gitops
 ---
 
 # Deployment repositories

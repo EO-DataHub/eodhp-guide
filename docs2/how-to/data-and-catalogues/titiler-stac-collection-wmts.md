@@ -1,6 +1,10 @@
 ---
 title: Adding STAC Collection to TiTiler WMTS using the Renders Extension
 doc_status: ok
+tags:
+  - titiler
+  - stac
+  - data-catalogues
 last_reviewed:
 reviewed_by:
 review_notes: Migrated from docs/operations/titiler/stac-collection-wmts.md.

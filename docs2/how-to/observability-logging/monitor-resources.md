@@ -1,6 +1,9 @@
 ---
 title: Monitoring Resource Usage Using Grafana
 doc_status: ok
+tags:
+  - grafana
+  - observability
 last_reviewed:
 reviewed_by:
 review_notes: Migrated from docs/operations/observability/monitor-resources.md.

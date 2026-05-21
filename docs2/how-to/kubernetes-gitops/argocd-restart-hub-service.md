@@ -1,6 +1,8 @@
 ---
 title: Restart a Hub Service using ArgoCD
 doc_status: ok
+tags:
+  - argo-cd
 last_reviewed:
 reviewed_by:
 review_notes: "Copied from docs/operations/argocd/restart-hub-service.md"

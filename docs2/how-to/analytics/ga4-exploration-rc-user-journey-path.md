@@ -4,6 +4,8 @@ doc_status: ok
 last_reviewed: 2026-05-20
 reviewed_by: geodowd
 review_notes: "Split from legacy docs/Analytics.md"
+tags:
+  - analytics
 ---
 
 # GA4 path exploration — user journey through the Resource Catalog

@@ -4,6 +4,9 @@ doc_status: needs-verification
 last_reviewed:
 reviewed_by:
 review_notes:
+tags:
+  - workspaces
+  - aws
 ---
 # Shared Storage Allocations
 

@@ -1,6 +1,10 @@
 ---
 title: AWS federated users (OIDC and IAM)
 doc_status: ok
+tags:
+  - aws
+  - oidc
+  - identity
 last_reviewed:
 reviewed_by:
 review_notes: "Copied from docs/iam/AWS Federated Users.md"

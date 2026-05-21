@@ -1,6 +1,10 @@
 ---
 title: Rotating Linkerd Trust Anchor
 doc_status: ok
+tags:
+  - linkerd
+  - security
+  - maintenance
 last_reviewed:
 reviewed_by:
 review_notes: Migrated from docs/operations/maintenance/rotating-linkerd-trust-anchor.md.

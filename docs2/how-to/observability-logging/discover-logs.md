@@ -1,6 +1,9 @@
 ---
 title: Discover Logs
 doc_status: remove-candidate
+tags:
+  - elk
+  - observability
 last_reviewed:
 reviewed_by:
 review_notes: Migrated from docs/operations/observability/discover-logs.md.

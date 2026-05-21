@@ -4,6 +4,9 @@ doc_status: unreviewed
 last_reviewed:
 reviewed_by:
 review_notes:
+tags:
+  - jupyter
+  - notebooks
 ---
 ### 3.7 Jupyter
 

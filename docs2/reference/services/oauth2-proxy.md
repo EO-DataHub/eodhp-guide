@@ -4,6 +4,9 @@ doc_status: ok
 last_reviewed:
 reviewed_by:
 review_notes: Migrated from docs/services/oauth2-proxy.md.
+tags:
+  - oauth2-proxy
+  - identity
 ---
 # Oauth2 Proxy and Redis
 

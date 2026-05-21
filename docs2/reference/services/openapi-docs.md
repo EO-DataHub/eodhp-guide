@@ -4,6 +4,8 @@ doc_status: ok
 last_reviewed:
 reviewed_by:
 review_notes: Migrated from docs/services/openapi-docs.md.
+tags:
+  - kubernetes
 ---
 # EO DataHub OpenAPI Docs
 

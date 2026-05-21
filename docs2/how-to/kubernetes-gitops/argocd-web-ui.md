@@ -1,6 +1,8 @@
 ---
 title: ArgoCD Web UI
 doc_status: ok
+tags:
+  - argo-cd
 last_reviewed:
 reviewed_by:
 review_notes: "Copied from docs/operations/argocd/web-ui.md"

@@ -1,6 +1,10 @@
 ---
 title: Kargo and Argo CD — design on EO Data Hub
 doc_status: needs-verification
+tags:
+  - kargo
+  - argo-cd
+  - gitops
 last_reviewed:
 reviewed_by:
 review_notes: "Split from docs/operations/kargo/developer-guide.md (sections 1–6)"

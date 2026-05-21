@@ -4,6 +4,8 @@ doc_status: unreviewed
 last_reviewed:
 reviewed_by:
 review_notes:
+tags:
+  - kubernetes
 ---
 ### 3.12 Apps
 

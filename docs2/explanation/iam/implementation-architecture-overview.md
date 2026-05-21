@@ -1,6 +1,8 @@
 ---
 title: "IAM: Implementation Architecture Overview"
 doc_status: needs-verification
+tags:
+  - identity
 last_reviewed:
 reviewed_by:
 review_notes:

@@ -4,6 +4,8 @@ doc_status: needs-verification
 last_reviewed:
 reviewed_by:
 review_notes:
+tags:
+  - pulsar
 ---
 # Pulsar Messages
 

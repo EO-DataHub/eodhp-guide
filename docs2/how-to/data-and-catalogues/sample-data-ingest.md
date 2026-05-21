@@ -1,6 +1,9 @@
 ---
 title: Sample Data Ingestion Process
 doc_status: ok
+tags:
+  - stac
+  - data-catalogues
 last_reviewed:
 reviewed_by:
 review_notes: Migrated from docs/operations/sample-data-ingest/ingestion.md; fixtures in sample-data-ingest/samples/.

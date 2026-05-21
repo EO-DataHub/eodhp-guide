@@ -4,6 +4,8 @@ doc_status: ok
 last_reviewed:
 reviewed_by:
 review_notes: Migrated from docs/services/argo-workflows-events.md.
+tags:
+  - workflows
 ---
 # Argo Workflows and Argo Events.
 

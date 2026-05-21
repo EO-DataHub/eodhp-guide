@@ -4,6 +4,9 @@ doc_status: unreviewed
 last_reviewed:
 reviewed_by:
 review_notes:
+tags:
+  - workspaces
+  - identity
 ---
 ### 3.2 Workspaces and Accounts
 

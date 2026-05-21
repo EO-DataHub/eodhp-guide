@@ -4,6 +4,9 @@ doc_status: unreviewed
 last_reviewed:
 reviewed_by:
 review_notes:
+tags:
+  - workspaces
+  - aws
 ---
 ### 3.14 Accounting and Costing Services
 

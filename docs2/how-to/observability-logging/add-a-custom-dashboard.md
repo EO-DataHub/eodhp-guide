@@ -1,6 +1,9 @@
 ---
 title: Adding a Custom Dashboard to Grafana
 doc_status: ok
+tags:
+  - grafana
+  - observability
 last_reviewed:
 reviewed_by:
 review_notes: "Copied from docs/operations/grafana/add-a-custom-dashboard.md"

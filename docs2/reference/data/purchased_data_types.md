@@ -4,6 +4,8 @@ doc_status: ok
 last_reviewed: 2026-05-20
 reviewed_by: geodowd
 review_notes: "Copied from docs/data/purchased_data_types.md"
+tags:
+  - data-catalogues
 ---
 # Purchased Data Types
 

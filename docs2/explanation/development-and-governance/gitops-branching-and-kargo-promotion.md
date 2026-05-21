@@ -1,6 +1,10 @@
 ---
 title: GitOps branching and Kargo promotion
 doc_status: ok
+tags:
+  - kargo
+  - argo-cd
+  - gitops
 last_reviewed: 2026-05-20
 reviewed_by: gedowd
 review_notes: "Conceptual sections from docs/Development.md"

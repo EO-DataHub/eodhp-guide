@@ -1,6 +1,8 @@
 ---
 title: How to Manage Users in the EODH GitHub Organisation
 doc_status: ok
+tags:
+  - identity
 last_reviewed: 2026-05-20
 reviewed_by: geodowd
 review_notes: "Copied from docs/EO-DataHub GitHub Organisation User Management Guide.md"

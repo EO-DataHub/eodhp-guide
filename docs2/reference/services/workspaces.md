@@ -4,6 +4,8 @@ doc_status: ok
 last_reviewed:
 reviewed_by:
 review_notes: Migrated from docs/services/workspaces.md.
+tags:
+  - workspaces
 ---
 # Workspaces
 

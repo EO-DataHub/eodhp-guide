@@ -1,6 +1,9 @@
 ---
 title: Data Flow Mapping
 doc_status: needs-verification
+tags:
+  - identity
+  - open-policy-agent
 last_reviewed:
 reviewed_by:
 review_notes:

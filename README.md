@@ -64,6 +64,63 @@ review_notes: "CLI flags changed; examples need updating."
 ---
 ```
 
+## Tags
+
+Pages are tagged to make related content discoverable across sections. Tags appear on each page and are aggregated on the [Tags](docs2/tags.md) page.
+
+### Tag taxonomy
+
+Two categories only — keeping it narrow prevents sprawl.
+
+#### Service / technology tags
+
+Use the canonical name (lowercase, hyphens). Tag the **primary** service a page is about; don't tag every service mentioned in passing.
+
+| Tag | Covers |
+|-----|--------|
+| `argo-cd` | Argo CD (deployment, web UI, app syncing) |
+| `kargo` | Kargo (promotion, freight, warehouses) |
+| `keycloak` | Keycloak (auth, realms, clients, users) |
+| `oauth2-proxy` | oauth2-proxy |
+| `auth-agent` | auth-agent |
+| `open-policy-agent` | OPA / OPAL |
+| `grafana` | Grafana (dashboards, monitoring) |
+| `prometheus` | Prometheus (metrics, scraping) |
+| `elk` | ELK / Kibana (logging) |
+| `linkerd` | Linkerd (service mesh, mTLS, certificates) |
+| `jupyter` | JupyterHub / notebooks |
+| `stac` | STAC FastAPI / resource catalogue |
+| `titiler` | TiTiler (tile services, WMTS) |
+| `pulsar` | Apache Pulsar (messaging) |
+| `workspaces` | Workspaces service |
+| `aws` | AWS-specific (EKS, EC2, IAM roles, SES, ECR) |
+| `terraform` | Terraform (infrastructure provisioning) |
+| `kubernetes` | Kubernetes (general cluster ops) |
+| `oidc` | OIDC / OAuth2 protocol-level pages |
+
+#### Topic tags
+
+Cross-cutting themes that span multiple services or sections.
+
+| Tag | Covers |
+|-----|--------|
+| `deployment` | Standing up or bootstrapping environments |
+| `gitops` | Argo CD / Kargo branching & promotion model |
+| `identity` | IAM concepts, user management, access policies |
+| `observability` | Metrics, dashboards, logs |
+| `data-catalogues` | Ingestion, harvesting, STAC catalogue management |
+| `notebooks` | Notebook images, workspace onboarding |
+| `workflows` | Argo Workflows, workflow output processing |
+| `security` | Certificates, mTLS rotation, trust anchors |
+| `maintenance` | Upgrades, rotation, housekeeping |
+| `analytics` | Google Analytics / GA4 |
+
+### Rules
+
+- **Max 4 tags per page.** Prefer fewer.
+- **At least one service/tech tag** if the page is about a specific service.
+- **Don't duplicate the section.** Don't tag every how-to page with `deployment` just because it's under `how-to/deployments/` — only tag if deployment is the actual subject.
+
 ## Diagrams
 
 - **PlantUML** — rendered via `mkdocs-puml` (remote render at plantuml.com)

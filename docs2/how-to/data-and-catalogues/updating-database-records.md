@@ -1,6 +1,9 @@
 ---
 title: Updating Database Records
 doc_status: ok
+tags:
+  - data-catalogues
+  - maintenance
 last_reviewed:
 reviewed_by:
 review_notes: "Copied from docs/operations/updating-database-records.md"

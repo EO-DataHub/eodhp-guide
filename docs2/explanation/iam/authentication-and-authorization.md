@@ -1,6 +1,9 @@
 ---
 title: Authentication and authorization
 doc_status: ok
+tags:
+  - identity
+  - oidc
 last_reviewed:
 reviewed_by:
 review_notes: "From docs/iam/Auth.md (conceptual); API token UI steps split to identity-access/how-to."

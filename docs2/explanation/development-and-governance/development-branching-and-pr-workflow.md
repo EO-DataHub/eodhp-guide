@@ -1,6 +1,8 @@
 ---
 title: Developer branching and PR workflow
 doc_status: ok
+tags:
+  - gitops
 last_reviewed:
 reviewed_by:
 review_notes: "Contributing/process section from docs/Development.md"

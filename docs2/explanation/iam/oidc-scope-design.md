@@ -1,6 +1,10 @@
 ---
 title: Platform IAM — OIDC clients and scopes
 doc_status: ok
+tags:
+  - keycloak
+  - oidc
+  - identity
 last_reviewed:
 reviewed_by:
 review_notes: "Copied from docs/iam/OIDC Scope Design.md"

@@ -1,6 +1,8 @@
 ---
 title: Google Analytics integration (GA4)
 doc_status: ok
+tags:
+  - analytics
 last_reviewed: 2026-05-20
 reviewed_by: geodowd
 review_notes: "Split from legacy docs/Analytics.md"

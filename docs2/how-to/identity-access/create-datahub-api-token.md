@@ -1,6 +1,8 @@
 ---
 title: Create a Data Hub API token
 doc_status: ok
+tags:
+  - identity
 last_reviewed:
 reviewed_by:
 review_notes: "Procedural excerpt from docs/iam/Auth.md"

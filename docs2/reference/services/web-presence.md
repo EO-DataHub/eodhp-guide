@@ -4,6 +4,8 @@ doc_status: ok
 last_reviewed:
 reviewed_by:
 review_notes: Migrated from docs/services/web-presence.md.
+tags:
+  - kubernetes
 ---
 # Web Presence
 
