@@ -5,4 +5,6 @@ nav:
   - Services: services
   - APIs: apis
   - Data: data
-  - ...
+  - analytics-google-analytics.md
+  - deployment-repositories.md
+  - repositories.md

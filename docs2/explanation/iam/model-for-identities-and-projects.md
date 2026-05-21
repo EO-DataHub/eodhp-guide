@@ -7,7 +7,7 @@ review_notes:
 ---
 # IAM: Model for Identities and Projects 
  
-This section describes the concepts used in EODH identities and tenancies in an implementation-neutral way - these concepts could persist even if implementation changes. Information on the specific choices of tools, standards and protocols is given in  [02. Implementation Architecture Overview](02.%20Implementation%20Architecture%20Overview.md).
+This section describes the concepts used in EODH identities and tenancies in an implementation-neutral way - these concepts could persist even if implementation changes. Information on the specific choices of tools, standards and protocols is given in  [02. Implementation Architecture Overview](./implementation-architecture-overview.md).
 ## Identities 
  
 Users will use external identities in the platform, including at least GitHub and Edugain identities but it's expected there will be many more. Identity providers are not fixed and may be added or removed. Identities are linked to EODH (Keycloak) users and multiple federated identities may be linked to a single user.

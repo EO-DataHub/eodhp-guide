@@ -1,14 +1,13 @@
 ---
 title: Governance
-doc_status: unreviewed
+doc_status: ok
+last_reviewed: 2026-05-21
+reviewed_by: geodowd
+review_notes: "Index for governance section"
 ---
 
 # Governance
 
-Organisation-wide policies separated from IAM product explanations and operational how-tos.
+Organisation policy and membership for the EO Data Hub GitHub organisation.
 
-Migrate:
-
-| Source | Target |
-|--------|--------|
-| `docs/EO-DataHub GitHub Organisation User Management Guide.md` | [GitHub organisation user management](github-organisation-users.md) (migrated) |
+- [Managing users in the EODH GitHub organisation](github-organisation-users.md)

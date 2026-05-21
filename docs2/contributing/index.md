@@ -1,16 +1,19 @@
 ---
-title: Contributing — programme and documentation workflows
-doc_status: unreviewed
+title: Contributing
+doc_status: ok
+last_reviewed: 2026-05-21
+reviewed_by: geodowd
+review_notes: "Index for contributing section"
 ---
 
 # Contributing
 
-**Decision:** Programme and documentation-process materials from `docs/documentation-repo/` live **here** (`docs2/contributing/`), not scattered across tutorials or how-to. They describe how contributors work on docs and governance of the programme, not how operators restart a hub service.
+Guides for contributing to documentation and understanding team development processes.
 
-Include this section in MkDocs navigation when switching the site to `docs2`; treat it as a fifth top-level grouping alongside Diátaxis (which is deliberate and common for Diátaxis sites).
+## Documentation
 
-Navigate:
+- [Build and publish a documentation site with Material for MkDocs](documentation/mkdocs-material-site.md)
 
-- [Documentation](documentation/index.md)
-- [Processes](processes/index.md)
-- [Roadmap](roadmap/index.md)
+## Processes
+
+- [Developer branching and PR workflow](processes/development-branching-and-pr-workflow.md)

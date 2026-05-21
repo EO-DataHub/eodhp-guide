@@ -1,19 +1,33 @@
 ---
 title: Explanation
-doc_status: unreviewed
+doc_status: ok
+last_reviewed: 2026-05-21
+reviewed_by: geodowd
+review_notes: "Index for explanation section"
 ---
 
 # Explanation
 
-Understanding-oriented documentation: rationale, constraints, architectural relationships, “why things are this way”.
+Narrative and design rationale for the EO Data Hub platform — how it is built, why it is built that way, and how the parts fit together.
 
-Migrate design and governance narrative material here—not step-by-step runbooks.
+## Architecture
 
-Links:
+- [Workflow output processing](architecture/workflow-output-processing.md)
+- [Catalogue ingestion and harvesting](architecture/catalogue/ingestion-and-harvesting.md)
 
-- [Google Analytics integration (GA4)](analytics-google-analytics-integration.md) — Frontend tracking strategy and coupling to routing
-- [Architecture](architecture/index.md)
-- [Design and decisions](design-and-decisions/index.md)
-- [Development and governance](development-and-governance/index.md)
-- [IAM (conceptual)](iam/index.md)
-- Guidance for pages mixing modes: [mixed pages migration notes](mixed-pages-migration-notes.md)
+## Development and governance
+
+- [GitOps branching and Kargo promotion](development-and-governance/gitops-branching-and-kargo-promotion.md)
+- [Kargo and Argo CD — design on EO Data Hub](development-and-governance/kargo-argoc-integration.md)
+
+## Identity and access management
+
+- [IAM: Model for identities and projects](iam/model-for-identities-and-projects.md)
+- [IAM: Implementation architecture overview](iam/implementation-architecture-overview.md)
+- [Authentication and authorization](iam/authentication-and-authorization.md)
+- [Platform IAM — OIDC clients and scopes](iam/oidc-scope-design.md)
+- [Data flow and access control](iam/data-flow-and-access-control.md)
+
+## Analytics
+
+- [Google Analytics integration (GA4)](analytics-google-analytics-integration.md)

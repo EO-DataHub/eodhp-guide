@@ -11,7 +11,7 @@ review_notes:
 
 ### Structure and Components
 
-The platform has a large set of possible interactions which require authentication and authorization and which the IAM architecture must support - these are analyzed in detail in [03. Data Flow and AuthZ, AuthN and Access Control Points and Methods](03.%20Data%20Flow%20and%20AuthZ,%20AuthN%20and%20Access%20Control%20Points%20and%20Methods.md) The mechanism for access control varies, for example between services running in the Kubernetes cluster and for download access directly to object stores. However, there are general patterns and common elements which are described here. The components are shown in this diagram (arrows indicate dependency):
+The mechanism for access control varies, for example between services running in the Kubernetes cluster and for download access directly to object stores. However, there are general patterns and common elements which are described here. The components are shown in this diagram (arrows indicate dependency):
 
 ```puml
 @startuml
@@ -256,7 +256,7 @@ The planned EOEPCA IAM architecture uses similar foundations to that here, parti
 
 Keycloak is used for identity federation and is the IdP to internal services, ie it's an OIDC provider available to the rest of the EODHP, brokering user identities from multiple upstream IdPs. Upstream IdPs may be OIDC, SAML (Edugain, but see below) or sometimes OAuth2 (GitHub).
 
-We use a Keycloak identity (which may be linked to multiple federated identities) to identify users internally. The users, groups and roles in the [01. Model for Identities and Projects](01.%20Model%20for%20Identities%20and%20Projects.md) are implemented as Keycloak users, groups and roles and user account data with cluster-wide relevance is kept in Keycloak. Keycloak can also be used for manual management of user permissions, particularly for permissions used by service administrators.
+We use a Keycloak identity (which may be linked to multiple federated identities) to identify users internally. The users, groups and roles in the [Model for Identities and Projects](./model-for-identities-and-projects.md) are implemented as Keycloak users, groups and roles and user account data with cluster-wide relevance is kept in Keycloak. Keycloak can also be used for manual management of user permissions, particularly for permissions used by service administrators.
 
 ```puml
 @startuml
