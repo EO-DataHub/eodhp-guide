@@ -1,0 +1,6 @@
+title: Architecture
+
+nav:
+  - Commercial data purchasing pipeline: commercial-data-purchasing.md
+  - Workflow output processing: workflow-output-processing.md
+  - Catalogue ingestion and harvesting: catalogue

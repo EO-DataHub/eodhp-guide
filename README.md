@@ -14,13 +14,13 @@ uv run mkdocs build  # build static site to site/
 
 ## Content structure
 
-All documentation lives under `docs2/`. The `docs/` directory is legacy source kept for reference — do not edit it.
+All documentation lives under `docs/`.
 
 | Folder | Contents |
 |--------|----------|
-| `docs2/how-to/` | Step-by-step guides for operating and developing the platform |
-| `docs2/reference/` | Service pages, API overviews, repository inventories |
-| `docs2/explanation/` | Architecture, design decisions, background reading |
+| `docs/how-to/` | Step-by-step guides for operating and developing the platform |
+| `docs/reference/` | Service pages, API overviews, repository inventories |
+| `docs/explanation/` | Architecture, design decisions, background reading |
 
 ### Navigation
 
@@ -66,7 +66,7 @@ review_notes: "CLI flags changed; examples need updating."
 
 ## Tags
 
-Pages are tagged to make related content discoverable across sections. Tags appear on each page and are aggregated on the [Tags](docs2/tags.md) page.
+Pages are tagged to make related content discoverable across sections. Tags appear on each page and are aggregated on the [Tags](docs/tags.md) page.
 
 ### Tag taxonomy
 

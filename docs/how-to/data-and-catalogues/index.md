@@ -15,3 +15,4 @@ Task-focused guides for data ingestion, catalogue management, and tile services.
 - [Sample data ingestion process](sample-data-ingest.md)
 - [Add a STAC collection to TiTiler WMTS using the renders extension](titiler-stac-collection-wmts.md)
 - [Updating database records](updating-database-records.md)
+- [Test commercial data adaptor changes](test-commercial-data-adaptor.md)
