@@ -1,9 +1,12 @@
 ---
 title: 3.2 Workspaces and Accounts
-doc_status: unreviewed
+doc_status: ok
 last_reviewed:
 reviewed_by:
 review_notes:
+tags:
+  - workspaces
+  - identity
 ---
 ### 3.2 Workspaces and Accounts
 
@@ -14,7 +17,7 @@ From a user’s point-of-view, a Workspace is a container which contains everyth
 Workspaces are not a component that can be found within the system but rather the current Workspace is context that most components in the system must be aware. What a Workspace can contain is an extensible concept which currently includes 
 
 - allocations of block and object storage, 
-- a sub-Catalog in the system’s STAC Catalog (usually API endpoints under /api/catalogue/stac/catalogs/user/catalogs/\<workspace-name\>), 
+- a sub-Catalog in the system’s STAC Catalog (usually API endpoints under `/api/catalogue/stac/catalogs/user/catalogs/\<workspace-name\>`), 
 - a collection of workflow definitions and the results of past execution, 
 - currently executing notebooks and workflows, 
 - links to commercial data provider accounts which the Workspace can use, - applications 

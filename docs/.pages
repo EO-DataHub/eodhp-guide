@@ -1,3 +1,7 @@
 nav:
-  - Home: README.md
-  - ...
+  - Home: index.md
+  - Architecture: architecture
+  - How-to guides: how-to
+  - Reference: reference
+  - Explanation: explanation
+  - Tags: tags.md

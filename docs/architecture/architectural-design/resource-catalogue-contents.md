@@ -1,9 +1,12 @@
 ---
 title: 3.5 Resource Catalogue Contents
-doc_status: unreviewed
+doc_status: ok
 last_reviewed:
 reviewed_by:
 review_notes:
+tags:
+  - stac
+  - data-catalogues
 ---
 ### 3.5 Resource Catalogue Contents
 
@@ -13,12 +16,13 @@ The catalogue has a hierarchical structure and houses objects of a variety of ty
 
 Where an object is available via the catalogue APIs the cat-path is always the same as the API path relative to the catalogue root – for example, `/catalogs/public/catalogs/ceda/collections/sentinel1-ard.` The object types (‘catalogs’ and ‘collections’ here) are included to avoid having multiple URLs for the same object whilst adhering to standards and conventional REST layouts. For example, /catalogs returns a list of sub-Catalogs of the root Catalog so, for a conventional API structure, `/catalogs/my-cat` should be the URL for sub-Catalog my-cat. 
 
-Cat-paths differ from API paths because they can also be applied to objects not available via the API. Objects harvested from external sources are assigned a source cat-path by the harvester – eg, upstream location https://api.stac.ceda.ac.uk/collections/cmip6 is assigned cat-path /catalogs/ceda-stac-catalog/collections/cmip6 (ceda-stac-catalog is the ID the CEDA STAC API gives for its root Catalog). Part of the job of a transformer is to translate the source cat-path into the destination cat-path. This is typically done by replacing a prefix of the source cat-path with the destination cat-path. 
+Cat-paths differ from API paths because they can also be applied to objects not available via the API. Objects harvested from external sources are assigned a source cat-path by the harvester – eg, upstream location `https://api.stac.ceda.ac.uk/collections/cmip6` is assigned cat-path `/catalogs/ceda-stac-catalog/collections/cmip6` (ceda-stac-catalog is the ID the CEDA STAC API gives for its root Catalog). Part of the job of a transformer is to translate the source cat-path into the destination cat-path. This is typically done by replacing a prefix of the source cat-path with the destination cat-path. 
 
 #### 3.5.2 Catalogue Structure
 
-The STAC catalog will start with some initial structure. Relative to the STAC catalog root, https://eodatahub.org.uk/api/catalogue/stac/:- **/** is the root Catalog (self, parent and root links all match),
+The STAC catalog will start with some initial structure. Relative to the STAC catalog root, `https://eodatahub.org.uk/api/catalogue/stac/`:
 
+- **/** is the root Catalog (self, parent and root links all match),
 - **/catalogs/public** contains a sub-Catalog for freely available datasets hosted by the platform. This is fully public and contains collections from the CEDA STAC Catalogue such as /catalogs/public/catalogs/ceda-stac-catalogue/collections/ukcp. 
 - **/catalogs/commercial** contains a sub-Catalog for each commercial data provider collaborating with EODH. This metadata is public but the associated data will only be available for purchase. 
 - **/catalogs/user** contains a sub-Catalog for each workspace. These are the ‘workspace catalogues’ and are under the control of the members of their owning workspace. Only the workspace has write access, but workspaces can choose to make parts of their workspace catalogue public for read access. 
@@ -43,7 +47,8 @@ Data streams may separately
 
 All current data streams are either 
 
-- commercial streams with account linking, order-based interfaces, adaptor-based retrieval, platform-published and hosted outside the hub (Planet and Airbus), or - open streams with no account linking, direct file-based interfaces, direct retrieval, platform published and hosted outside the hub (CEDA STAC). 
+- commercial streams with account linking, order-based interfaces, adaptor-based retrieval, platform-published and hosted outside the hub (Planet and Airbus), or 
+- open streams with no account linking, direct file-based interfaces, direct retrieval, platform published and hosted outside the hub (CEDA STAC). 
 
 Each stream is allocated a sub-Catalog within the relevant top-level Catalog (‘public’ or ‘commercial’). Typically, this will contain one Collection for each of the stream’s datasets but there is no limitation preventing a more complex structure of sub-Catalogs being created. 
 
@@ -53,8 +58,10 @@ Special-purpose workspaces may be created for data streams. This is useful to ap
 
 Each data stream must provide catalogue metadata which can be harvested by EODH into the platform catalogue. This can be provided in a number of ways: 
 
-- **STAC harvesting**: by providing a STAC API which the STAC harvester can harvest, - **custom harvester**: by providing a proprietary or other non-STAC API and having the platform developers write a custom harvester, 
-- **delegated search**: by providing an API and having the platform developers write a custom proxy to make it appear within the EODH API hierarchy without harvesting, - **Git**: by writing STAC into a Git repository, 
+- **STAC harvesting**: by providing a STAC API which the STAC harvester can harvest,
+- **custom harvester**: by providing a proprietary or other non-STAC API and having the platform developers write a custom harvester, 
+- **delegated search**: by providing an API and having the platform developers write a custom proxy to make it appear within the EODH API hierarchy without harvesting,
+- **Git**: by writing STAC into a Git repository, 
 - **Workflow**: with a harvester workflow. 
 
 ##### 3.5.4.1 STAC Harvester-Based Harvesting
@@ -132,5 +139,4 @@ This scenario is only useful where the data stream can assure EODH that retrieva
 
 #### 3.5.6 Future Evolution
 
-Should Workflow-startup latency become problematic, for example when supporting interactive applications, persistently running adaptors which listen directly for retrieval messages may be required. 
-
+Should Workflow-startup latency become problematic, for example when supporting interactive applications, persistently running adaptors which listen directly for retrieval messages may be required.

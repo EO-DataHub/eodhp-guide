@@ -1,9 +1,13 @@
 ---
 title: 3.7 Jupyter
-doc_status: unreviewed
+doc_status: needs-update
 last_reviewed:
 reviewed_by:
 review_notes:
+tags:
+  - jupyter
+  - notebooks
+  - needs-update
 ---
 ### 3.7 Jupyter
 
@@ -38,6 +42,9 @@ User ---> JupyterLab : Uses\nNotebooks
 ```
 
 **Figure 3-7 Jupyter**
+
+!!! todo "Needs update"
+      I think we could probably add something about Dask integration
 
 The EOEPCA Application Hub provides JupyterHub for spawning JupyterLab notebooks and shell access as workspace services. This means that the notebooks run in workspace namespaces whilst the hub uses its own. This allows for correct accounting of resource use by notebooks. When a user spawns a notebook they must choose both the notebook image to use and also the particular workspace to run it in. 
 

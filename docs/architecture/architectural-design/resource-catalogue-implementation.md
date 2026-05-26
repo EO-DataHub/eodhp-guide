@@ -1,15 +1,19 @@
 ---
 title: 3.4 Resource Catalogue Implementation
-doc_status: unreviewed
+doc_status: needs-update
 last_reviewed:
 reviewed_by:
 review_notes:
+tags:
+  - stac
+  - data-catalogues
+  - needs-update
 ---
 ### 3.4 Resource Catalogue Implementation
 
 The Resource Catalogue can be considered in four layers: services, ingest, transform and harvest. Harvesters, transformers and ingesters are known together as the harvest pipeline. Harvesters obtain catalogue metadata from its original sources, transformers modify it, ingesters load it into services and services provide functionality to users. 
 
-This section describes the functioning of the components of the catalogue. The section 3.5 Resource Catalogue Contents describes the structure of the catalogue contents and the options available for integrating a data source. 
+This section describes the functioning of the components of the catalogue. The section [3.5 Resource Catalogue Contents](./resource-catalogue-contents.md) describes the structure of the catalogue contents and the options available for integrating a data source. 
 
 #### 3.4.1 Harvest Pipeline Overview
 
@@ -145,14 +149,7 @@ package "STAC API" as STACAPI {
   sfapi <-- sfapiingest
 }
 
-package "Annotations" as Annotations {
-  [Annotations API] as AnnotationsAPI <<future>>
-  [Annotations Ingester] as AnnotationsIngester <<future>>
-  [Annotations Store] as AnnotationsStore <<future>>
 
-  AnnotationsAPI -> AnnotationsStore
-  AnnotationsStore <-- AnnotationsIngester
-}
 
 [Planet's APIs] as Planet
 
@@ -165,18 +162,14 @@ package "Commercial Data" as CommercialData {
 
 node "Messaging" {
   [STAC topics] as STACTopics
-  [Annotations topic] as AnnotationsTopic
   [S3 - transformed metadata] as S3Transformed
 }
 
 sfapiingest ---> STACTopics
 sfapiingest ---> S3Transformed
-AnnotationsIngester ---> AnnotationsTopic
-AnnotationsIngester ---> STACTopics
-AnnotationsIngester ---> S3Transformed
+
 
 STACB --> sfapi : STAC
-STACB ..> AnnotationsAPI
 STACB --> CommercialAPIs : "Quotes\nOrders\nThumbnails"
 STACB --> PlanetSTAC : STAC
 
@@ -185,7 +178,7 @@ STACB --> PlanetSTAC : STAC
 
 **Figure 3-5 Catalogue services and ingesters**
 
-The Catalogue services expose the parts of the EODH API which find, describe and order data. The STAC API component provides the main part of the STAC APIs for finding and describing data, with the Planet STAC Proxy augmenting this with metadata for Planet’s STAC Items. Additionally, some commercial data thumbnails referred to from STAC are proxied by the Commercial Data APIs. The commercial data quotation and ordering APIs are provided by the Commercial Data APIs component. Finally, the Annotations services are designed to provide linked-data-based information about datasets, processes and relations between them, but only a small part of this exists and practical use of this requires further development. 
+The Catalogue services expose the parts of the EODH API which find, describe and order data. The STAC API component provides the main part of the STAC APIs for finding and describing data, with the Planet STAC Proxy augmenting this with metadata for Planet’s STAC Items. Additionally, some commercial data thumbnails referred to from STAC are proxied by the Commercial Data APIs. The commercial data quotation and ordering APIs are provided by the Commercial Data APIs component.
 
 ##### 3.4.2.1 STAC API
 
@@ -210,18 +203,6 @@ This means that the higher-level search endpoints, such as the root Catalog’s 
 This is a stateless custom service which provides custom APIs for ordering commercial data (though they could also be used for non-commercial data available over order-based APIs). This serves API endpoints such as `/api/catalogue/stac/catalogs/commercial/catalogs/planet/collections/PSScene/items/20250717\_132418\_16\_253a/quote` and `/api/catalogue/stac/catalogs/commercial/catalogs/planet/collections/PSScene/items/2025 0717\_132418\_16\_253a/order` which can retrieve price quotes and place orders for specific commercial data items. 
 
 This service contains provider-specific modules able to retrieve quotes from provider APIs. For details on the ordering process itself see 3.9.4 Adaptors. 
-
-##### 3.4.2.4 Annotations
-
-Note: the implementation of the annotations system is incomplete. 
-
-Annotations are RDF graphs capable of providing rich metadata about catalogue entries, including linking across multiple datasets, linking datasets and processing, and user defined data with user-defined structure. The initial implementation was intended only to provide QA information for datasets assessed by NPL. 
-
-The annotations API can list and return annotations related to a specified metadata entry (at `\<Collection URL\>/annotations`). Annotations are received by the annotations ingester as TriG files linked (currently) to a single dataset. TriG is an extension to Turtle which allows subgraphs to be included, which allows QA data to be included inside a subgraph. This, in turn, allows the W3C PROV ontology to be used to specify the provenance of the subgraph. The ingester writes these are objects in an S3 object store at a location such as `/catalogs/my-catalog/collections/my-collection/annotations/graph-id.trig`, essentially using S3 a simple document database. The annotations API is then able to uses these files to list and return annotations. 
-
-Future work could use a much more sophisticated store capable of more sophisticated querying but this is sufficient to report QA results by dataset, especially given the small number of annotation files that will exist for each one. 
-
-The annotations ingester also generates a basic DCAT representation of datasets based on their STAC Collection. This provides an RDF resource for the QA data to refer to. 
 
 #### 3.4.3 Harvest and Transform
 
@@ -319,6 +300,9 @@ Ingest --> Transformed
 
 Harvesters support all required upstream sources from which catalogue metadata must be harvested and replicated into the EODHP. Specifically, these include: 
 
+!!! todo "Add OpenCosmos Harvester"
+    Add point for OpenCosmos Harvester
+
 - A STAC Harvester which harvests from external STAC catalogs. This uses STAC APIs or HTTPS to retrieve STAC Collections and Items. It’s also capable of harvesting STAC from GitHub repos. 
 - An Airbus Harvester which generates 1\) STAC Collections for Airbus datasets and 2\) harvests individual scene metadata from Airbus’s APIs to generate corresponding STAC Items. 
 - A Planet Harvester which generates and updates STAC Collections for Planet data. Individual Items are not generated as this relies on the Planet STAC Proxy, but the Collections must still be updated with, for example, their current temporal extent. 
@@ -349,6 +333,9 @@ As with harvesters, transformers write catalogue metadata into S3 and send ‘tr
 
 #### 3.4.4 Future Evolution
 
+!!! todo "Possibly remove"
+    Possibly remove this section?
+
 Additional harvesters can be added to support new sources of catalogue data, for example to harvest from Geonetwork servers or GUI-based editors. 
 
 The file harvester could be extended to harvest STAC, access policies, workflow definitions, etc, from any location in workspace storage into the same location in the catalogue or workflow runner. This would create a common hierarchy across all components \- catalogue, workflows and file storage. A GUI-based browser could then be used to navigate this hierarchy, view and visualize all types of object, and modify them by modifying the underlying files. 
@@ -359,8 +346,6 @@ The annotations service could be extended to hold provenance data in PROV-O form
 
 The annotations service could allow for user-generated annotations to be stored and served, either publicly or privately to the user. This takes advantage of the service’s ability to store information of different provenances and reliability outside of the main catalogue entries. Such annotations could include anything from simple tagging, to key-value data linked to points in images, to arbitrary graphs. 
 
-The STAC API could be extended to also serve OGC Records API-compatible records for non-dataset/non-spatiotemporal metadata, such as records for workflows or notebooks. Whilst very similar the STAC and OAR APIs are not completely coordinated, but it is possible to serve APIs that work with OAR and STAC clients simultaneously (with STAC 
-
-only APIs being ignored by OAR clients). See [this link](https://github.com/EO-DataHub/documentation/blob/main/APIs/01.%20Overview.md#correspondence-between-stac-ogc-records-and-ogc-features-api) for a more specific proposal. 
+The STAC API could be extended to also serve OGC Records API-compatible records for non-dataset/non-spatiotemporal metadata, such as records for workflows or notebooks. Whilst very similar the STAC and OAR APIs are not completely coordinated, but it is possible to serve APIs that work with OAR and STAC clients simultaneously (with STAC only APIs being ignored by OAR clients). See [this link](https://github.com/EO-DataHub/documentation/blob/main/APIs/01.%20Overview.md#correspondence-between-stac-ogc-records-and-ogc-features-api) for a more specific proposal. 
 
 Harvester definitions and the harvest mechanism could be extended sufficiently to allow user-defined harvesting. For example, a user might create a harvest configuration to harvest an external STAC Catalog into a sub-Catalog in their workspace catalogue. Making a ‘harvest configuration’ a more sophisticated object in EODH would also allow for harvest status and control pages and for log browsing. This would be particularly useful for system operators who would then have a GUI for managing harvesting.

@@ -1,9 +1,12 @@
 ---
 title: 3.9 Data Access Services
-doc_status: unreviewed
+doc_status: ok
 last_reviewed:
 reviewed_by:
 review_notes:
+tags:
+  - stac
+  - data-catalogues
 ---
 ### 3.9 Data Access Services
 

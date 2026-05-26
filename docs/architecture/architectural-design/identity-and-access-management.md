@@ -1,15 +1,23 @@
 ---
 title: 3.13 Identity and Access Management
-doc_status: unreviewed
+doc_status: needs-update
 last_reviewed:
 reviewed_by:
 review_notes:
+tags:
+  - identity
+  - keycloak
+  - oidc
+  - needs-update
 ---
 ### 3.13 Identity and Access Management
 
 #### 3.13.1 Model for Identities and Workspaces
 
 ##### 3.13.1.1 User Identities
+
+!!! todo "Needs update"
+    Need to add microsoft identity provider info
 
 Users will use external identities in the platform, current GitHub and Google identities. Identity providers are not fixed and new ones may be added. Identities are linked to EODH (Keycloak) users and multiple federated identities may be linked to a single user. 
 
@@ -127,7 +135,7 @@ In the future workspaces could also be linked to external resources, such as Git
 
 ###### 3.13.2.1.1 Structure and Components
 
-The platform has a large set of possible interactions which require authentication and authorization and which the IAM architecture must support \- these are analyzed in detail in [03\. Data Flow and AuthZ, AuthN and Access Control Points and Methods.md](https://github.com/EO-DataHub/documentation/blob/deliveryversion/mvp/Architecture/IAM/03.%20Data%20Flow%20and%20AuthZ%2C%20AuthN%20and%20Access%20Control%20Points%20and%20Methods.md). The mechanism for access control varies, for example between services running in the Kubernetes cluster and for download access directly to object stores. However, there are general patterns and common elements which are described here. The components are shown in this diagram (arrows indicate dependency): 
+The platform has a large set of possible interactions which require authentication and authorization and which the IAM architecture must support - these are analyzed in detail in [03\. Data Flow and AuthZ, AuthN and Access Control Points and Methods.md](https://github.com/EO-DataHub/documentation/blob/deliveryversion/mvp/Architecture/IAM/03.%20Data%20Flow%20and%20AuthZ%2C%20AuthN%20and%20Access%20Control%20Points%20and%20Methods.md). The mechanism for access control varies, for example between services running in the Kubernetes cluster and for download access directly to object stores. However, there are general patterns and common elements which are described here. The components are shown in this diagram (arrows indicate dependency): 
 
 ```puml
 @startuml
@@ -188,9 +196,7 @@ Requests to EODHP Services arrive through the Kubernetes proxy and are pre authe
 
 Authagent authenticates requests using one of three methods: cookies (see 3.13.2.3 Two Party Browser-based Access), API tokens (see 3.13.2.4 Two-Party External API-based Access) or OAuth2 tokens from Keycloak (3.13.2.5 Three-Party External API-based Access). Authagent then authorizes requests using an OPA sidecar and policies. Two of these apply only to ‘two-party’ access, meaning access involving only the hub and a hub user. The last applies to ‘three-party’ access involving the hub, a hub user and a (usually third-party) hub application. 
 
-After authentication Authagent performs authorization. Authagent only authorizes based on limited request information, such as the path and user, and if necessary more fine-grained authorization (based on the decoded request and stored data) occurs when the request 
-
-arrives at the target service. However, the authagent pre-authorization is always sufficient to detect when a browser-based request must be redirected for login. This means that other services do not need to be able to initiate logins. 
+After authentication Authagent performs authorization. Authagent only authorizes based on limited request information, such as the path and user, and if necessary more fine-grained authorization (based on the decoded request and stored data) occurs when the request arrives at the target service. However, the authagent pre-authorization is always sufficient to detect when a browser-based request must be redirected for login. This means that other services do not need to be able to initiate logins. 
 
 After passing through the proxy layer, requests from authenticated users will always have a valid Keycloak token attached regardless of whether tokens were used to authenticate the request made by the user. EODHP Services can then obtain the user information they need by decoding this, relying on mTLS with the proxy to know that the token is and remains valid. The services then use this information for authorization, in some cases using their own OPA sidecars and policies. 
 
@@ -268,14 +274,14 @@ This data flow diagram shows the data flow in a 2-party case in which:
 - An API or UI user with a valid session (API token, Keycloak token or cookie) makes a call to an EODHP API running in the Kubernetes cluster, such as the workflow or catalogue APIs. 
 - The request goes first to the Kubernetes proxy, nginx, which first forwards the request headers to authagent. 
 - Authagent: 
-  - Checks if an API token is present and, if so, swaps it for a Keycloak access 
+    - Checks if an API token is present and, if so, swaps it for a Keycloak access 
 token (refreshing it if necessary). 
-  - Makes an auth request to OAuth2 Proxy with the (potentially opaque) token or 
+    - Makes an auth request to OAuth2 Proxy with the (potentially opaque) token or 
 cookie attached and receives a validated token with a full set of claims. 
-  - Authorizes passing the request to the main service by querying OPA. This is 
+    - Authorizes passing the request to the main service by querying OPA. This is 
 not necessarily a complete authorization (it does not have full request 
 information) but will be enough to detect if a login is required but not present. 
-  - Returns a success response to nginx, including the access token. 
+    - Returns a success response to nginx, including the access token. 
 - The proxy forwards the request to the underlying service in Kubernetes with the access token and the original credential removed. 
 - The service decodes the request and does any final authorization, which may involve using an OPA sidecar. This may be based on information decoded from the request (like workflow identities). 
 - The service processes the request and returns a response back through the proxy. 

@@ -1,6 +1,6 @@
 site_name: EO Data Hub Technical Guide
 site_author: Sparkgeo
-docs_dir: docs2
+docs_dir: docs
 theme:
   name: material
   font:
