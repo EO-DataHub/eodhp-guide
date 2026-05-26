@@ -1,6 +1,6 @@
 ---
 title: 3.6 Workspace Storage
-doc_status: unreviewed
+doc_status: ok
 last_reviewed:
 reviewed_by:
 review_notes:
@@ -34,5 +34,4 @@ To later scale the number of block stores, the Workspace Controller can begin to
 
 Multiple pools of filesystems may be required if alternative filesystem options are provided, with one for each set of supported filesystem options (multi- vs single-zone, lifecycle management, provisioned throughput, etc). 
 
-Support for AWS EFx Lustre filesystems could also be added later in the same manner. Whilst Lustre is designed for HPC applications and can be linked to an S3 bucket, so that the bucket contents appear in a sub-path, it also has some disadvantages. Access control is exclusively through POSIX UIDs/GIDs and storage must be allocated in advance in 2.4GB increments. 
-
+Support for AWS EFx Lustre filesystems could also be added later in the same manner. Whilst Lustre is designed for HPC applications and can be linked to an S3 bucket, so that the bucket contents appear in a sub-path, it also has some disadvantages. Access control is exclusively through POSIX UIDs/GIDs and storage must be allocated in advance in 2.4GB increments.

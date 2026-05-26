@@ -1,14 +1,18 @@
 ---
 title: 3.14 Accounting and Costing Services
-doc_status: unreviewed
+doc_status: needs-update
 last_reviewed:
 reviewed_by:
 review_notes:
 tags:
   - workspaces
   - aws
+  - needs-update
 ---
 ### 3.14 Accounting and Costing Services
+
+!!! todo "Needs update"
+    Do we want to put in something here (or another page) about kubecost?
 
 ```puml
 @startuml
@@ -86,7 +90,8 @@ EFSCollector ..> Ingester : EFS storage use data\n(via msg)
 The Accounting Service consists of 
 
 - Collectors, which collect specific billing data and send it to Pulsar. 
-- The Ingester, which receives billing data from Pulsar and processes and records it. - The API, which serves accounting data over a read-only API. 
+- The Ingester, which receives billing data from Pulsar and processes and records it.
+- The API, which serves accounting data over a read-only API. 
 - A PostgreSQL database called ‘accounting’. 
 - A Kubernetes ConfigMap, configured using Git and ArgoCD, which can set product and price information. 
 

@@ -1,12 +1,13 @@
 ---
 title: 3.15 System Management Services
-doc_status: unreviewed
+doc_status: needs-update
 last_reviewed:
 reviewed_by:
 review_notes:
 tags:
   - kubernetes
   - deployment
+  - needs-update
 ---
 ### 3.15 System Management Services
 
@@ -33,6 +34,9 @@ The CPU and memory data from the core Kubernetes monitoring are also used for bi
 
 #### 3.15.4 Logging
 
+!!! todo "Needs update"
+    I believe Jakub has done some work on this so may need updating.
+
 Pod logs are sent to stdout/stderr and are both harvested by the Elastic Stack and are available through the usual kubectl log commands. The Elastic Stack allows for searching of logs across the whole cluster in a single interface. 
 
 Some components, particularly those in the accounting system and harvest pipeline, produce JSON structured log data through Open Telemetry. This allows more structured querying in Kibana, for example by workspace. OTEL span data is also emitted allowing logs for a single API call to be correlated across multiple microservice hops. This also provides enough data for distributed tracing, although this is not configured into Grafana at present. 
@@ -41,5 +45,4 @@ Some components, particularly those in the accounting system and harvest pipelin
 
 AWS CloudWatch provides Canaries, which are lambdas run every 5 minutes to check a service and provide a success/failure indication. Canaries are configured to check that each publicly available service in EODH is able to return a response. In the event of failure, CloudWatch is configured to send an alert to an SNS topic which in turn emails a list of system operators. 
 
-This is configured manually in the AWS UI. 
-
+This is configured manually in the AWS UI.

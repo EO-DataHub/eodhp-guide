@@ -1,6 +1,6 @@
 ---
 title: "5. OPEN-SOURCE SOFTWARE REUSE"
-doc_status: unreviewed
+doc_status: ok
 last_reviewed:
 reviewed_by:
 review_notes:

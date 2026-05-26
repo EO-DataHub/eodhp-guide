@@ -1,6 +1,6 @@
 ---
 title: 3.12 Apps
-doc_status: unreviewed
+doc_status: ok
 last_reviewed:
 reviewed_by:
 review_notes:
@@ -41,5 +41,4 @@ The application must be registered as an OIDC client by an administrator and cal
 
 This allows a client-side application to use the hub as a computational back-end without any need for its end user to have a billing account in EODH and whilst controlling completely how the end user is charged. 
 
-Future work could allow user service calls to be charged-for at prices set by their publisher, with the cost being added to the end user’s hub account and a credit being added to the user service publisher’s account. This would relieve the application provider of running their own billing infrastructure. Future work could also enhance the permissions model for user services so that they could be limited to only customers of the app, relieving the user service of having to implement its own access control. 
-
+Future work could allow user service calls to be charged-for at prices set by their publisher, with the cost being added to the end user’s hub account and a credit being added to the user service publisher’s account. This would relieve the application provider of running their own billing infrastructure. Future work could also enhance the permissions model for user services so that they could be limited to only customers of the app, relieving the user service of having to implement its own access control.
