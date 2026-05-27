@@ -12,7 +12,7 @@ tags:
 
 ## Summary
 
-Data adaptors enable ordering of commercial data from Airbus and Planet within the EO DataHub. These adaptors run as user service workflows in specialised data provider workspaces via the [Workflow Runner](workflow-runner.md) service.
+Data adaptors enable ordering of commercial data from Airbus, Planet, and Open Cosmos within the EO DataHub. These adaptors run as user service workflows in specialised data provider workspaces via the [Workflow Runner](workflow-runner.md) service.
 
 Each adaptor interfaces with its respective provider to place an order for a single item, waits for delivery to an S3 bucket, then downloads and attaches assets to a STAC item that tracks the order. The Workflow Runner manages asset upload and ingestion of STAC items into the user's workspace.
 
@@ -24,10 +24,17 @@ Each adaptor interfaces with its respective provider to place an order for a sin
 - Container images:
   - `public.ecr.aws/eodh/airbus-optical-adaptor`
   - `public.ecr.aws/eodh/airbus-sar-adaptor`
+- See [Airbus Adaptor](airbus-adaptor.md) for full reference (inputs, pipeline steps, product bundles, SAR options).
 
 **Planet:**
 - Container image:
   - `public.ecr.aws/eodh/planet-adaptor`
+- See [Planet Adaptor](planet-adaptor.md) for full reference (inputs, pipeline steps, product bundles, secrets).
+
+**Open Cosmos:**
+- Container image:
+  - `public.ecr.aws/eodh/open-cosmos-adaptor`
+- See [Open Cosmos Adaptor](open-cosmos-adaptor.md) for full reference (inputs, pipeline steps, secrets).
 
 ### Dependent Services
 
