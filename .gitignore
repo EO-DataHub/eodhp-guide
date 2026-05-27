@@ -6,4 +6,4 @@ venv/
 uv.lock
 site/
 .cursor/
-.claude/
+.claude/settings.local.json
