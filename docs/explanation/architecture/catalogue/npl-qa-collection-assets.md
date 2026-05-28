@@ -3,10 +3,7 @@ title: NPL QA Assessments as STAC Collection Assets
 doc_status: ok
 tags:
   - stac
-  - catalogue
-  - qa
-  - npl
-  - data-quality
+  - data-catalogues
 last_reviewed:
 reviewed_by:
 review_notes: Drafted from issue #144. Issue #164 (OC data QA) is a placeholder pending NPL check-in.

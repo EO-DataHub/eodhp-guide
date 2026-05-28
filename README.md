@@ -90,6 +90,8 @@ Use the canonical name (lowercase, hyphens). Tag the **primary** service a page 
 | `linkerd` | Linkerd (service mesh, mTLS, certificates) |
 | `jupyter` | JupyterHub / notebooks |
 | `stac` | STAC FastAPI / resource catalogue |
+| `rc-ui` | Resource Catalogue UI (eodhp-rc-ui) |
+| `qgis` | QGIS layer integration |
 | `titiler` | TiTiler (tile services, WMTS) |
 | `pulsar` | Apache Pulsar (messaging) |
 | `workspaces` | Workspaces service |
@@ -109,6 +111,7 @@ Cross-cutting themes that span multiple services or sections.
 | `identity` | IAM concepts, user management, access policies |
 | `observability` | Metrics, dashboards, logs |
 | `data-catalogues` | Ingestion, harvesting, STAC catalogue management |
+| `commercial-data` | Commercial data purchasing, orders, provider integrations |
 | `notebooks` | Notebook images, workspace onboarding |
 | `workflows` | Argo Workflows, workflow output processing |
 | `security` | Certificates, mTLS rotation, trust anchors |

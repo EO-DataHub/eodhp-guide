@@ -5,7 +5,6 @@ tags:
   - jupyter
   - notebooks
   - workflows
-  - rc-ui
   - stac
 last_reviewed:
 reviewed_by:

@@ -17,6 +17,10 @@ Task-focused guides for deploying and maintaining the platform infrastructure an
 - [Platform deployment](platform-deployment.md) — step-by-step guide for deploying a new cluster from Terraform through Argo CD bootstrapping and Kargo promotion
 - [Bootstrap dependencies](bootstrap-dependencies.md) — sync-wave order and service dependency constraints for cluster initialisation
 
+## Services
+
+- [Deploy eodhp-guide to Kubernetes](deploy-eodhp-guide-to-kubernetes.md) — containerise this MkDocs site and serve it at `/guide` via ArgoCD
+
 ## Cluster maintenance
 
 - [Updating cluster Kubernetes version](updating-cluster-kubernetes-version.md)

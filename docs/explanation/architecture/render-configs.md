@@ -3,11 +3,8 @@ title: RC UI Render Configurations
 doc_status: ok
 tags:
   - rc-ui
-  - rendering
   - titiler
-  - cmip6
-  - eocis
-  - configFromServer
+  - stac
 last_reviewed:
 reviewed_by:
 review_notes: Updated from eodhp-rc-ui source. Originally drafted from issues #85, #115, #128, #163. Issue #42 (future enhanced viz) also referenced.

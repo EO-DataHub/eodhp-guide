@@ -2,11 +2,10 @@
 title: QGIS and XYZ Tile Integration
 doc_status: ok
 tags:
+  - rc-ui
   - qgis
   - titiler
-  - wms
-  - layer-files
-  - rc-ui
+  - stac
 last_reviewed:
 reviewed_by:
 review_notes: Updated from eodhp-rc-ui and resource-catalog-support-utils source. WMS noted as not yet implemented.

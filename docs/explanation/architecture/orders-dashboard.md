@@ -3,9 +3,9 @@ title: RC UI Orders Dashboard
 doc_status: ok
 tags:
   - rc-ui
-  - orders
+  - stac
   - commercial-data
-  - dashboard
+  - data-catalogues
 last_reviewed:
 reviewed_by:
 review_notes: Updated from eodhp-rc-ui source. Originally drafted from issues #93, #123.

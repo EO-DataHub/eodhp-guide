@@ -2,9 +2,9 @@
 title: Processes Catalogue
 doc_status: ok
 tags:
-  - processes
+  - rc-ui
+  - stac
   - workflows
-  - catalogue
 last_reviewed:
 reviewed_by:
 review_notes: Updated from workflow-catalogue and processes-catalog-api-proposal repos. Issue #41 still open.
