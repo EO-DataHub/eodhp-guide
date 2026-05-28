@@ -14,7 +14,7 @@ tags:
 !!! todo "Needs update"
     Do we want to put in something here (or another page) about kubecost?
 
-```puml
+```kroki-plantuml
 @startuml
 
 

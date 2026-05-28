@@ -16,7 +16,7 @@ review_notes:
 
 The mechanism for access control varies, for example between services running in the Kubernetes cluster and for download access directly to object stores. However, there are general patterns and common elements which are described here. The components are shown in this diagram (arrows indicate dependency):
 
-```puml
+```kroki-plantuml
 @startuml
 
 [API client / Browser] as Client
@@ -261,7 +261,7 @@ Keycloak is used for identity federation and is the IdP to internal services, ie
 
 We use a Keycloak identity (which may be linked to multiple federated identities) to identify users internally. The users, groups and roles in the [Model for Identities and Projects](./model-for-identities-and-projects.md) are implemented as Keycloak users, groups and roles and user account data with cluster-wide relevance is kept in Keycloak. Keycloak can also be used for manual management of user permissions, particularly for permissions used by service administrators.
 
-```puml
+```kroki-plantuml
 @startuml
 
 [Browser] as Browser

@@ -13,7 +13,7 @@ The Workflow Runner manages workflow-based user computational activity and capac
 
 Note: a component called the ‘Workflow and Analysis System’ used to exist and contain Jupyter, Workspace Management and the workflow pods (but not the rest of the workflow system). The first two are now their own components and workflow pods are now here. This change has no practical effect on users or developers. 
 
-```puml
+```kroki-plantuml
 @startuml
 
 actor User

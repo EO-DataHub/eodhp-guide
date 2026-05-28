@@ -11,7 +11,7 @@ tags:
 ---
 ### 3.7 Jupyter
 
-```puml
+```kroki-plantuml
 @startuml
 
 actor User

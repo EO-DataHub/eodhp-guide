@@ -137,7 +137,7 @@ In the future workspaces could also be linked to external resources, such as Git
 
 The platform has a large set of possible interactions which require authentication and authorization and which the IAM architecture must support - these are analyzed in detail in [03\. Data Flow and AuthZ, AuthN and Access Control Points and Methods.md](https://github.com/EO-DataHub/documentation/blob/deliveryversion/mvp/Architecture/IAM/03.%20Data%20Flow%20and%20AuthZ%2C%20AuthN%20and%20Access%20Control%20Points%20and%20Methods.md). The mechanism for access control varies, for example between services running in the Kubernetes cluster and for download access directly to object stores. However, there are general patterns and common elements which are described here. The components are shown in this diagram (arrows indicate dependency): 
 
-```puml
+```kroki-plantuml
 @startuml
 
 [API client / Browser] as Client
@@ -410,7 +410,7 @@ Keycloak is used for identity federation and is the IdP to internal services, ie
 
 We use a Keycloak identity, which may be linked to multiple federated identities, to identify users internally. Workspace membership is implemented as Keycloak group membership. Keycloak can also be used for manual management of user permissions, particularly for permissions used by service administrators which are implemented through Keycloak roles. 
 
-```puml
+```kroki-plantuml
 @startuml
 
 [Browser] as Browser

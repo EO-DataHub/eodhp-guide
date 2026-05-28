@@ -61,5 +61,4 @@ plugins:
   - search
   - tags
   - awesome-pages
-  - plantuml:
-      puml_url: https://www.plantuml.com/plantuml/
+  - kroki:

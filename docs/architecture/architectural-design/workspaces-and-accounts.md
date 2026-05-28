@@ -41,7 +41,7 @@ The EODH operator is responsible for calculating and issuing invoices and carryi
 
 #### 3.2.3 Workspace and Account Management Implementation
 
-```puml
+```kroki-plantuml
 @startuml
 
 

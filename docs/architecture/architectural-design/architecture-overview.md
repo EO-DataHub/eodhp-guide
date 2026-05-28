@@ -52,7 +52,7 @@ EODHP can be decomposed into components, each typically being a specific piece o
 !!! todo "Needs confirming"
     This chart needs confirmation that it is correct and if it needs updating
 
-```puml
+```kroki-plantuml
 @startuml
 
 '[                                                                                                                                                                            Messaging                                                                                                                                                                            ] as Messaging

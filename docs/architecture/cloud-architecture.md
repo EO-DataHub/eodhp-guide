@@ -29,7 +29,7 @@ An example of an AWS service not being used is SQS, with Pulsar used instead. Th
 
 ### 4.2 Cloud Platform
 
-```puml
+```kroki-plantuml
 @startuml
 
 actor User

@@ -58,7 +58,7 @@ On failure at any step, the adaptor writes `order:status = failed` and an `order
 
 State transitions use the [STAC Order extension](https://github.com/stac-extensions/order) fields (`order:status`, `order:id`, `order:date`):
 
-```puml
+```kroki-plantuml
 @startuml
 hide empty description
 

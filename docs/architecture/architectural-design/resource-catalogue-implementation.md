@@ -133,7 +133,7 @@ Each step in the pipeline may use multithreading and multiple replicas, subject 
 
 #### 3.4.2 Services and Ingest
 
-```puml
+```kroki-plantuml
 @startuml
 
 package WebPresence {
@@ -206,7 +206,7 @@ This service contains provider-specific modules able to retrieve quotes from pro
 
 #### 3.4.3 Harvest and Transform
 
-```puml
+```kroki-plantuml
 @startuml
 
 node "Pulsar harvested Topics" {

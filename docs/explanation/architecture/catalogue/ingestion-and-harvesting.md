@@ -124,7 +124,7 @@ flowchart TB
 
 ### Services
 
-```puml
+```kroki-plantuml
 @startuml
 
 package WebPresence {

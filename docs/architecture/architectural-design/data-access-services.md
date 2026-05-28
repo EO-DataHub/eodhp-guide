@@ -22,7 +22,7 @@ The data services allow users inside and outside the platform to access platform
 
 The main components used to access data which already exists as files accessible to the user are shown in the deployment diagram below. 
 
-```puml
+```kroki-plantuml
 actor User
 
 package "Workspace Storage" as UserStorage {
@@ -92,7 +92,7 @@ TiTiler also mounts the workspaces EFS store and has been granted a Kubernetes s
 
 #### 3.9.4 Adaptors
 
-```puml
+```kroki-plantuml
 actor User
 
 package "Workflow and Analysis System" as WAS {
@@ -115,7 +115,7 @@ User --> WorkspaceMgmt : Link Account
 **Figure 3-10-a Account Linking**
 
 
-```puml
+```kroki-plantuml
 actor User
 
 package "Workspace Storage" {
