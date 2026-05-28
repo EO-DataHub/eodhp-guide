@@ -168,9 +168,78 @@ Raise a PR against `eodhp-argocd-deployment` to update the version tracked by `w
 This follows the same pattern as `WORKSPACE_UI_URL`/`WORKSPACE_UI_VERSION` already present in that file.
 
 !!! note "Django web-presence code"
-    For `web-presence` to serve a navigation link to the guide, the Django app itself needs to read these environment variables and expose them. At time of writing, `eodhp-web-presence` does not yet have a view or template for the guide — that code change is a separate task (add settings, view, URL pattern, and template in `eodhp-web-presence`, mirroring the `workspaces_page_view` pattern). The S3 URL is accessible regardless; the argocd kustomization update just records the live version in the GitOps config.
+    The argocd kustomization update records the live version in the GitOps config. The versioned S3 URL is accessible immediately. For the friendly `/eodhp-guide/` URL to work, a separate code change to `eodhp-web-presence` is needed — see Step 6.
 
 Merge and promote the PR through Kargo as normal for a `web-presence` change.
+
+## Step 6 — Add the guide link to eodhp-web-presence
+
+The versioned S3 URL works immediately after Step 4. The friendly URL `https://eodatahub.org.uk/eodhp-guide/` requires changes to both `eodhp-web-presence` (a redirect view) and `eodhp-argocd-deployment` (an auth-bypass ingress).
+
+### eodhp-web-presence changes
+
+1. **`settings.py`** — add an `EODHP_GUIDE` dict after the existing `WORKSPACE_UI` block, using the same `env()` pattern:
+
+    ```python
+    EODHP_GUIDE = {
+        "version": env("EODHP_GUIDE_VERSION", default="v1.0.0"),
+        "url": env("EODHP_GUIDE_URL", default=None),
+    }
+    ```
+
+2. **`views.py`** — add a redirect view (the guide is a static MkDocs site, not an SPA, so a redirect to the versioned S3 path is correct). CloudFront does not serve directory indexes, so `index.html` must be explicit:
+
+    ```python
+    def eodhp_guide_page_view(request: HttpRequest) -> HttpResponse:
+        return redirect(
+            "{url}/{version}/index.html".format(
+                url=settings.EODHP_GUIDE["url"],
+                version=settings.EODHP_GUIDE["version"],
+            )
+        )
+    ```
+
+3. **`urls.py`** — import `eodhp_guide_page_view` and register the URL pattern:
+
+    ```python
+    path("eodhp-guide/", eodhp_guide_page_view),
+    ```
+
+4. Raise a PR to `eodhp-web-presence`, tag a release, and raise a separate PR to `eodhp-argocd-deployment` updating the `web-presence` image tag. Promote through Kargo as normal.
+
+### eodhp-argocd-deployment changes
+
+The platform nginx master ingress applies `auth_request` to every location by default. The guide is public documentation, so `/eodhp-guide/` must bypass authentication. Add a second ingress object to `apps/web-presence/base/ingress.yaml`:
+
+```yaml
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.org/mergeable-ingress-type: minion
+    nginx.org/location-snippets: |
+      auth_request off;
+
+      include blocks/header_guards.conf;
+  name: web-presence-eodhp-guide
+  namespace: web
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: ${[.vars.platform.domain]}
+      http:
+        paths:
+          - backend:
+              service:
+                name: web-presence
+                port:
+                  number: 8000
+            path: /eodhp-guide/
+            pathType: Prefix
+```
+
+Without this, unauthenticated users are redirected to the login page before the Django redirect fires.
 
 ## Releasing a new version
 
@@ -183,11 +252,12 @@ Old versions remain accessible at their versioned URLs until manually removed fr
 
 ## Expected URLs
 
-| Version | URL |
-|---|---|
-| `1.0.0` | `https://eodatahub.org.uk/static-apps/eodhp-guide/1.0.0/index.html` |
-| `staging` | `https://staging.eodatahub.org.uk/static-apps/eodhp-guide/1.0.0/index.html` |
-| `test` | `https://test.eodatahub.org.uk/static-apps/eodhp-guide/1.0.0/index.html` |
+| Environment | URL | Notes |
+|---|---|---|
+| Production (versioned) | `https://eodatahub.org.uk/static-apps/eodhp-guide/1.0.0/index.html` | Available after Step 4 |
+| Staging (versioned) | `https://staging.eodatahub.org.uk/static-apps/eodhp-guide/1.0.0/index.html` | Available after Step 4 |
+| Test (versioned) | `https://test.eodatahub.org.uk/static-apps/eodhp-guide/1.0.0/index.html` | Available after Step 4 |
+| Production (friendly) | `https://eodatahub.org.uk/eodhp-guide/` | Requires Step 6 |
 
 !!! note "Staging and test environments"
     The `static-web-artefacts-eodh` bucket is shared across environments. Each environment's CloudFront distribution has a separate `/static-apps/*` origin pointing to the same bucket, so a version published once is available in all environments at its versioned path.

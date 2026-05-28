@@ -12,6 +12,18 @@ uv run mkdocs serve  # serve locally with live reload at http://127.0.0.1:8000
 uv run mkdocs build  # build static site to site/
 ```
 
+## Releasing a new version
+
+1. Merge changes to `main`
+2. Tag the release and push:
+   ```bash
+   git tag v1.x.x && git push origin v1.x.x
+   ```
+3. GitHub Actions builds the site and syncs it to S3 — verify it at `https://eodatahub.org.uk/static-apps/eodhp-guide/<version>/index.html`
+4. Raise a PR to `eodhp-argocd-deployment` updating `EODHP_GUIDE_VERSION` in `apps/web-presence/base/kustomization.yaml`, then promote through Kargo
+
+See [docs/how-to/deployments/deploy-eodhp-guide-to-kubernetes.md](docs/how-to/deployments/deploy-eodhp-guide-to-kubernetes.md) for the full setup guide.
+
 ## Content structure
 
 All documentation lives under `docs/`.
@@ -126,5 +138,5 @@ Cross-cutting themes that span multiple services or sections.
 
 ## Diagrams
 
-- **PlantUML** — rendered via `mkdocs-puml` (remote render at plantuml.com)
-- **Mermaid** — supported via `pymdownx.superfences` fenced code blocks
+- **PlantUML** — use ` ```kroki-plantuml ` fenced code blocks, rendered via [kroki.io](https://kroki.io) at page-load time
+- **Mermaid** — use ` ```mermaid ` fenced code blocks, rendered client-side via `pymdownx.superfences`
