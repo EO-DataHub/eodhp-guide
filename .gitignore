@@ -3,7 +3,6 @@
 venv/
 
 .venv/
-uv.lock
 site/
 .cursor/
 .claude/settings.local.json
