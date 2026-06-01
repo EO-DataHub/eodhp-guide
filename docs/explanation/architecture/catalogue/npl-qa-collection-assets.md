@@ -116,7 +116,7 @@ QA assets are attached to a collection the next time that collection is harveste
 
 CEDA and Planet collections are harvested daily; Airbus collections are harvested monthly. For Airbus collections, a file deposited shortly after a harvest run could wait up to a month before appearing.
 
-CEDA catalogue data is ingested via the configuration harvester — a CronJob that scans the `stac-harvester-configurations` GitHub repository for changes daily at 06:00 UTC and triggers the STAC ingestion pipeline. Planet uses a standard Kubernetes CronJob. Airbus jobs are triggered via Argo Events (calendar EventSource → Sensor → Kubernetes Job).
+To trigger a harvest immediately after depositing files, see [Manually trigger a harvester](../../../how-to/data-and-catalogues/trigger-harvester-manually.md).
 
 | Harvester | Collections | Frequency | Prod (UTC) | Staging (UTC) | Test (UTC) | Trigger |
 |-----------|-------------|-----------|------------|---------------|------------|---------|
