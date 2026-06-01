@@ -26,10 +26,156 @@ The high-level architecture is illustrated in Figure 3-1 Architecture Overview w
 
 This document concentrates on layers 3, 4 and 5, which are directly part of the platform. Note that this is a conceptual view and does not necessarily reflect how the system is broken into internal software components – for example, a single service may provide both an API and underlying processing within a workspace. 
 
-!!! todo "Update chart"
-    This chart could do with being updated to remove mention of SparkGeo
-
 ![](../figs/fig-3-01-architecture-overview.png)
+
+```kroki-plantuml
+@startuml
+
+hide stereotype
+
+skinparam defaultTextAlignment center
+skinparam backgroundColor white
+skinparam actorBackgroundColor white
+skinparam actorBorderColor black
+skinparam arrowColor #333333
+skinparam nodesep 30
+skinparam ranksep 50
+
+skinparam rectangle {
+  BackgroundColor White
+  BorderColor Black
+}
+
+skinparam rectangle<<faded>> {
+  BackgroundColor White
+  BorderColor DarkGray
+  FontColor DarkGray
+}
+
+skinparam frame {
+  BackgroundColor White
+  BorderColor Black
+}
+
+' ── Actors above the platform boundary ──────────────────────────────
+
+actor "Application\nUser" as AppUser
+
+together {
+  actor "Data Hub\nUser" as HubUser
+  actor "Application\nDeveloper" as AppDev
+  rectangle "Application" as App
+}
+
+AppUser -down-> App
+AppDev -right-> App
+AppUser -[hidden]right-> AppDev
+
+' ── Identity Providers (outside platform, top-right) ─────────────────
+
+rectangle "Identity\nProviders" as IdP
+
+' ── Ingress and IAM ──────────────────────────────────────────────────
+
+frame "Ingress and IAM" as IAM {
+  rectangle "CDN" as CDN
+  rectangle "Proxying" as Proxy
+  rectangle "IAM" as IAMInner
+}
+
+IdP -down-> IAM
+
+' ── Presentation layer ───────────────────────────────────────────────
+
+frame "Web Interfaces" as WebIF {
+  rectangle "Catalogue\nBrowser" as CatBrowser
+  rectangle "Website" as Website
+  rectangle "JupyterHub UI" as JupUI
+  rectangle "Workspace UI" as WorkspaceUI
+}
+
+frame "APIs" as APIs {
+  rectangle "STAC" as STAC
+  rectangle "Records API" <<faded>> as RecordsAPI
+  rectangle "OGC Processes" as OGCProc
+  rectangle "OpenID Connect" as OIDC
+  rectangle "S3\n(data access)" as S3
+  rectangle "HTTPS\n(data access)" as HTTPS
+  rectangle "Commercial Data\nOrdering" as CommOrder
+  rectangle "Mapping\nWM(T)S XYZ" as Mapping
+}
+
+WebIF -right-> APIs
+
+HubUser -down-> WebIF
+HubUser -down-> APIs
+AppDev  -down-> APIs
+App     -down-> APIs
+
+' ── Workspace and management layer ───────────────────────────────────
+
+frame "User Workspaces" as UW {
+  rectangle "Notebooks" as Notebooks
+  rectangle "Data - block store" as UWBlock
+  rectangle "Data - object store" as UWObject
+  rectangle "Workflows" as UWFlows
+  rectangle "Catalogue entries" as UWCat
+  rectangle "Metadata harvesters" <<faded>> as UWHarv
+  rectangle "Workflow definitions" as UWDefs
+  rectangle "Annotations + QA" <<faded>> as UWAnnot
+  rectangle "Events and\nNotifications" <<faded>> as UWEvents
+}
+
+frame "System Workspaces" as SW {
+  rectangle "Data - block store" as SWBlock
+  rectangle "Data - object store" as SWObject
+  rectangle "Workflows" as SWFlows
+  rectangle "Catalogue entries" as SWCat
+  rectangle "Metadata harvesters" as SWHarv
+  rectangle "Workflow definitions" as SWDefs
+  rectangle "Events and\nNotifications" as SWEvents
+  rectangle "Annotations + QA" <<faded>> as SWAnnot
+  rectangle "Adaptors" as SWAdapt
+}
+
+frame "System Management" as SM {
+  rectangle "Config Control" as ConfigCtrl
+  rectangle "Monitoring" as Monitoring
+  rectangle "Messaging" as Messaging
+  rectangle "Accounting" as Accounting
+  rectangle "Service Mesh" as ServiceMesh
+}
+
+APIs <-down-> UW
+APIs <-down-> SW
+
+' ── Data Streams ──────────────────────────────────────────────────────
+
+frame "Data Streams" as DS {
+  rectangle "Commercial Data" as DSComm
+  rectangle "Open Data" as DSOpen
+  rectangle "Catalogue entries" as DSCat
+}
+
+SW -down-> DS
+
+' ── Layout hints ─────────────────────────────────────────────────────
+
+HubUser -[hidden]right-> AppDev
+WebIF   -[hidden]right-> APIs
+APIs    -[hidden]right-> IAM
+UW      -[hidden]right-> SW
+SW      -[hidden]right-> SM
+
+' ── Legend ───────────────────────────────────────────────────────────
+
+legend bottom left
+  |= Symbol |= Meaning |
+  | <font color="DarkGray">░░░</font> | In architecture but limited or no implementation |
+end legend
+
+@enduml
+```
 
 **Figure 3-1 Architecture Overview**
 

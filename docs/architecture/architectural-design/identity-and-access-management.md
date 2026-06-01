@@ -1,6 +1,6 @@
 ---
 title: 3.13 Identity and Access Management
-doc_status: needs-update
+doc_status: ok
 last_reviewed:
 reviewed_by:
 review_notes:
@@ -8,7 +8,6 @@ tags:
   - identity
   - keycloak
   - oidc
-  - needs-update
 ---
 ### 3.13 Identity and Access Management
 
@@ -16,10 +15,7 @@ tags:
 
 ##### 3.13.1.1 User Identities
 
-!!! todo "Needs update"
-    Need to add microsoft identity provider info
-
-Users will use external identities in the platform, current GitHub and Google identities. Identity providers are not fixed and new ones may be added. Identities are linked to EODH (Keycloak) users and multiple federated identities may be linked to a single user. 
+Users will use external identities in the platform. Current supported identity providers are GitHub, Google, and Microsoft (Entra ID / Azure AD). Identity providers are not fixed and new ones may be added. For configuration details of the Microsoft IDP see [Microsoft Entra ID IDP Integration](../../explanation/iam/entra-idp-integration.md). Identities are linked to EODH (Keycloak) users and multiple federated identities may be linked to a single user. 
 
 Machine identities are anticipated to also exist in the future, for example for use when workflows are triggered by events. These identities will either be internal identities used by EODHP software components or will be linked to the workspace responsible for them. Users with sufficient privileges can create machine identities and assign privileges to them but they will always remain scoped to a specific workspace and unable to act outside it. Those users will also be able to obtain credentials used for access on behalf of that Machine User in the same ways as they can for their own User. 
 
@@ -406,7 +402,7 @@ The planned EOEPCA IAM architecture uses similar foundations to that here, parti
 
 ##### 3.13.2.2 Keycloak
 
-Keycloak is used for identity federation and is the IdP to internal services, ie it's an OIDC provider available to the rest of the EODHP, brokering user identities from multiple upstream IdPs. Upstream IdPs may be OIDC, OAuth2 (like GitHub), or, in the future, SAML (Edugain, but see below). 
+Keycloak is used for identity federation and is the IdP to internal services, ie it's an OIDC provider available to the rest of the EODHP, brokering user identities from multiple upstream IdPs. Current upstream IdPs are GitHub (OAuth2), Google (OIDC), and Microsoft Entra ID (OIDC, multi-tenant). Future IdPs may include SAML-based providers such as Edugain (see below). 
 
 We use a Keycloak identity, which may be linked to multiple federated identities, to identify users internally. Workspace membership is implemented as Keycloak group membership. Keycloak can also be used for manual management of user permissions, particularly for permissions used by service administrators which are implemented through Keycloak roles. 
 
