@@ -12,4 +12,5 @@ nav:
   - Private data rendering: private-data-rendering.md
   - Dask integration: dask-integration.md
   - JupyterHub resilience and resource limits: jupyterhub-resilience.md
+  - TiTiler resilience and scaling: titiler-resilience-and-scaling.md
   - Catalogue ingestion and harvesting: catalogue
