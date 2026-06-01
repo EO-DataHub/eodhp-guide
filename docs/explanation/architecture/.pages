@@ -10,4 +10,6 @@ nav:
   - QGIS and XYZ tile integration: qgis-layer-integration.md
   - Render configurations: render-configs.md
   - Private data rendering: private-data-rendering.md
+  - Dask integration: dask-integration.md
+  - JupyterHub resilience and resource limits: jupyterhub-resilience.md
   - Catalogue ingestion and harvesting: catalogue
