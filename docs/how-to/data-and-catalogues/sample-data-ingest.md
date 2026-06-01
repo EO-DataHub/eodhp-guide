@@ -20,6 +20,32 @@ This guide describes the process for ingesting sample STAC catalog data into the
 - `kubectl` configured to access the cluster
 - `jq` installed for JSON processing
 
+## Data formats by provider
+
+Before ingesting or COG-converting sample data, confirm the source format for the provider and product.
+
+### Airbus
+
+| Product | Source format |
+|---------|--------------|
+| PHR (MS, P, PMS) | JPEG2000 (`.jp2` / `.j2w`) |
+| PHR (PMS-N) | GeoTIFF (`.tif` / `.tfw`) |
+| PNEO | GeoTIFF (`.tif`) |
+| SPOT | GeoTIFF (`.tif`) |
+
+### Planet
+
+| Product | Source format | Notes |
+|---------|--------------|-------|
+| PlanetScope Basemaps | GeoTIFF | Already COG in many cases |
+| PlanetScope Scenes (1A, 1B) | GeoTIFF | Embedded georeferencing |
+| PlanetScope Scenes (3B) | GeoTIFF | Multi-band; separate georeferencing files |
+| SkySat Collect | GeoTIFF | Not COG; requires conversion |
+
+COG conversion is required before data is TiTiler-renderable. All optical sample data should have a COG asset added to its STAC item.
+
+---
+
 ## Overview
 
 The ingestion process consists of four main steps:
@@ -185,6 +211,25 @@ aws s3 ls s3://workspaces-eodhp/exampleworkspace/commercial-data/airbus/airbus_p
   sort -u | \
   xargs -I {} aws s3 cp /dev/null s3://workspaces-eodhp/exampleworkspace/commercial-data/airbus/airbus_phr_data/{}/.s3keep
 ```
+
+---
+
+## Step 5: Validate item counts
+
+After harvesting, verify the number of ingested items matches what the provider declared:
+
+```bash
+curl -s "https://eodatahub.org.uk/api/catalogue/stac/catalogs/commercial/catalogs/<provider>/collections/<collection>/items?limit=1" \
+  | jq '.numberMatched'
+```
+
+Discrepancies can indicate:
+
+- The provider has not yet given the EODH organisation access to all collections.
+- A 403 on some collections (intermittent permissions issue — re-run harvester after confirming access is restored).
+- Items present in the provider's catalogue but not yet assigned to the EODH project/scenario.
+
+In these cases, raise the discrepancy with the provider, quoting the expected vs actual count per collection.
 
 ---
 
