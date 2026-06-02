@@ -10,4 +10,6 @@ nav:
   - QGIS and XYZ tile integration: qgis-layer-integration.md
   - Render configurations: render-configs.md
   - Private data rendering: private-data-rendering.md
+  - TiTiler resilience and scaling: titiler-resilience-and-scaling.md
+  - Workspace file management: workspace-file-management.md
   - Catalogue ingestion and harvesting: catalogue
