@@ -1,18 +1,15 @@
 ---
 title: 3.14 Accounting and Costing Services
-doc_status: needs-update
+doc_status: ok
 last_reviewed:
 reviewed_by:
 review_notes:
 tags:
   - workspaces
   - aws
-  - needs-update
 ---
 ### 3.14 Accounting and Costing Services
 
-!!! todo "Needs update"
-    Do we want to put in something here (or another page) about kubecost?
 
 ```kroki-plantuml
 @startuml
@@ -124,3 +121,18 @@ Collectors are designed to recover after downtime by recording their last proces
 The Accounting API service serves product, price and Billing Event data via a read-only API. The Workspace UI uses this to display per-Workspace resource consumption and, if set, costs. 
 
 The Accounting Service listens for billing events on the messaging system – these events being output by platform components, such as the User Account Service (consumption of processing resources), Data Access services (consumption of data resources) and the Workspace Controller (workspace resources). The Accounting Service will maintain all such events in its database to support filtered queries \- used to report billing data, with this data being sufficient to generate invoices based on a UI provided by the web presence (invoice generation, payment records and payment processing are assumed external).
+
+#### 3.14.4 Kubecost and Workspace Cost Visibility
+
+Kubecost is installed in the cluster and provides Kubernetes-native cost allocation data — CPU, memory, persistent volume, network, and load balancer costs — aggregated per namespace. This is complementary to the Accounting Service:
+
+| | Accounting Service | Kubecost |
+|-|--------------------|---------|
+| **Data source** | Collectors (S3 logs, EFS samples, CloudFront logs, Prometheus) | Kubernetes resource metrics |
+| **Purpose** | Formal billing events, invoicing | Operational cost visibility |
+| **Granularity** | Per product/SKU per workspace | Per namespace, broken down by resource type |
+| **Status** | Designed; partially implemented | Installed in cluster |
+
+The **Workspace Cost API** (`kubecost-eodh-api`) sits in front of Kubecost and enforces workspace membership scoping so that users only see cost data for namespaces belonging to their own workspaces. It exposes two endpoints: a per-workspace total cost summary and a detailed per-namespace breakdown with top cost drivers.
+
+This API is in development and not yet live. See [Workspace Cost API](../../explanation/architecture/workspace-cost-api.md) for the full design and API reference.

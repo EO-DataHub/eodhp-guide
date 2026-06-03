@@ -26,10 +26,8 @@ The high-level architecture is illustrated in Figure 3-1 Architecture Overview w
 
 This document concentrates on layers 3, 4 and 5, which are directly part of the platform. Note that this is a conceptual view and does not necessarily reflect how the system is broken into internal software components – for example, a single service may provide both an API and underlying processing within a workspace. 
 
-!!! todo "Update chart"
-    This chart could do with being updated to remove mention of SparkGeo
-
 ![](../figs/fig-3-01-architecture-overview.png)
+
 
 **Figure 3-1 Architecture Overview**
 

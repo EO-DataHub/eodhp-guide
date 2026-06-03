@@ -13,5 +13,6 @@ nav:
   - Dask integration: dask-integration.md
   - JupyterHub resilience and resource limits: jupyterhub-resilience.md
   - TiTiler resilience and scaling: titiler-resilience-and-scaling.md
+  - Workspace cost API: workspace-cost-api.md
   - Workspace file management: workspace-file-management.md
   - Catalogue ingestion and harvesting: catalogue
