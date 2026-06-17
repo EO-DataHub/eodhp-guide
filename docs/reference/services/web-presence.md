@@ -92,3 +92,24 @@ The web presence code is version controlled in the https://github.com/EO-DataHub
 New versions should be released by creating a new release using GitHub web UI with a version tag following the pattern v1.2.3. The commit tag will trigger the GitHub action release process.
 
 Alternately, releases may be published directly from the code repository with `make publish version=v1.2.3`, but this should only be used for test releases as the Git commit will not be properly tagged.
+
+### Deploying a new workspace-ui version
+
+The workspace UI is a static frontend app served by web-presence from the `static-web-artefacts-eodh` S3 bucket. Deploying a new version is a two-step process.
+
+**Step 1 — Release workspace-ui**
+
+Create a GitHub release in [eodhp-workspace-ui](https://github.com/EO-DataHub/eodhp-workspace-ui) with a semver tag (e.g. `v0.1.35`). The release CI workflow builds the static assets and uploads them to the S3 bucket under a versioned prefix.
+
+**Step 2 — Update the version reference in the deployment repo**
+
+The `WORKSPACE_UI_VERSION` env var in the `web-presence-envs` ConfigMap controls which version web-presence serves. It is set in two places that must both be updated:
+
+- `apps/web-presence/base/kustomization.yaml` — the default value
+- `apps/web-presence/envs/<env>/kustomization.yaml` — a JSON patch that overrides the base for each environment (currently test and staging have their own override)
+
+Update both to the new version, commit to `main`, and the `web-presence-config` Kargo warehouse will detect the change and auto-promote it to test. Promote staging and prod manually via the [Kargo UI](https://kargo.eodatahub.org.uk) after verifying in the previous environment.
+
+> **Note:** `WORKSPACE_UI_VERSION` is a plain ConfigMap value and is **not** tracked by Kargo. Editing it directly is safe — Kargo will not overwrite your change on the next promotion.
+
+The same two-step pattern applies to `EODHP_GUIDE_VERSION` (tracks [eodhp-guide](https://github.com/EO-DataHub/eodhp-guide) releases) and `RESOURCE_CATALOGUE_VERSION` (tracks [eodhp-resource-catalogue-ui](https://github.com/EO-DataHub/eodhp-resource-catalogue-ui) releases) in the same ConfigMap.
