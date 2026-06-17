@@ -75,6 +75,26 @@ Steps for progressing freight, onboarding apps, and Kustomize overlays in the de
 
 > **Why manual?** Dev images use `freightCreationPolicy: Manual` and `imageSelectionStrategy: NewestBuild` to avoid auto-detecting every push. This gives you explicit control over which image combination to deploy.
 
+### Updating a static app version
+
+Some services embed the version of a static frontend app as a plain ConfigMap value rather than a container image tag. These versions are **not** tracked by Kargo, so they are safe to edit directly and will not be overwritten on promotion. Examples in the `web-presence` app:
+
+| Config key | App |
+|---|---|
+| `WORKSPACE_UI_VERSION` | [eodhp-workspace-ui](https://github.com/EO-DataHub/eodhp-workspace-ui) |
+| `EODHP_GUIDE_VERSION` | [eodhp-guide](https://github.com/EO-DataHub/eodhp-guide) |
+| `RESOURCE_CATALOGUE_VERSION` | [eodhp-resource-catalogue-ui](https://github.com/EO-DataHub/eodhp-resource-catalogue-ui) |
+
+To update one of these:
+
+1. Edit the value in `apps/web-presence/base/kustomization.yaml`
+2. Also update the matching JSON patch in `apps/web-presence/envs/<env>/kustomization.yaml` for **every** environment that overrides the base value (currently test and staging both have their own patch — if you only update the base, the env-level patch takes precedence and the base change has no effect for those environments)
+3. Commit to `main`
+4. The `web-presence-config` warehouse detects the change and auto-promotes to test
+5. Verify, then promote staging and prod via the [Kargo UI](https://kargo.eodatahub.org.uk)
+
+The static app's files must already be present in S3 at the target version before promoting beyond test. See [Deploying a new workspace-ui version](../../reference/services/web-presence.md#deploying-a-new-workspace-ui-version) for the full two-step process.
+
 ### Rolling back (promote forward)
 
 Kargo has no dedicated rollback feature. Instead, you "roll back" by **re-promoting an earlier freight** to the target stage. From Kargo's perspective this is just another promotion.
