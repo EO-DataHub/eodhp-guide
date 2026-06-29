@@ -1,8 +1,8 @@
 ---
 title: Reference
 doc_status: ok
-last_reviewed: 2026-05-21
-reviewed_by: geodowd
+last_reviewed: 2026-06-29
+reviewed_by: recmanj
 review_notes: "Index for reference section"
 ---
 
@@ -21,6 +21,11 @@ Component reference pages for each platform service, grouped by function.
 ## Data
 
 - [Purchased data types](data/purchased_data_types.md)
+
+## CI/CD
+
+- [Reusable CI workflows](ci-cd/reusable-workflows.md)
+- [Shared Renovate configuration](ci-cd/renovate-config.md)
 
 ## Analytics
 
