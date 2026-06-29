@@ -4,17 +4,24 @@ doc_status: ok
 tags:
   - grafana
   - observability
-last_reviewed:
-reviewed_by:
-review_notes: Migrated from docs/services/grafana.md.
+last_reviewed: 2026-06-26
+reviewed_by: recmanj
+review_notes: Updated to reflect VictoriaLogs datasource and Logs Explorer dashboard.
 ---
 # Grafana
 
 ## Summary
 
-Grafana is connected to Prometheus and is used for visualizing system metrics. It can be accessed at https://grafana.eodatahub.org.uk/ by any Keycloak user with the `admin` role.
+Grafana is the platform's primary observability UI. It can be accessed at https://grafana.eodatahub.org.uk/ by any Keycloak user with the `admin` role.
 
-Typical uses are to visualize time series of CPU and memory use of pods and to visualize time series of harvest pipeline Pulsar topics' message rates and backlogs.
+Grafana connects to two data sources:
+
+| Datasource | Type | Used for |
+|-----------|------|----------|
+| Prometheus | Metrics | CPU/memory usage, Pulsar message rates, service health |
+| VictoriaLogs | Logs | Kubernetes container logs from all platform pods |
+
+Typical uses include visualising time series of CPU and memory use of pods, monitoring Pulsar harvest pipeline message rates and backlogs, and searching platform logs via the **EODH Platform Logs Explorer** dashboard.
 
 Grafana is unmodified third-party software.
 
@@ -28,12 +35,14 @@ Grafana is configured in the [ArgoCD deployment repo](https://github.com/EO-Data
 
 ### Control
 
-To restart service run `kubectl rollout restart -n grafana deployment grafana ` for Kubernetes cluster or use ArgoCD UI to restart.
+```sh
+kubectl rollout restart -n grafana deployment grafana
+```
 
-To stop service, the service must be removed from ArgoCD configuration.
+Or use the ArgoCD UI to restart. To stop the service, remove it from ArgoCD configuration.
 
 ### Dependencies
 
-Prometheus and Keycloak.
+Prometheus, VictoriaLogs, and Keycloak.
 
-**Related:** [Monitor resources](../../how-to/observability-logging/monitor-resources.md), [Add a custom Grafana dashboard](../../how-to/observability-logging/add-a-custom-dashboard.md).
+**Related:** [Monitor resources](../../how-to/observability-logging/monitor-resources.md), [Add a custom Grafana dashboard](../../how-to/observability-logging/add-a-custom-dashboard.md), [Access platform logs](../../how-to/observability-logging/access-logs.md), [VictoriaLogs](victorialogs.md).
