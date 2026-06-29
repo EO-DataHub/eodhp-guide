@@ -70,7 +70,7 @@ Bootstrap order:
   - nginx
   - ArgoCD
   - Keycloak (note: depends on a database and external-secrets)
-  - ELK
+  - VictoriaLogs
   - Prometheus
   - Grafana (needs external-secrets)
   - linkerd viz

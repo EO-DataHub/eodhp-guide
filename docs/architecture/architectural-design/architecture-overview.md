@@ -151,7 +151,7 @@ package ENS {
 
 package Supporting {
   [ArgoCD]
-  [ELK]
+  [VictoriaLogs]
   [Messaging]
   [...]
 }

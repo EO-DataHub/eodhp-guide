@@ -47,7 +47,7 @@ Traffic is also routed to the workspace efs service via another ingress, which a
 
 Workspaces can be deleted by workspace owners using the Workspace UI.
 
-Logs for the workspace services can be viewed using the ELK Stack UI at https://logs.eodatahub.org.uk, searching for `kubernetes.namespace : "workspaces"`. You can also view logs in the workspace-controller-manager and workspace-manager pods either in the ArgoCD UI or using the Kubernetes CLI `kubectl -n workspaces logs <pod-name>`. Logs for the efs service can be viewed in the `efs-nginx` pod.
+Logs for the workspace services can be viewed in Grafana under **Dashboards > VictoriaLogs > EODH Platform Logs Explorer**, filtering by `kubernetes.pod_namespace: "workspaces"`. You can also view logs in the workspace-controller-manager and workspace-manager pods either in the ArgoCD UI or using the Kubernetes CLI `kubectl -n workspaces logs <pod-name>`. Logs for the efs service can be viewed in the `efs-nginx` pod.
 
 Workspace data is stored in the workspaces-db in the `databases` namespace. This can be viewed using Postgres applications such as pg-admin.
 
