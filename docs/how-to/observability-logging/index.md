@@ -1,16 +1,16 @@
 ---
 title: Observability & logging
 doc_status: ok
-last_reviewed: 2026-05-21
-reviewed_by: geodowd
-review_notes: "Index for observability-logging how-to guides"
+last_reviewed: 2026-06-26
+reviewed_by: recmanj
+review_notes: "Updated for VictoriaLogs/Grafana stack (ELK removed)."
 ---
 
 # Observability & logging
 
 Task-focused guides for monitoring and logging on the EO Data Hub platform.
 
-**Reference:** [Prometheus](../../reference/services/prometheus.md) · [Grafana](../../reference/services/grafana.md) · [ELK](../../reference/services/elk.md)
+**Reference:** [Prometheus](../../reference/services/prometheus.md) · [Grafana](../../reference/services/grafana.md) · [VictoriaLogs](../../reference/services/victorialogs.md)
 
 ## Grafana
 
@@ -19,5 +19,5 @@ Task-focused guides for monitoring and logging on the EO Data Hub platform.
 
 ## Logs
 
-- [Access Kibana logs](access-kibana-logs.md)
-- [Discover logs](discover-logs.md)
+- [Access platform logs](access-logs.md)
+- [Search and filter logs](discover-logs.md)
