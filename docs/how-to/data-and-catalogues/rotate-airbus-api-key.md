@@ -76,5 +76,5 @@ kubectl logs -n rc -l app=airbus-adaptor --tail=50
 
 ## Notes
 
-- The per-workspace OTP key mechanism (used for placing orders) is managed separately — see the [Airbus Adaptor reference](../../reference/services/airbus-adaptor.md#configuration--kubernetes-secrets) for details.
+- The per-workspace OTP key mechanism (used for placing orders) is managed separately — see the [Airbus Adaptor reference](../../reference/services/airbus-adaptor.md#configuration-kubernetes-secrets) for details.
 - Proposed future improvements include expiry tracking in Secrets Manager, a Grafana/Prometheus alert at 30 days before expiry, and automated renewal via the Airbus key management API. These are not yet implemented.

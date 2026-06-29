@@ -30,7 +30,7 @@ Component reference pages for each platform service.
 
 - [Prometheus](prometheus.md)
 - [Grafana](grafana.md)
-- [ELK](elk.md)
+- [VictoriaLogs](victorialogs.md)
 
 ## Data & catalogues
 
