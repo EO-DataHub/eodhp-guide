@@ -14,6 +14,7 @@ Task-focused guides for deploying and maintaining the platform infrastructure an
 
 ## Cluster setup
 
+- [Minimal test deployment](minimal-test-deployment.md) — phased overview of standing up a test system from scratch, with success checkpoints and links to detailed guides
 - [Platform deployment](platform-deployment.md) — step-by-step guide for deploying a new cluster from Terraform through Argo CD bootstrapping and Kargo promotion
 - [Bootstrap dependencies](bootstrap-dependencies.md) — sync-wave order and service dependency constraints for cluster initialisation
 
