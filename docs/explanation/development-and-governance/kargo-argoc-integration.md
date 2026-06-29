@@ -1,13 +1,12 @@
 ---
 title: Kargo and Argo CD — design on EO Data Hub
-doc_status: needs-verification
+doc_status: ok
 tags:
   - kargo
   - argo-cd
   - gitops
-  - needs-verification
-last_reviewed:
-reviewed_by:
+last_reviewed: 2026-06-29
+reviewed_by: recmanj
 review_notes: "Split from docs/operations/kargo/developer-guide.md (sections 1–6)"
 ---
 
@@ -49,7 +48,7 @@ The integration works through four mechanisms:
 
 1. **Argo CD ApplicationSet discovers apps.** The root ApplicationSet (`eodhp/base/apps.yaml`) uses a git directory generator with the pattern `apps/*/envs/<env>` to discover all applications for each environment.
 
-2. **Each Application reads from a Kargo-managed branch.** Per-environment patches (in `eodhp/envs/<env>/kustomization.yaml`) set `targetRevision` to `kargo/{{app}}/<env>`. This means Argo CD reads pre-built manifests from a branch that Kargo writes to during promotions. The exception is the dev environment, which reads from `main` directly.
+2. **Each Application reads from a Kargo-managed branch.** Per-environment patches (in `eodhp/envs/<env>/kustomization.yaml`) set `targetRevision` to `kargo/{{app}}/<env>`. This means Argo CD reads pre-built manifests from a branch that Kargo writes to during promotions. The exception is **bootstrap** mode, where Argo CD reads from `main` directly until Kargo has created these branches (see [Platform deployment](../../how-to/deployments/platform-deployment.md)).
 
 3. **Kargo is authorized to trigger syncs.** Each Application is annotated with `kargo.akuity.io/authorized-stage: "eodhp:{{app}}-<env>"`, which allows the Kargo stage to force an Argo CD sync after pushing new manifests.
 
@@ -100,7 +99,7 @@ Warehouse ──detects──> Freight ──promotes──> Stage
 
 ## EO Data Hub Kargo topology (`apps/kargo/`)
 
-We run Kargo in a **hub-and-spoke** model across four clusters.
+We run Kargo in a **hub-and-spoke** model across three clusters.
 
 ### Hub: prod cluster
 
@@ -155,6 +154,8 @@ apps/kargo-eodhp-project/
       promotiontasks.yaml     # The shared "promote" PromotionTask
       credentials-rbac.yaml   # Role + RoleBindings for credential access
       git-credentials.yaml    # ExternalSecret for git SSH key
+      user-rbac.yaml          # ServiceAccount + RBAC for the kargo-developer group
+      slack-webhook-secret.yaml # ExternalSecret for Slack notifications
   envs/
     prod/
       kustomization.yaml      # simple overlay: resources: [../../base]
@@ -172,7 +173,8 @@ The chart is rendered by Kustomize's `HelmChartInflationGenerator` and only depl
 | `promotiontasks.yaml` | PromotionTask (`promote`) | Shared promotion steps for all apps |
 | `credentials-rbac.yaml` | Role, RoleBindings | Lets remote shard controllers read secrets in the `eodhp` namespace |
 | `git-credentials.yaml` | ExternalSecret | SSH key for Kargo to push to the deployment repo |
-| `github-actions-rbac.yaml` | Role, RoleBinding | Lets the `ci-promoters` group create promotions (for GitHub Actions) |
+| `user-rbac.yaml` | ServiceAccount, Role, RoleBindings | RBAC for the global `kargo-developer` group (binds `kargo-promoter` plus an extra role for warehouse refresh and freight creation) |
+| `slack-webhook-secret.yaml` | ExternalSecret | Slack webhook URL for promotion notifications (created when `slackNotifications: true`) |
 
 ---
 
@@ -255,7 +257,7 @@ If an app defines a `stages` list (e.g. `stages: [prod]`), only those environmen
 
 Each environment's ApplicationSet is configured to read from a specific git source:
 - **test/staging/prod:** Argo CD reads from the `kargo/<app>/<env>` branch, which contains pre-built manifests pushed by the promotion task
-- **dev:** The dev ApplicationSet reads from `kargo/<app>/test` (the dev stage promotion writes to the `kargo/<app>/test` branch which targets the test env overlay)
+- **dev:** there is no separate dev ApplicationSet — the dev stage promotion writes to the `kargo/<app>/test` branch (it targets the test env overlay), so the **test** ApplicationSet picks it up
 
 ---
 

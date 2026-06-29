@@ -15,7 +15,6 @@ Task-focused guides for deploying and operating the platform via Argo CD, Kargo,
 ## Argo CD
 
 - [Access the Argo CD web UI](argocd-web-ui.md)
-- [Deploy via Argo CD dev branch](deploy-via-argocd-dev-branch.md)
 - [Restart a Hub service using Argo CD](argocd-restart-hub-service.md)
 
 ## Kargo

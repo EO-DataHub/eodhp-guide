@@ -17,7 +17,7 @@ For shared EFS or Lustre storage we can use POSIX UIDs and GIDs to maintain a se
 
 To avoid clashes and aid debugging, this page is a reference to these allocations and what they're for. Unshared storage allocated automatically via persistent volume claims is not included.
 
-`<cluster>` means `dev`, `test`, `prod`, etc.
+`<cluster>` means `test`, `staging`, or `prod`.
 
 | Type | Name                                        | Subpath                                                     | UID/GID   | Allocation method       | Purpose and notes                                                                                                                             |
 | ---- | ------------------------------------------- | ----------------------------------------------------------- | --------- | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
