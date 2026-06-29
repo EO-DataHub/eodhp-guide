@@ -1,13 +1,12 @@
 ---
 title: Kargo developer guide
-doc_status: needs-verification
+doc_status: ok
 tags:
   - kargo
   - argo-cd
   - gitops
-  - needs-verification
-last_reviewed:
-reviewed_by:
+last_reviewed: 2026-06-29
+reviewed_by: recmanj
 review_notes: "Split from docs/operations/kargo/developer-guide.md (TL;DR + sections 7–9)"
 ---
 
@@ -71,7 +70,7 @@ Steps for progressing freight, onboarding apps, and Kustomize overlays in the de
 4. Click **Refresh** to pick up the new tag
 5. Click **Create Freight** -- **important:** you must select image tags for **every** image in the warehouse, not just the one you changed. The UI shows a dropdown per image subscription.
 6. Promote the new freight to the `<app>-dev` stage
-7. The image is deployed to the **dev** environment on the test cluster
+7. The `<app>-dev` stage deploys the image to the **test** environment
 
 > **Why manual?** Dev images use `freightCreationPolicy: Manual` and `imageSelectionStrategy: NewestBuild` to avoid auto-detecting every push. This gives you explicit control over which image combination to deploy.
 
@@ -124,8 +123,6 @@ apps/<app-name>/
     deployment.yaml       # (or other manifests)
     ...
   envs/
-    dev/
-      kustomization.yaml  # resources: [../../base]
     test/
       kustomization.yaml  # resources: [../../base]
     staging/
@@ -133,6 +130,8 @@ apps/<app-name>/
     prod/
       kustomization.yaml  # resources: [../../base]
 ```
+
+Apps have overlays only for `test`, `staging`, and `prod`. There is no `dev` overlay — the `<app>-dev` Kargo stage deploys to the **test** environment (`targetEnv: test`), so it reuses the test overlay.
 
 See [Environment overlays (Kustomize)](#environment-overlays-kustomize) for details on the kustomization files.
 
@@ -294,7 +293,7 @@ The base `kustomization.yaml` declares the namespace, resources, generators, and
 A minimal overlay just inherits the base with no changes:
 
 ```yaml
-# apps/<app>/envs/dev/kustomization.yaml
+# apps/<app>/envs/test/kustomization.yaml
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
@@ -302,7 +301,7 @@ resources:
   - ../../base
 ```
 
-To customise a specific environment, add `images`, `patches`, `generators`, or additional `resources` to that overlay's `kustomization.yaml`. This keeps environment differences isolated and explicit -- you can see exactly what differs between dev, test, staging, and prod by looking at their respective overlay files.
+To customise a specific environment, add `images`, `patches`, `generators`, or additional `resources` to that overlay's `kustomization.yaml`. This keeps environment differences isolated and explicit -- you can see exactly what differs between test, staging, and prod by looking at their respective overlay files.
 
 Values that vary by environment (domains, AWS account IDs, database URLs) are handled separately via gomplate variables (`${[.vars.<path>]}`), which are substituted at deploy time from `eodhp/envs/<env>/vars.yaml`.
 

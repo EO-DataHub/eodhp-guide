@@ -17,9 +17,10 @@ The [Terraform CLI](https://developer.hashicorp.com/terraform/tutorials/aws-get-
 
 The Terraform deployments depend on AWS CLI profiles being configured for the respective target AWS account instances.
 
-- profile `eodhp-test` for `dev` and `test` clusters
+- profile `eodhp-test` for the `test` cluster
 - profile `eodhp-prod` for `staging` and `prod` clusters
-  To set up an AWS CLI profile use `aws configure --profile $PROFILE`. At all times you must ensure you use the correct `--profile $PROFILE` flag in all AWS CLI calls.
+
+To set up an AWS CLI profile use `aws configure --profile $PROFILE`. At all times you must ensure you use the correct `--profile $PROFILE` flag in all AWS CLI calls.
 
 If you need to inspect outputs from a previous run of Terraform deployments use `terraform output`.
 
