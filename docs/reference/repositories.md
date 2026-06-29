@@ -1,8 +1,8 @@
 ---
 title: EODH Repositories
-doc_status: unreviewed
-last_reviewed:
-reviewed_by:
+doc_status: needs-verification
+last_reviewed: 2026-06-29
+reviewed_by: recmanj
 review_notes:
 tags:
   - gitops
@@ -974,6 +974,8 @@ Notes:
 ### github-actions
 
   Contains workflows for GitHub actions used by the EO-DataHub
+
+  See the [CI/CD reference](ci-cd/index.md) for the reusable workflows and shared Renovate configuration.
 
   ![github](https://img.shields.io/badge/github-000000?style=flat)
 
