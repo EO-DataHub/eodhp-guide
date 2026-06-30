@@ -61,4 +61,5 @@ plugins:
   - search
   - tags
   - awesome-pages
+  - drawio
   - kroki:

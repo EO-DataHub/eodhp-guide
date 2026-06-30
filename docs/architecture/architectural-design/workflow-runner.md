@@ -9,6 +9,8 @@ tags:
 ---
 ### 3.8 Workflow Runner
 
+**See also:** [Workflow Execution Internals](../../explanation/architecture/workflow-execution-internals.md) — code-level component relationships and CWL wrapping detail.
+
 The Workflow Runner manages workflow-based user computational activity and capacity utilisation on the platform, including some download services activity. Workflows are OGC Best Practice for EO Application Packages comprising CWL and container images for each step. The Workflow Runner makes them available for execution via API calls using the OGC Processes API. 
 
 Note: a component called the ‘Workflow and Analysis System’ used to exist and contain Jupyter, Workspace Management and the workflow pods (but not the rest of the workflow system). The first two are now their own components and workflow pods are now here. This change has no practical effect on users or developers. 
