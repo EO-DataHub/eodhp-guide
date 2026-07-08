@@ -103,6 +103,8 @@ kubectl -n ws-<workspace-name> get secret otp-airbus -o yaml
 
 In AWS, locate secret `ws-<workspace-name>-eodhp` (or `ws-<workspace-name>-<CLUSTER_PREFIX>`) and confirm JSON includes key `airbus`.
 
+**Not all providers use this OTP model.** Open Cosmos uses OAuth2 client-credentials with refresh tokens instead of an OTP-encrypted static API key — credentials are stored in a `oauth-open-cosmos` Kubernetes Secret and refreshed in place by `resource-catalogue-fastapi`. Code assuming every provider has an OTP-based `get_api_key()` result (e.g. the quote/order endpoints in `resource_catalogue_fastapi/__init__.py`) has to explicitly bypass that check for Open Cosmos.
+
 ### Backups
 
 Adaptor outputs are stored in S3 buckets. Ingested items are backed up as part of the `stac-fastapi` database. The original delivered items are not removed by the adaptors.
