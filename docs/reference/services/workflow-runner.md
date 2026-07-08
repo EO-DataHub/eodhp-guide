@@ -54,6 +54,56 @@ Workflows and access policies can be harvested from Git using the EventBus and S
 
 The workflow system tests, included in this service, use the `workflowtestuser` workspace, with password stored in AWS Secrets Manager. To allow the system tests to run with correct authentication, you will need to login to this user account and generate an API key for the workspace of the same name. This API key needs to be stored in AWS Secrets Manager under `ades.workflow-systems-test.api-token`, and needs to be reset every 30 days.
 
+### Access Policies (public vs user-service)
+
+Whether a deployed workflow executes in the *calling* workspace or its own *deploying/owning* workspace is controlled by an access-policy.json object, read by `ades-fastapi`'s `ades_client.py::_check_workflow_access()` from:
+
+```
+s3://{ADES_POLICY_BUCKET}/{ADES_POLICY_PREFIX}/{deploy_workspace}/{workflow_id}.access-policy.json
+```
+
+- `ADES_POLICY_BUCKET` — `user-workflows-catalogue-<cluster_prefix>` (e.g. `user-workflows-catalogue-eodhp`)
+- `ADES_POLICY_PREFIX` — `deployed`
+- both set in `eodhp-argocd-deployment/apps/ades/base/api/deployment.yaml`
+
+Check order in the code:
+
+```python
+if workflow_policy.get("user_service"):
+    return True, "Workflow is a user-service"
+elif workflow_policy.get("public"):
+    return True, "Workflow is public"
+else:
+    # allowed_access.workspaces / allowed_access.groups allowlist check
+```
+
+Minimal schema for a user-service workflow:
+
+```json
+{
+    "id": "<workflow-id>",
+    "user_service": true,
+    "public": false
+}
+```
+
+If no access-policy object exists at all, the workflow is private (only callable with a token scoped to the deploying workspace). The check result is surfaced verbatim as the `AccessReasoning` field on process listings (`ades_fastapi/models.py`) — check this field first when a workflow is executing with the wrong permissions. See [Commercial Data Purchasing Pipeline — execution model](../../explanation/architecture/commercial-data-purchasing.md#execution-model-public-vs-user-service) for why this distinction matters for commercial data adaptors.
+
+### Known gotchas
+
+**Per-provider output-path allowlist.** `eoepca-proc-service-template`'s `service.py` (rendered into each deployed workflow via cookiecutter) decides the stage-out S3 prefix with a hardcoded provider allowlist:
+
+```python
+if self.executing_workspace_name in ["airbus", "planet", "open-cosmos"]:
+    output_prefix = f"commercial-data"
+else:
+    output_prefix = "processing-results/{{cookiecutter.workflow_id}}"
+```
+
+A new provider's workspace name must be added to this list, or its order-tracking STAC items land under `processing-results/...` instead of `commercial-data/...` and `order:status` never progresses past `pending`, even though the workflow itself succeeds. `service.py` is rendered once, at process-deploy time, from whichever branch `${cluster.prefix}` resolves to for that cluster (`eodhp` for prod) — already-deployed processes need to be redeployed/re-registered to pick up an allowlist change.
+
+**Stale cookiecutter template cache.** The template is rendered from a local git clone cached on the `zoo-project-dru-zookernel` pod (namespace `ades`) at `/tmp/zTmp/cookiecutter-templates/eoepca-proc-service-template`, persisted across pod restarts. Redeploys run `git pull` on this cache via a bare `os.system(...)` call in `DeployProcess.py` that never checks the exit code — if the pull fails silently (e.g. a `"detected dubious ownership in repository"` error from Git's CVE-2022-24765 safe-directory check), every redeploy logs success while actually re-rendering from a stale, un-pulled copy of the template. If an allowlist or other template change doesn't seem to take effect after redeploying, check the `zoo-project-dru-zookernel` pod logs for this error, then force a fresh clone on that pod: `rm -rf /tmp/zTmp/cookiecutter-templates/eoepca-proc-service-template`.
+
 ### Configuration
 
 The Auth Agent is configured as part of the [ArgoCD deployment repo](https://github.com/EO-DataHub/eodhp-argocd-deployment) in the apps/ades directory.

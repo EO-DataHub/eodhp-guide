@@ -115,6 +115,7 @@ Adaptor code is version controlled in the [EO-DataHub/commercial-data-adaptors](
 
 - [Commercial Data Purchasing Pipeline](../../explanation/architecture/commercial-data-purchasing.md) — end-to-end explanation of how an order flows from the RC UI through the Purchase API to the adaptor workflow.
 - [Test commercial data adaptor changes](../../how-to/data-and-catalogues/test-commercial-data-adaptor.md) — how to safely test adaptor code changes without affecting live orders.
+- [Add a new commercial data provider](../../how-to/data-and-catalogues/add-commercial-data-provider.md) — checklist for onboarding a new provider adaptor, including the access-policy.json requirement, the output-path allowlist, and IAM role setup.
 
 New versions are released by following the release process described in the repository's README. Deploying adaptors is a manual one time process that must be done when all dependencies are deployed and workspaces for data providers are created.
 
