@@ -67,6 +67,21 @@ The ordering workflow executes in the data provider workspace (e.g. `airbus`):
 - Moves files into the user workspace (e.g. `sparkgeouser`).
 - Updates the STAC item in the user workspace to change order status and add asset records for delivered files. Assets identified vary by provider: primaryAsset, quicklook, thumbnail, metadata, masks.
 
+## Execution Model: public vs user-service
+
+Whether a deployed ordering workflow actually runs **in the provider's workspace** (with access to that workspace's stored provider credentials) or **in the calling user's own workspace** depends entirely on the workflow's access policy — not on anything in the Purchase API.
+
+ADES checks the workflow's access-policy.json (see the [access-policy schema reference](../../reference/services/workflow-runner.md#access-policies-public-vs-user-service)) in this order:
+
+| | Executes in | Gets access to |
+|---|---|---|
+| `"public": true` | Calling workspace (the ordering user's own namespace) | Only the calling workspace's storage/secrets |
+| `"user_service": true` | Deploying/owning workspace (e.g. `ws-planet`, `ws-airbus`) | Additional access to the owning workspace's storage, secrets, block store |
+
+Commercial data adaptors must be deployed as `user_service` workflows: without provider-workspace access, the adaptor can't read the provider API keys / cloud credentials linked to that provider's workspace (e.g. the Airbus `otp-airbus` secret), since those are only ever stored against the provider workspace, not the purchasing user's.
+
+The API surfaces which mode a deployed workflow is actually running in via an `AccessReasoning` field on process listings (`"Workflow is a user-service"` / `"Workflow is public"`) — check this field first when a purchase fails with missing-credential errors, since it usually means the workflow was deployed as `public` instead of `user_service`.
+
 ## COG Conversion (Planned)
 
 An additional workflow is planned to convert delivered assets to Cloud-Optimised GeoTIFF (COG):

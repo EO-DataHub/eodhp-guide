@@ -103,6 +103,8 @@ kubectl -n ws-<workspace-name> get secret otp-airbus -o yaml
 
 In AWS, locate secret `ws-<workspace-name>-eodhp` (or `ws-<workspace-name>-<CLUSTER_PREFIX>`) and confirm JSON includes key `airbus`.
 
+**Not all providers use this OTP model.** Open Cosmos uses OAuth2 client-credentials with refresh tokens instead of an OTP-encrypted static API key — credentials are stored in a `oauth-open-cosmos` Kubernetes Secret and refreshed in place by `resource-catalogue-fastapi`. Code assuming every provider has an OTP-based `get_api_key()` result (e.g. the quote/order endpoints in `resource_catalogue_fastapi/__init__.py`) has to explicitly bypass that check for Open Cosmos.
+
 ### Backups
 
 Adaptor outputs are stored in S3 buckets. Ingested items are backed up as part of the `stac-fastapi` database. The original delivered items are not removed by the adaptors.
@@ -115,6 +117,7 @@ Adaptor code is version controlled in the [EO-DataHub/commercial-data-adaptors](
 
 - [Commercial Data Purchasing Pipeline](../../explanation/architecture/commercial-data-purchasing.md) — end-to-end explanation of how an order flows from the RC UI through the Purchase API to the adaptor workflow.
 - [Test commercial data adaptor changes](../../how-to/data-and-catalogues/test-commercial-data-adaptor.md) — how to safely test adaptor code changes without affecting live orders.
+- [Add a new commercial data provider](../../how-to/data-and-catalogues/add-commercial-data-provider.md) — checklist for onboarding a new provider adaptor, including the access-policy.json requirement, the output-path allowlist, and IAM role setup.
 
 New versions are released by following the release process described in the repository's README. Deploying adaptors is a manual one time process that must be done when all dependencies are deployed and workspaces for data providers are created.
 
