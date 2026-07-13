@@ -63,3 +63,4 @@ plugins:
   - awesome-pages
   - drawio
   - kroki:
+  - glightbox
