@@ -1,0 +1,6 @@
+title: CI/CD
+
+nav:
+  - Overview: index.md
+  - Reusable workflows: reusable-workflows.md
+  - Renovate configuration: renovate-config.md

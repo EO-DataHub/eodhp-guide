@@ -1,0 +1,73 @@
+name: Publish to S3 bucket
+
+on:
+  workflow_call:
+  push:
+    tags:
+      - v\d.*
+
+permissions:
+  contents: read
+
+jobs:
+  prechecks:
+    name: Prechecks
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          RETURN_CODE=0
+          if [ -z "${{ vars.S3_PATH }}" ]; then
+            echo "Github vars.S3_PATH required for publish"
+            RETURN_CODE=1
+          fi
+          if [ -z "${{ vars.AWS_REGION }}" ]; then
+            echo "Github vars.AWS_REGION required for publish"
+            RETURN_CODE=1
+          fi
+          if [ -z "${{ vars.AWS_ROLE_ARN }}" ]; then
+            echo "Github vars.AWS_ROLE_ARN required for publish"
+            RETURN_CODE=1
+          fi
+          exit $RETURN_CODE
+
+  tag:
+    uses: EO-DataHub/github-actions/.github/workflows/get-version-tag.yaml@main
+    with:
+      github-ref: ${{ github.ref_name }}
+
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Install dependencies
+        run: uv sync --frozen --no-dev
+
+      - name: Build static site
+        run: uv run mkdocs build --strict
+
+      - name: Upload site to GitHub artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: eodhp-guide
+          path: site/
+          retention-days: 1
+
+  publish:
+    name: Publish to S3 bucket
+    needs: [prechecks, tag, build]
+    uses: EO-DataHub/github-actions/.github/workflows/s3-publish.yaml@main
+    with:
+      app_artifact: eodhp-guide
+      s3_path: ${{ vars.S3_PATH }}/${{ needs.tag.outputs.version }}
+      aws_region: ${{ vars.AWS_REGION }}
+      aws_role_arn: ${{ vars.AWS_ROLE_ARN }}
+    permissions:
+      id-token: write
+      contents: read

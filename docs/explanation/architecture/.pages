@@ -1,0 +1,19 @@
+title: Architecture
+
+nav:
+  - Commercial data purchasing pipeline: commercial-data-purchasing.md
+  - Orders dashboard: orders-dashboard.md
+  - Catalogue search form pipeline: catalogue-search-form-pipeline.md
+  - Workflow output processing: workflow-output-processing.md
+  - Workflow execution internals: workflow-execution-internals.md
+  - Processes catalogue: processes-catalogue.md
+  - Notebook and workflow launch: parameterised-notebook-and-workflow-launch.md
+  - QGIS and XYZ tile integration: qgis-layer-integration.md
+  - Render configurations: render-configs.md
+  - Private data rendering: private-data-rendering.md
+  - Dask integration: dask-integration.md
+  - JupyterHub resilience and resource limits: jupyterhub-resilience.md
+  - TiTiler resilience and scaling: titiler-resilience-and-scaling.md
+  - Workspace cost API: workspace-cost-api.md
+  - Workspace file management: workspace-file-management.md
+  - Catalogue ingestion and harvesting: catalogue

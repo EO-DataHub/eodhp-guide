@@ -1,0 +1,10 @@
+title: Architecture
+
+nav:
+  - Home: index.md
+  - "1. Introduction": introduction.md
+  - "2. Overview": overview.md
+  - "3. Architectural design": architectural-design
+  - "4. Cloud architecture": cloud-architecture.md
+  - "5. Open-source software reuse": open-source-software-reuse.md
+  - "C4 Model": c4

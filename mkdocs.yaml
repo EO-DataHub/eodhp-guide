@@ -1,0 +1,66 @@
+site_name: EO Data Hub Technical Guide
+site_author: Sparkgeo
+docs_dir: docs
+use_directory_urls: false
+theme:
+  name: material
+  font:
+    text: Fira Sans #Atkinson Hyperlegible
+  logo: assets/icon_eodh_logo_white_grey.png
+  features:
+    - navigation.instant
+    - navigation.indexes
+    - navigation.path
+    - search.suggest
+    - navigation.top
+    - content.code.copy
+    - content.code.select
+    - navigation.footer
+
+  palette:
+    # The first one is selected as the default
+    # Light Mode
+    - scheme: default
+      toggle:
+        icon: material/weather-night
+        name: Light mode
+      primary: blue
+      accent: blue
+
+    # Dark Mode
+    - scheme: slate
+      toggle:
+        icon: material/weather-sunny
+        name: Dark mode
+      primary: blue grey
+      accent: orange
+extra:
+  social:
+    - icon: fontawesome/brands/github-alt
+      link: https://github.com/EO-DataHub/
+  homepage: https://eodatahub.org.uk/
+
+extra_css:
+  - stylesheets/extra.css
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - admonition
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+plugins:
+  - search
+  - tags
+  - awesome-pages
+  - drawio
+  - kroki:
+  - glightbox
