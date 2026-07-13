@@ -5,6 +5,7 @@ nav:
   - Orders dashboard: orders-dashboard.md
   - Catalogue search form pipeline: catalogue-search-form-pipeline.md
   - Workflow output processing: workflow-output-processing.md
+  - Workflow execution internals: workflow-execution-internals.md
   - Processes catalogue: processes-catalogue.md
   - Notebook and workflow launch: parameterised-notebook-and-workflow-launch.md
   - QGIS and XYZ tile integration: qgis-layer-integration.md

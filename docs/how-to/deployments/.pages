@@ -1,0 +1,7 @@
+nav:
+  - index.md
+  - Minimal test deployment: minimal-test-deployment.md
+  - Platform deployment: platform-deployment.md
+  - Bootstrap dependencies: bootstrap-dependencies.md
+  - Deploy eodhp-guide to Kubernetes: deploy-eodhp-guide-to-kubernetes.md
+  - Updating cluster Kubernetes version: updating-cluster-kubernetes-version.md

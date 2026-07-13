@@ -98,7 +98,7 @@ Use the canonical name (lowercase, hyphens). Tag the **primary** service a page 
 | `open-policy-agent` | OPA / OPAL |
 | `grafana` | Grafana (dashboards, monitoring) |
 | `prometheus` | Prometheus (metrics, scraping) |
-| `elk` | ELK / Kibana (logging) |
+| `victorialogs` | VictoriaLogs / Grafana (logging) |
 | `linkerd` | Linkerd (service mesh, mTLS, certificates) |
 | `jupyter` | JupyterHub / notebooks |
 | `stac` | STAC FastAPI / resource catalogue |

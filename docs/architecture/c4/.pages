@@ -1,0 +1,8 @@
+title: C4 Model
+
+nav:
+  - Overview: index.md
+  - System Context: system-context.md
+  - Containers: containers.md
+  - "Detail: Identity & Access Management": iam.md
+  - "Detail: Resource Catalogue & Data Access": resource-catalogue-data-access.md

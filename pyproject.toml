@@ -8,4 +8,6 @@ dependencies = [
     "mkdocs-awesome-pages-plugin>=2.10.1",
     "mkdocs-material>=9.5.43",
     "mkdocs-kroki-plugin",
+    "mkdocs-drawio>=1.4.0",
+    "mkdocs-glightbox>=0.4.0",
 ]

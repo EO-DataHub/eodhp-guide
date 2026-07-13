@@ -1,13 +1,12 @@
 ---
 title: 3.1 Architecture Overview
-doc_status: needs-update
-last_reviewed:
+doc_status: ok
+last_reviewed: 2026-06-30
 reviewed_by:
 review_notes:
 tags:
   - kubernetes
   - aws
-  - needs-update
 ---
 ### 3.1 Architecture Overview
 
@@ -26,7 +25,7 @@ The high-level architecture is illustrated in Figure 3-1 Architecture Overview w
 
 This document concentrates on layers 3, 4 and 5, which are directly part of the platform. Note that this is a conceptual view and does not necessarily reflect how the system is broken into internal software components – for example, a single service may provide both an API and underlying processing within a workspace. 
 
-![](../figs/fig-3-01-architecture-overview.png)
+![](../figs/fig-3-01-architecture-overview.drawio)
 
 
 **Figure 3-1 Architecture Overview**
@@ -46,9 +45,6 @@ This document concentrates on layers 3, 4 and 5, which are directly part of the 
 #### 3.1.2 Components
 
 EODHP can be decomposed into components, each typically being a specific piece of software executing as one or more instances. These provide the functionality at layers 3, 4 and 5 above. 
-
-!!! todo "Needs confirming"
-    This chart needs confirmation that it is correct and if it needs updating
 
 ```kroki-plantuml
 @startuml
@@ -82,18 +78,15 @@ package IAM {
 
 package "Resource Catalogue" as Catalogue {
   [User Policies] as AccessPolicies
-  [Annotations] as AnnCat
   [Search] as CatS
   [Ingesters] as CatI
   [Transformers]
   [Harvesters] as CatSource
   [Commercial Data] as Ordering
 
-  CatBrowser --> AnnCat
   CatBrowser --> CatS
   CatBrowser --> Ordering
   CatS --> CatI
-  AnnCat --> CatI
   AccessPolicies --> CatI
   CatI ..> Transformers : (via messaging)
   Transformers ..> CatSource : (via messaging)
@@ -108,7 +101,7 @@ package "Data Access Services" as DAS {
 
 package "Workflow Runner" as WR {
   [Workflow API] as WFAPI
-  [ADES] as ADES
+  [ADES/ZOO-Project] as ADES
 
   WFAPI --> ADES
 
@@ -151,7 +144,7 @@ package ENS {
 
 package Supporting {
   [ArgoCD]
-  [ELK]
+  [VictoriaLogs]
   [Messaging]
   [...]
 }
@@ -187,7 +180,6 @@ Figure 3-2 provides an overview of the main components comprising the architectu
     - **JupyterLab**: provides a Notebook interface of users to run code. 
 - Resource Catalogue: 
     - **Search**: a customized stac-fastapi instance providing STAC access to the EODH catalogue, including user-defined catalogue entries which are namespaced to be ‘inside’ a particular workspace. 
-    - **Annotations:** (implementation currently incomplete): a service to retrieve linked-data-based annotations on data in the catalogue. 
     - **User Policies:** a repository of user-set access policies that allow them to publish data from their workspaces. Accessible only internally within the platform. 
     - **Commercial Data**: a service for getting quotations for and for ordering commercial data. 
     - **Harvesters**: a variety of components which obtain catalogue data from sources inside and outside EODH. 
@@ -196,8 +188,8 @@ Figure 3-2 provides an overview of the main components comprising the architectu
 - ENS 
     - **Argo Events+Workflows**: instances of Argo Events and Argo Workflows which are used to trigger harvesters which run on a schedule. This may expand eventually to a wider role, such as triggering workflows on data arrival. 
 - Workflow Runner 
-    - **Workflow API**: a service to accept and authorize workflow definition and execution requests, implementing the EODH model of workflows being owned by and potentially private to a particular workspace. 
-    - **ADES**: the workflow execution engine from EOEPCA which is able to execution CWL-based user-defined workflows. 
+    - **Workflow API** (`ades-fastapi`): a service to accept and authorize workflow definition and execution requests, implementing the EODH model of workflows being owned by and potentially private to a particular workspace. 
+    - **ADES/ZOO-Project**: the workflow execution engine implementing OGC API Processes. Requests pass through `ades-fastapi` to ZOO-Project, which delegates CWL execution to `zoo-calrissian-runner` and `pycalrissian`. These submit Kubernetes jobs consisting of a stage-in pod (fetching STAC inputs), the user's CWL workflow pods, and a stage-out pod (uploading outputs to workspace S3). 
     - **Workflow Ingester**: a service (technically a catalogue ingester) which allows workflows to be defined and added to the ADES via a definition in a catalogue harvest location. Most workflows are defined via a POST to the workflow API. 
     - **Workflow Job**: workflow-based processing requested by a user, running as one or more Kubernetes pods. 
 - IAM 
