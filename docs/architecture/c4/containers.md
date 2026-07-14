@@ -56,7 +56,8 @@ Rel(user, catalogueUI, "Searches, browses and orders EO data via", "HTTPS")
 Rel(user, jupyterhub, "Runs notebooks via", "HTTPS")
 Rel(user, gis, "Uses")
 
-Rel(gis, dataAccess, "Renders layers via", "XYZ/WMTS")
+Rel(gis, dataAccess, "Searches catalogue and renders layers via", "STAC API/XYZ/WMTS")
+Rel(gis, iam, "Authenticates via")
 
 Rel(catalogueUI, dataAccess, "Searches", "STAC API/HTTPS")
 Rel(webPresence, workspaceMgmt, "Creates and manages workspaces via")
