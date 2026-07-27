@@ -63,7 +63,7 @@ The application is configured through:
    - `VITE_BASE_PATH` - Base path for the application (optional)
 
 2. **STAC Collection Configuration**:
-   - Collection categorization defined in `src/constants/collectionCategorizations.ts`
+   - Collection categorization defined in `src/constants/collectionCategorizations.ts` (see [Collection categorisation](../../explanation/architecture/collection-categorisation.md))
    - Collection rendering configuration in `src/library/collectionRenderingConfig.ts`
    - JSON schema forms for query interfaces in `src/json-schema-forms/`
 

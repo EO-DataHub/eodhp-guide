@@ -52,7 +52,7 @@ Because rendering parameters are defined here rather than in the STAC catalogue,
 | `expression` | Algebraic band index | `"(cog_b7-cog_b3)/(cog_b7+cog_b3)"` |
 | `variable` | xarray variable name (netCDF/zarr) | `"pr"`, `"tas"`, `"analysed_sst"` |
 | `auth` | Whether tile requests require authentication | `true`, `false` |
-| `quicklook_georeference` | Display as georeferenced image rather than tiles | `"bbox-squared"`, `"geometry"` |
+| `quicklook_georeference` | Georeference a non-tiled quicklook image for map display; see [Quicklooks](#quicklooks) | `"bbox"`, `"bbox-squared"`, `"geometry"` |
 | `thumbnail_asset` | Asset key to use for thumbnail fallback | `"thumbnail"`, `"external_thumbnail"` |
 | `thumbnail_auth` | Whether thumbnail requires authentication | `true`, `false` |
 
@@ -73,6 +73,22 @@ The config loader routes each render to one of two TiTiler backends:
 
 - **Standard STAC** — `/core/stac/tiles/WebMercatorQuad/{z}/{x}/{y}@1x` — used for COG and most raster assets.
 - **Multidimensional** — `/xarray/tiles/{z}/{x}/{y}@1x` — used when the render has a `variable` field (netCDF/zarr via kerchunk reference files).
+
+---
+
+## Quicklooks
+
+Quicklooks are low-resolution preview images used to show commercial satellite imagery on the map before it has been purchased at full resolution — a proper on-map preview is considered important enough before a purchase decision that the RC UI renders quicklooks directly rather than showing a static thumbnail.
+
+Catalog providers are inconsistent about how they supply a quicklook: some provide a proper georeferenced GeoTIFF, which TiTiler can render like any other COG; others provide only a plain PNG with no embedded georeference at all.
+
+For a PNG with no georeference, the RC UI falls back to the STAC item's own geolocation — either its `geometry` (GeoJSON polygon) or its `bbox` property — to place the image on the map. Which one to use, and how, is set per-render via `quicklook_georeference`:
+
+| `quicklook_georeference` | Behavior |
+|--------------------------|----------|
+| `bbox` | Uses the STAC item's bounding box (`bbox` property) to georeference the quicklook image. |
+| `geometry` | Uses the STAC item's geometry (GeoJSON polygon) to georeference the quicklook image. Since the polygon can be arbitrarily complex, heuristics are used to find four corner points to anchor the image to. |
+| `bbox-squared` | Handles PNGs padded on one side to make the image square in pixel dimensions, even though the underlying `bbox` only covers the (non-square) image geometry. The `bbox` is post-processed to be squared in UTM coordinates before use. |
 
 ---
 

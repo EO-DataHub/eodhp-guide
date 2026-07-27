@@ -10,6 +10,7 @@ nav:
   - Notebook and workflow launch: parameterised-notebook-and-workflow-launch.md
   - QGIS and XYZ tile integration: qgis-layer-integration.md
   - Render configurations: render-configs.md
+  - Collection categorisation: collection-categorisation.md
   - Private data rendering: private-data-rendering.md
   - Dask integration: dask-integration.md
   - JupyterHub resilience and resource limits: jupyterhub-resilience.md
