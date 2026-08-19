@@ -19,3 +19,4 @@ This covers Members, Publisher, Files, Profile, Platform admin usage, and the Ac
 - [Workspace management UX](workspace-management-ux.md) — what's changing in Members, Publisher/Files visibility, Profile, and platform-admin controls, and why, with open questions for client review
 - [Accounting & billing UX](accounting-billing-ux.md) — the proposed credit-based Credits/Usage/Budget pages and the workspace category setting, with open questions for client review
 - [Proposed backend endpoints](pending-backend-endpoints.md) — flat, scannable table of every backend endpoint needed, grouped by page
+- [Accounting & billing backend ADR](accounting-billing-backend-adr.md) —  Architecture Decision Record describing the proposed back end changes and the reasoning behind them
