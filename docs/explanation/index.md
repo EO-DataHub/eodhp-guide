@@ -23,6 +23,10 @@ GitOps branching, Kargo promotion, and developer workflow.
 
 IAM model, authentication design, OIDC scopes, and access control.
 
+## [Design decisions](design-decisions/index.md)
+
+Decision records for cross-cutting design — accounting/billing and workspace changes so far.
+
 ## Analytics
 
 - [Google Analytics integration (GA4)](analytics-google-analytics-integration.md)
