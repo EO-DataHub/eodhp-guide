@@ -1,8 +1,8 @@
 # ADR-001: Credit-based accounting for platform usage
 
-**Status:** Proposed. Four decisions listed at the end are needed before work starts.
-**Date:** 2026-08-19
-**Applies to:** the EO DataHub accounting service. The separate commercial-data purchasing work is unaffected.
+- **Status:** Proposed. Four decisions listed at the end are needed before work starts.
+- **Date:** 2026-08-19
+- **Applies to:** the EO DataHub accounting service.
 
 ## Summary
 
@@ -36,12 +36,12 @@ Six choices define the system.
 
 ## Excluded from this phase
 
-| Excluded | Consequence |
-|---|---|
-| Payments, invoicing, refunds | Credits stay notional. Granting credit is an administrative action |
-| Blocking or throttling on overspend | A workspace can exceed its budget. The system reports it and nothing more |
-| Delivering the warnings | See risk 2 below. The warning is produced, but nothing yet sends it to anyone |
-| GPU measurement | See risk 1 below. Owned by a different component |
+| Excluded                            | Consequence                                                                   |
+| ----------------------------------- | ----------------------------------------------------------------------------- |
+| Payments, invoicing, refunds        | Credits stay notional. Granting credit is an administrative action            |
+| Blocking or throttling on overspend | A workspace can exceed its budget. The system reports it and nothing more     |
+| Delivering the warnings             | See risk 2 below. The warning is produced, but nothing yet sends it to anyone |
+| GPU measurement                     | See risk 1 below. Owned by a different component                              |
 
 ## Consequences
 
@@ -68,20 +68,3 @@ Four other items reduced in size once the existing code was examined more closel
 **3. A shared message contract between two services has already drifted apart.** Two services exchange workspace information, and their definitions of that message have quietly diverged — different field names on each side. It causes no failure today only because the mismatched fields happen not to be read. This work needs to add a field to that same message, which means changing two services, written in two different languages, in step, and fixing the existing mismatch at the same time. It is straightforward work but it crosses a team boundary.
 
 **4. The frontend assumes a permission level that does not exist.** The wider frontend design uses three levels within a workspace — owner, administrator, member — but the platform currently has only two. The accounting features work with the two that exist and have been built so the third can be admitted later by changing a single value. The rest of the frontend work will need the missing level built.
-
-## Decisions needed
-
-| # | Decision | Why it matters |
-|---|---|---|
-| 1 | May the existing accounting database be recreated from empty, or must accumulated records be preserved? | Determines whether a data-preserving migration must be written. Affects the first database change only, not the design. The data is believed to be unused, but that should be confirmed rather than assumed |
-| 2 | Is GPU measurement funded and scheduled, and by whom? | Two planned pages cannot show correct figures without it. It sits outside this work |
-| 3 | Is a notification system funded? | Without it, budget warnings are recorded and never delivered, and the alerts switch offered to users does nothing |
-| 4 | Confirm that credits stay notional for this phase, with no money movement | The design assumes it throughout. Reversing this assumption later is expensive; assuming it now is not |
-
-One further question needs an answer before the usage pages are built, though it does not block development: whether a workspace's usage figures are visible to every member or only to administrators. The frontend proposal currently states both.
-
-## Where the detail lives
-
-- **Credits ledger design decisions** — the twelve technical decisions behind this ADR, with reasoning
-- **Credits ledger schema** — the database design
-- **Credits ledger scoping** — the task list and estimates. Note that its sizes predate several decisions recorded here

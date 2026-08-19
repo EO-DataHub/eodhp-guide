@@ -28,6 +28,8 @@ Shows consumption over time, filterable by month and by user, with a per-user br
 
 The "by user" functionality won't be available until the next phase, but we decided to include it in the interface design now so it can be easily plugged in later.
 
+**Question for you:** today's usage/billing records are believed to be unused and safe to discard when the new credit model is built — can that be confirmed, or does existing usage history need to be preserved and carried forward into the new system?
+
 ## Budget
 
 Two separate things, worth noting as separate because they work differently:
@@ -51,7 +53,14 @@ A new tab under [Platform admin](workspace-management-ux.md#platform-admin-draft
 
 Both are mock data — there's no real cross-workspace alerting yet, and new workspaces don't actually inherit these defaults yet either.
 
-**Question for you:** who should be notified when a workspace breaches its limit — just the platform admin shown here, or the workspace's own owner/admins too?
+**Questions for you:**
+
+- This design shows alert toggles and warn thresholds, but nothing today actually delivers a
+  notification anywhere (email, in-app, etc.) when a limit is breached — is building that
+  delivery mechanism in scope and funded, or should the alerting UI stay switched off until it
+  is, so it doesn't look like something that works when it doesn't?
+- Who should be notified when a workspace breaches its limit — just the platform admin shown
+  here, or the workspace's own owner/admins too?
 
 ## Platform costs
 
