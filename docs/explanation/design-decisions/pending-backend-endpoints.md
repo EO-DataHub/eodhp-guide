@@ -92,17 +92,3 @@ that.
 | POST    | credit top-up/grant endpoint `/api/workspaces/:id/accounting/balance`        | `{ amount: number }`                                                             | Tops up/grants credits to the workspace                                                                                                                                                                  | `hub_admin` only |
 | GET/PUT | `/api/workspaces/:id/accounting/budget`                                      | `{ enabled: boolean, defaultUserThreshold: number, workspaceThreshold: number }` | Reads/sets one combined spending limit covering CPU + GPU together, matching the Budget page's single "compute" number, plus the default per-user threshold and whether per-user budgets are switched on | Owner            |
 | GET/PUT | `/api/workspaces/:id/accounting/budget/users` / `.../budget/users/:username` | `{ username, threshold, alertsEnabled }`                                         | Lists/sets per-user budget overrides, same combined-number shape as the row above                                                                                                                        | Owner            |
-
----
-
-## Open questions
-
-Not yet resolved — flagging here rather than cluttering the tables above.
-
-- **Usage visibility** — who can see a workspace's usage data: any member, or admins only?
-- **Member visibility** — who can see the list of workspace members, members or admins only?
-- **Promote/demote** — who can promote a member to admin or demote an admin back to member:
-  only the owner, or any admin?
-- **Dask/GPU integrations** — who can enable them: just `hub_admin` for now, or eventually workspace owners/admins too?
-- **Visibility changes** — who can change the visibility of a workspace's files, workflows, or catalogue data: owner, admin, or any member?
-- **Budget overrides** — who can view or set per-user budget overrides: only the owner, or any admin?
