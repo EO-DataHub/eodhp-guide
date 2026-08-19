@@ -71,7 +71,7 @@ Also worth flagging: visibility is currently a simple binary (Public/Private). I
 Platform/hub admins now have their own area, separate from any single workspace's Settings — reachable from the username menu, visible only to platform admins. It exists because the workspace switcher only ever lists workspaces you're a member of, and a platform admin needs to reach workspaces they don't belong to at all (e.g. to enable GPU access for a workspace they're not in). It has four tabs; two are covered here, two are billing concepts covered in [Accounting & billing UX](accounting-billing-ux.md).
 
 - **Workspace settings** — every workspace on the platform, with its **Category** (Commercial/Research — drives the pricing multiplier, see the billing doc) and **Dask/GPU integration** toggles.
-- **Usage** — the same cross-workspace usage leaderboard; every workspace's usage, for spotting which are consuming the most.
+- **Usage** — the same cross-workspace usage leaderboard; every workspace's usage (CPU, memory, GPU) and total credits, for spotting which are consuming the most.
 - **Budget policy** and **Platform costs** — see the billing doc.
 
 All four tabs are mock data — the real version needs a "list every workspace" endpoint that doesn't exist yet (today's workspace/usage APIs are scoped to the caller's own memberships, or one billing account at a time, not the whole platform).

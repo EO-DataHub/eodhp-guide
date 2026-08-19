@@ -11,19 +11,20 @@ review_notes: "New page summarising feat/add-workspace-services for client revie
 
 # Accounting & billing UX
 
-The old workspace app billed everything in raw pounds, shown as a flat list of invoices. The proposal here moves to a shared **credit** currency: a workspace holds a credit balance, spends it on compute (CPU/GPU) at a per-resource rate, and tops it up as needed. This page covers three new pages built around that idea — Credits, Usage, and Budget — plus the workspace category setting that drives pricing. All of it is a **draft**: nothing here is connected to a real backend yet, since the credit-ledger model itself doesn't exist in the billing system today. It's a clickable proposal, built so you can react to the idea before real engineering work starts.
+The old workspace app billed everything in raw pounds, shown as a flat list of invoices. The proposal here moves to a shared **credit** currency: a workspace holds a credit balance, spends it on compute (CPU/memory/GPU) at a per-resource rate, and tops it up as needed. This page covers three new pages built around that idea — Credits, Usage, and Budget — plus the workspace category setting that drives pricing. All of it is a **draft**: nothing here is connected to a real backend yet, since the credit-ledger model itself doesn't exist in the billing system today. It's a clickable proposal, built so you can react to the idea before real engineering work starts.
 
 ## Credits
 
-Shows the workspace's current credit balance, a "burn rate" table (how many credits each resource costs — e.g. 1 credit/hour for CPU, 10 credits/hour for GPU), and a "Buy more credits" action mocked at the moment. It also shows the workspace's category (Commercial/Research) read-only, since it drives the pricing multiplier — the editable control lives with the other platform-admin-only, cross-workspace settings, not here — see [Workspace management UX](workspace-management-ux.md).
+Shows the workspace's current credit balance, a "burn rate" table (how many credits each resource costs — e.g. 1 credit/hour for CPU, 0.5 credits/GB-hour for memory, 10 credits/hour for GPU), and a "Buy more credits" action mocked at the moment. Memory has its own rate rather than being bundled into the CPU rate because the real usage-data API already meters it as its own separate quantity, alongside CPU. It also shows the workspace's category (Commercial/Research) read-only, since it drives the pricing multiplier — the editable control lives with the other platform-admin-only, cross-workspace settings, not here — see [Workspace management UX](workspace-management-ux.md).
 
 **Questions for you:**
 
-- This assumes the CPU/GPU credit-rate model is the right shape, with storage and data egress billed as a storage plan (see budget section), is this ok?
+- This assumes the CPU/memory/GPU credit-rate model is the right shape, with storage and data egress billed as a storage plan (see budget section) — is this ok?
+- The formula behind the burn-rate table is **additive, not multiplicative**: `cost = (cpu-seconds × cpu-rate) + (memory-gb-seconds × memory-rate)` — CPU and memory are priced and charged independently, then summed, mirroring how the real usage-data API already meters them as two separate quantities. A job that's light on one resource and heavy on the other still gets charged fairly for whichever it actually uses. Are you happy with cost being calculated this way?
 
 ## Usage
 
-Shows consumption over time, filterable by month and by user, with a per-user breakdown. This is the page real usage data already partially supports today (the underlying usage API exists, just not denominated in credits yet).
+Shows consumption over time, filterable by month and by user, with a per-user breakdown, broken down by resource type (CPU, memory, GPU). This is the page real usage data already partially supports today (the underlying usage API exists, just not denominated in credits yet) — CPU and memory are already separately metered there today, which is what this page's resource breakdown mirrors.
 
 The "by user" functionality won't be available until the next phase, but we decided to include it in the interface design now so it can be easily plugged in later.
 
@@ -31,7 +32,7 @@ The "by user" functionality won't be available until the next phase, but we deci
 
 Two separate things, worth noting as separate because they work differently:
 
-- **Storage** is still a flat monthly plan (Free / Standard / Plus), billed in pounds, separate from the credit pool.
+- **Storage** is still a flat monthly plan (Free / Standard / Plus), billed in pounds, separate from the credit pool. Unlike the compute side, there's no proposed endpoint for this yet at all — reading a workspace's plan/usage and changing plan are both entirely mocked, with nothing plumbed in.
 - **Compute spending limits** are new: one combined limit covering CPU + GPU together (not split per resource), plus optional per-member overrides with alerts.
 
 The "by user" functionality won't be available until the next phase, but we decided to include it in the interface design now so it can be easily plugged in later.
