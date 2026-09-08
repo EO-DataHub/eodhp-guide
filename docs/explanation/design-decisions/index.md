@@ -20,3 +20,13 @@ This covers Members, Publisher, Files, Profile, Platform admin usage, and the Ac
 - [Accounting & billing UX](accounting-billing-ux.md) — the proposed credit-based Credits/Usage/Budget pages and the workspace category setting, with open questions for client review
 - [Proposed backend endpoints](pending-backend-endpoints.md) — flat, scannable table of every backend endpoint needed, grouped by page
 - [Accounting & billing backend ADR](accounting-billing-backend-adr.md) —  Architecture Decision Record describing the proposed back end changes and the reasoning behind them
+
+## Credits ledger implementation
+
+Lower-level design work for the credit-based accounting model in `accounting-service`, one level down from the ADR and UX pages above.
+
+- [ADR-001: Credit-based platform accounting](ADR-001%20Credit-based%20platform%20accounting.md) — proposed model: one shared workspace credit balance, a versioned pricing policy, an append-only ledger, and budgets that warn rather than block
+- [Credits ledger design decisions](Credits%20ledger%20design%20decisions.md) — numbered decisions for the credits, ledger, and budget features, and what each changes in the task list
+- [Credits ledger schema](Credits%20ledger%20schema.md) — database schema implementing those decisions, plus the API response conventions new endpoints should follow
+- [Credits ledger scoping](Credits%20ledger%20scoping.md) — implementation tasks for the credits, ledger, and account system, sequenced against findings in the current codebase
+- [Dev tooling notes](Dev%20tooling%20notes.md) — working notes for the `accounting-service` dev environment, kept separate from the decision records above
