@@ -1,3 +1,12 @@
+---
+title: Credits and ledger — schema design
+doc_status: unreviewed
+tags:
+  - workspaces
+last_reviewed:
+reviewed_by:
+review_notes: "Migrated from the standalone accounting and billing repository; not yet reviewed in the guide."
+---
 # Credits and ledger — schema design
 
 This note defines the database schema for the credits, ledger, and budget features in `accounting-service`. It implements the decisions in [Credits ledger design decisions](Credits%20ledger%20design%20decisions.md), which are referenced below as D1 to D12.
@@ -79,16 +88,68 @@ A policy is one calibration pass covering every rate at once (D3). Rows are immu
 | `uuid` | UUID | Primary key |
 | `version` | int | Human-usable identifier. Monotonic, unique |
 | `valid_from` | timestamptz | When this policy starts applying to usage |
-| `valid_until` | timestamptz, null | Null for the current policy |
+| `valid_until` | timestamptz, null | Null on every policy the loader writes. See *The loader never closes a policy* below |
 | `configured_at` | timestamptz | Defaults to `func.now()`. Decision time, as distinct from validity time |
 | `corrects_id` | UUID, null | Self-reference. Set when this policy corrects an earlier one (D8) |
-| `credit_to_currency_rate` | Decimal | Credits per pound. Reporting and calibration only (D2) |
 | `default_category` | str | Applied to workspaces with no assignment yet (D6) |
 | `reason` | str, null | Why this calibration happened. Feeds the audit log |
 
 **`pricing_policy_rate`** — one row per SKU per policy: `uuid`, `policy_id` → `pricing_policy`, `item_id` → `billing_item`, `credits_per_unit` (Decimal). Unique on `(policy_id, item_id)`.
 
 **`pricing_policy_category_multiplier`** — one row per category per policy: `uuid`, `policy_id`, `category` (str), `multiplier` (Decimal). Unique on `(policy_id, category)`.
+
+### The loader never closes a policy
+
+T4 appends and nothing else. A stored policy keeps `valid_until` null for good, so every
+validity range is open, and `PricingPolicy.resolve` reads the most recently configured policy
+whose `valid_from` is at or before the usage time (T5). This is distinct from
+`PricingPolicy.current`, which ignores validity and answers "what did we configure last" for
+the loader: a policy dated next month is what we configured last, and prices nothing today. Ties on `configured_at` break
+on `version` descending, because `configured_at` defaults to `func.now()` and that is the
+transaction timestamp: two policies minted in one transaction carry the same value.
+
+This is what makes a correction cheap. A backdated policy configured later wins over the
+policy it corrects without rewriting a range it did not create, which is the append-only
+property D8 needs. `valid_until` keeps a narrower meaning: a policy deliberately ended with
+no replacement, which nothing does yet.
+
+### Mint or match
+
+The `pricing_policy` section of the configuration document holds one calibration pass:
+
+```yaml
+pricing_policy:
+  valid_from: "2025-01-01T00:00:00Z"
+  default_category: standard
+  reason: "initial calibration"
+  rates:
+    - sku: cpu-seconds
+      credits_per_unit: 0.5
+  category_multipliers:
+    - category: standard
+      multiplier: 1
+```
+
+The loader runs on every ingester pod start, so leaving the stored policy alone is the common
+case. `PolicyFingerprint` in `accounting_service/pricing.py` decides: it holds `valid_from`,
+the default category, the rates and the multipliers, with rates and
+multipliers sorted so document order does not matter and amounts compared as `Decimal` so
+rewriting `0.5` as `0.50` is not a calibration. `reason` is deliberately outside it, so
+re-wording the note explaining a policy mints nothing. `valid_from` is deliberately inside
+it, so re-dating a calibration is recordable rather than a silent no-op.
+
+`default_category` must have an entry in `category_multipliers`, or every workspace with no
+category assignment is unpriceable (D6). Rejected at load rather than defaulted to 1, so the
+number in force is a number somebody wrote down.
+
+Two replicas starting together both see the same current policy and both mint the same
+version. The unique constraint on `version` refuses the second; the write happens inside a
+savepoint so the caller's transaction survives, and the loser re-reads. If the winner minted
+what this document describes there is nothing left to do, which is the whole recovery.
+
+`pricing_policy.rates` is the only place a rate is configured. A `prices:` section briefly
+coexisted with it, feeding `billing_item_price` in pounds, and both are gone: credits are the
+unit of account and there was no second number worth keeping in step.
 
 The pair `(valid_from, configured_at)` makes the policy bi-temporal, which is what allows a corrected policy to be added for a period already charged without destroying the record of what was charged at the time. `BillingItemPrice` already describes this pattern in its docstring, so the concept is not new to this codebase — see *What this replaces*.
 
@@ -240,11 +301,11 @@ Individual reversal rows are therefore invisible here. The audit surface (task 9
 
 ## What this replaces
 
-`pricing_policy_rate` supersedes `billing_item_price`. Under D2 credits are the unit of account, so a price in pounds is `credits_per_unit × credit_to_currency_rate` — derived, not stored. Keeping both invites the two disagreeing about the same number.
+`pricing_policy_rate` replaced `billing_item_price`, and that table is gone as of revision `30ac7fce87ae`. Credits are the unit of account (D2) and nothing converts them to money, so there is no second number to keep in step.
 
-`GET /accounting/prices` keeps its fields and computes its values from the policy instead of reading `billing_item_price`. `eodhp-workspace-ui` consumes it through `InvoicesContext` (`getSKUPrice`, `getSKUUnit`), so T11 changes the implementation and not the shape. The types of two fields have already changed, though, ahead of that work: see *API response conventions* below.
+`GET /accounting/prices` serves the rates of the policy in force. `eodhp-workspace-ui` consumes it through `InvoicesContext` (`getSKUPrice`, `getSKUUnit`), and the shape did change: `price` became `credits_per_unit`, renamed rather than redefined so a client displaying credits as pounds fails visibly rather than showing a wrong number; `uuid` and `valid_until` are gone, the first because a rate row's identity is an implementation detail and the second because the loader never closes a policy. `valid_from` kept its name but not its meaning - every SKU now reports the date of the calibration that set it, so they all share one date.
 
-`BillingItemPrice`'s docstring already describes the append-and-supersede pattern this schema adopts, but `upsert_configured_price` contradicts it by mutating rows in place. The new policy loader appends, and never updates a row that already exists.
+The policy loader appends and never updates a row that already exists. `upsert_configured_price` used to contradict that by mutating price rows in place; it went with the table.
 
 ## Migration approach
 

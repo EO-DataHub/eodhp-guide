@@ -1,3 +1,12 @@
+---
+title: Credits, ledger, and account system — implementation tasks
+doc_status: unreviewed
+tags:
+  - workspaces
+last_reviewed:
+reviewed_by:
+review_notes: "Migrated from the standalone accounting and billing repository; not yet reviewed in the guide."
+---
 # Credits, ledger, and account system — implementation tasks
 
 This note breaks the credits work into tasks that can be picked up and finished one at a time. It replaces the earlier version of this document, which sized 15 business-level items before the design was settled. Those items are preserved in the [traceability table](#traceability-to-the-original-task-numbers), because the source spreadsheet and the other two design notes refer to them by number.
@@ -53,8 +62,8 @@ Everything downstream stores a `policy_id`, so the policy tables come before the
 | ID | Task | Est | Status | Notes |
 |---|---|---|---|---|
 | T3 | Add the three policy tables and a migration | 1d | Done | `pricing_policy`, `pricing_policy_rate`, `pricing_policy_category_multiplier`, in `models.py`, with revision `9b12692d3f40`. `corrects_id` is a bare self-referential foreign key with no relationship attribute, because following it is an audit path rather than a read path. `version` is unique; monotonic is the loader's job in T4 |
-| T4 | Mint-or-match policy loader | 1.5d | | Each load either matches the current policy or mints a new version. Matching compares every rate, every category multiplier and the exchange rate together, against `Configuration` objects rather than dicts now that T2 validates the document first. See the finding on the config loader above |
-| T5 | Resolve the policy for a usage time | 0.5d | | Select the policy whose validity range contains the time, ordered by `configured_at` descending, limit 1. If no policy applies, use the earliest `valid_from` (D10). A query with no writes, so it is cheap to test |
+| T4 | Mint-or-match policy loader | 1.5d | Done | Each load either matches the current policy or mints a new version. Matching compares every rate and every category multiplier together, against `Configuration` objects rather than dicts now that T2 validates the document first. `PolicyFingerprint` in `pricing.py` is the match rule; `PricingPolicy.load_configured_policy` carries it out, recovering from a lost version race inside a savepoint. `valid_until` is never written - see *The loader never closes a policy* in the [schema note](Credits%20ledger%20schema.md) |
+| T5 | Resolve the policy for a usage time | 0.5d | Done | Select the policy whose validity range contains the time, ordered by `configured_at` descending then `version` descending, limit 1. If no policy applies, the earliest `valid_from` prices it (D10). `PricingPolicy.resolve`, written when `GET /accounting/prices` needed it: a policy dated in the future must not be served as a current rate |
 
 ## Wave 2 — the pricing engine
 
@@ -75,7 +84,7 @@ Everything downstream stores a `policy_id`, so the policy tables come before the
 | ID | Task | Est | Notes |
 |---|---|---|---|
 | T10 | Balance read and the snapshot table | 1.5d | Snapshot plus the delta of rows newer than `as_of`. Key the snapshot on `recorded_at`, or a backfilled event falls out of both halves of the sum |
-| T11 | Policy read endpoints | 1d | `GET /accounting/prices` keeps its fields and computes pound values from the policy, which `eodhp-workspace-ui` depends on through `InvoicesContext`. Its `price` field is already an exact decimal string, so use the `ExactDecimal` type for anything new that returns money or credits. `GET /accounting/pricing-policy` returns the current policy and its version history |
+| T11 | Policy read endpoints | 1d | **Half done.** `GET /accounting/prices` now serves credit rates from the policy in force, brought forward as part of removing fiat pricing: `price` became `credits_per_unit`, and `uuid` and `valid_until` are gone. `eodhp-workspace-ui` reads this through `InvoicesContext` and needs updating to match. Still to do: `GET /accounting/pricing-policy`, returning the current policy and its version history |
 | T12 | Usage reads with period, user and SKU filters | 1d | `SUM(credits)` grouped by the requested dimension, with `HAVING SUM(credits) <> 0` so a fully reversed charge disappears instead of showing as a zero row (D12) |
 | T13 | Explainable pricing endpoint | 0.5d | Reads the quantity, policy version and category stored on each ledger row and shows how the charge was reached. Cheap because T7 to T9 store what it needs |
 | T14 | Pre-execution cost estimate | 0.5d | Runs T7's function against a proposed quantity and writes nothing. Advisory only (D4) |
@@ -113,7 +122,7 @@ So neither source can be trusted for the audience list. Read `aud` off a real to
 
 ## Effort
 
-Waves 0 to 5 total about 23 days, of which T1, T2 and T3 account for 2.5 days and are done. This excludes the two tasks below that remain blocked, and matches the earlier estimate closely enough that the [ADR](ADR-001%20Credit-based%20platform%20accounting.md) does not need revising.
+Waves 0 to 5 total about 23 days, of which T1 to T5 account for 4.5 days and are done, plus half of T11. This excludes the two tasks below that remain blocked, and matches the earlier estimate closely enough that the [ADR](ADR-001%20Credit-based%20platform%20accounting.md) does not need revising.
 
 T21 accounts for 1.5 of those days and is hardening rather than a credit feature. It is counted here because it gates wave 5, but it would be defensible to fund it separately.
 
@@ -133,7 +142,7 @@ The largest single item is now 2 days. The earlier list had one 20-day item. Its
 
 **The breach-message consumer.** T16 publishes a message that nothing reads. D9 puts delivery out of scope, and the consuming subsystem is undesigned. Until it exists, warn-only enforcement has no visible effect on a user, which matters because the warning is the whole control.
 
-**Payment and invoicing.** Credits stay separate from money (D2). The exchange rate is a reporting and calibration value.
+**Payment and invoicing.** Credits are the unit of account and nothing converts them to money (D2). Buying credits is out of scope: a user asks a hub admin, who grants them (T15).
 
 ## Traceability to the original task numbers
 
@@ -141,7 +150,7 @@ The source spreadsheet and the other two design notes cite the original numberin
 
 | Original | Task | Now |
 |---|---|---|
-| 0 | Config and loader: consumption rate, exchange rate | T2, T3, T4 |
+| 0 | Config and loader: consumption rate | T2, T3, T4 |
 | 1 | Metered usage to credits, with category multiplier | T6, T7, T9 |
 | 2a | Ledger schema and idempotent debit ingestion | T8, T9 |
 | 2b | Balance maintenance and read API | T10 |
@@ -169,7 +178,7 @@ The earlier version of this document listed eight gaps. Six are now closed by a 
 | No reversal or correction type | D7. T17 |
 | No alerting on breach | D4 and D9. Published by T16, consumer out of scope |
 | Versioning asymmetry between price and category | D6 pins the resolved category on every ledger row |
-| The exchange rate had no consumer | D2 defines it as a reporting value, read by T11 |
+| The exchange rate had no consumer | Confirmed, and it never acquired one. Removed 2026-09-08 with `billing_item_price`; see the revision to D2 |
 | Access control was not stated per endpoint | D11. T1 |
 
 Two remain open:
@@ -186,5 +195,6 @@ Two remain open:
 - Which audience values appear in the tokens that reach this service. T21 cannot be finished without them, and they cannot be read reliably from either `realms.yaml` or the existing consumer.
 - The storage-billing charging cycle and proration rules. This gates the first blocked task.
 - Whether reading a balance and usage is open to any workspace member or to admins alone. D11 makes this one constant per endpoint, so it does not block T10 or T12.
-- Whether `/accounting/skus` and `/accounting/prices` should start requiring a token. They take none today, so pound values derived from the policy stay publicly reachable even though the policy endpoint requires a member.
+- Whether `/accounting/skus` and `/accounting/prices` should start requiring a token. They take none today, so the credit rates in force stay publicly reachable even though the policy endpoint requires a member.
 - How often a calibration pass runs. This affects how much tooling T4 deserves, not whether it is correct.
+- **The remote test database still needs migrating, and this is an action rather than a question.** Its schema was created by `create_all` and then stamped at the baseline, so `alembic_version` claimed it was up to date while five columns were still naive. The chain is `20fef2107e45` → `7c3d5e9a1f42` → `9b4e2c81a7d3` → `9b12692d3f40` → `30ac7fce87ae`, and everything from `9b4e2c81a7d3` on is unapplied. Rehearse against a `pg_dump` copy before touching the real one. Note that `30ac7fce87ae` drops `billing_item_price` and discards its rows, which was accepted on the grounds that nothing consumes that data; its downgrade is deliberately empty, so recovery means restoring the dump.

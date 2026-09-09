@@ -1,3 +1,12 @@
+---
+title: Dev tooling notes
+doc_status: unreviewed
+tags:
+  - pulsar
+last_reviewed:
+reviewed_by:
+review_notes: "Working notes rather than a decision record; migrated from the standalone accounting and billing repository; not yet reviewed in the guide."
+---
 # Dev tooling notes
 
 Working notes for the `accounting-service` development environment. Separate from

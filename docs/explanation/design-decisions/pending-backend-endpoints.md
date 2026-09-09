@@ -1,3 +1,13 @@
+---
+title: Proposed backend endpoints
+doc_status: unreviewed
+tags:
+  - workspaces
+  - rc-ui
+last_reviewed:
+reviewed_by:
+review_notes: "Proposal for client review; endpoints are not built yet."
+---
 # Proposed backend endpoints
 
 A flat, scannable list of every backend endpoint grouped by the frontend pages it is needed by.
