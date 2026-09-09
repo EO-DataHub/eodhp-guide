@@ -11,7 +11,7 @@ review_notes: "Migrated from the standalone accounting and billing repository; n
 
 This note breaks the credits work into tasks that can be picked up and finished one at a time. It replaces the earlier version of this document, which sized 15 business-level items before the design was settled. Those items are preserved in the [traceability table](#traceability-to-the-original-task-numbers), because the source spreadsheet and the other two design notes refer to them by number.
 
-Read this with [Credits ledger design decisions](Credits%20ledger%20design%20decisions.md), which says why the design is shaped this way, and [Credits ledger schema](Credits%20ledger%20schema.md), which defines the tables. Decisions are cited below as D1 to D12.
+Read this with [Credits ledger design decisions](credits-ledger-design-decisions.md), which says why the design is shaped this way, and [Credits ledger schema](credits-ledger-schema.md), which defines the tables. Decisions are cited below as D1 to D12.
 
 Scope is a workspace's own platform usage: compute, storage, object-store calls and transfer. The commercial-data purchasing rearchitecture is separate work.
 
@@ -39,14 +39,14 @@ T2 has since put a validated document model in front of this loader, so T4 compa
 | `session.rollback()` at teardown, plus ten manual `delete(...)` cleanups | One transaction per test with savepoints, no cleanups |
 | Ingester reaching for a module-global engine | `DBIngester(session_factory=...)` |
 
-Two consequences for the tasks below. New tables need no driver guards. And a test that drives the ingester must pass `session_factory=db_session_factory`, or its writes land outside the test's transaction. See *How the tests get a database* in the [schema note](Credits%20ledger%20schema.md).
+Two consequences for the tasks below. New tables need no driver guards. And a test that drives the ingester must pass `session_factory=db_session_factory`, or its writes land outside the test's transaction. See *How the tests get a database* in the [schema note](credits-ledger-schema.md).
 
 ## Wave 0 — foundations that unblock the rest
 
 | ID | Task | Est | Status | Notes |
 |---|---|---|---|---|
 | T1 | Replace `require_owner` with ordered authorisation tiers | 0.5d | Done | A `MinTier` enum ordering member, admin, owner, with `hub_admin` above all three. The admin tier reads the `workspaces-admin` claim from T20 (D11) |
-| T2 | Validate the config document with Pydantic | 1d | Done | `accounting_service/configuration.py` holds `ConfiguredItem` and a `Configuration` document model, and `load_configuration` validates the whole document before any of it is applied. Took about half the estimate, because `ConfiguredPrice` had already landed with the pricing rules. See *The configuration document* in the [schema note](Credits%20ledger%20schema.md) |
+| T2 | Validate the config document with Pydantic | 1d | Done | `accounting_service/configuration.py` holds `ConfiguredItem` and a `Configuration` document model, and `load_configuration` validates the whole document before any of it is applied. Took about half the estimate, because `ConfiguredPrice` had already landed with the pricing rules. See *The configuration document* in the [schema note](credits-ledger-schema.md) |
 | T20 | Publish workspace admin status as a JWT claim | 0.5d + review | Blocked | Cross-repo. A client scope in `eodhp-argocd-deployment/apps/keycloak/base/realms.yaml` using the same `oidc-api-claims-protocol-mapper` pattern as `workspaces-owned`, plus an entry in `apps/oauth2-proxy/base/values.yaml:6`. Depends on the inverse endpoint below |
 
 T20 is all that is left in this wave, and it waits on another repository.
@@ -62,7 +62,7 @@ Everything downstream stores a `policy_id`, so the policy tables come before the
 | ID | Task | Est | Status | Notes |
 |---|---|---|---|---|
 | T3 | Add the three policy tables and a migration | 1d | Done | `pricing_policy`, `pricing_policy_rate`, `pricing_policy_category_multiplier`, in `models.py`, with revision `9b12692d3f40`. `corrects_id` is a bare self-referential foreign key with no relationship attribute, because following it is an audit path rather than a read path. `version` is unique; monotonic is the loader's job in T4 |
-| T4 | Mint-or-match policy loader | 1.5d | Done | Each load either matches the current policy or mints a new version. Matching compares every rate and every category multiplier together, against `Configuration` objects rather than dicts now that T2 validates the document first. `PolicyFingerprint` in `pricing.py` is the match rule; `PricingPolicy.load_configured_policy` carries it out, recovering from a lost version race inside a savepoint. `valid_until` is never written - see *The loader never closes a policy* in the [schema note](Credits%20ledger%20schema.md) |
+| T4 | Mint-or-match policy loader | 1.5d | Done | Each load either matches the current policy or mints a new version. Matching compares every rate and every category multiplier together, against `Configuration` objects rather than dicts now that T2 validates the document first. `PolicyFingerprint` in `pricing.py` is the match rule; `PricingPolicy.load_configured_policy` carries it out, recovering from a lost version race inside a savepoint. `valid_until` is never written - see *The loader never closes a policy* in the [schema note](credits-ledger-schema.md) |
 | T5 | Resolve the policy for a usage time | 0.5d | Done | Select the policy whose validity range contains the time, ordered by `configured_at` descending then `version` descending, limit 1. If no policy applies, the earliest `valid_from` prices it (D10). `PricingPolicy.resolve`, written when `GET /accounting/prices` needed it: a policy dated in the future must not be served as a current rate |
 
 ## Wave 2 — the pricing engine
@@ -122,7 +122,7 @@ So neither source can be trusted for the audience list. Read `aud` off a real to
 
 ## Effort
 
-Waves 0 to 5 total about 23 days, of which T1 to T5 account for 4.5 days and are done, plus half of T11. This excludes the two tasks below that remain blocked, and matches the earlier estimate closely enough that the [ADR](ADR-001%20Credit-based%20platform%20accounting.md) does not need revising.
+Waves 0 to 5 total about 23 days, of which T1 to T5 account for 4.5 days and are done, plus half of T11. This excludes the two tasks below that remain blocked, and matches the earlier estimate closely enough that the [ADR](accounting-billing-backend-adr.md) does not need revising.
 
 T21 accounts for 1.5 of those days and is hardening rather than a credit feature. It is counted here because it gates wave 5, but it would be defensible to fund it separately.
 

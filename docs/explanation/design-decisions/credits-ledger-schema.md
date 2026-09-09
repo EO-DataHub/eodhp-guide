@@ -9,7 +9,7 @@ review_notes: "Migrated from the standalone accounting and billing repository; n
 ---
 # Credits and ledger — schema design
 
-This note defines the database schema for the credits, ledger, and budget features in `accounting-service`. It implements the decisions in [Credits ledger design decisions](Credits%20ledger%20design%20decisions.md), which are referenced below as D1 to D12.
+This note defines the database schema for the credits, ledger, and budget features in `accounting-service`. It implements the decisions in [Credits ledger design decisions](credits-ledger-design-decisions.md), which are referenced below as D1 to D12.
 
 ## Conventions inherited from the existing schema
 

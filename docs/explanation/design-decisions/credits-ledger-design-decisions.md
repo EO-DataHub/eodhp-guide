@@ -9,7 +9,7 @@ review_notes: "Migrated from the standalone accounting and billing repository; n
 ---
 # Credits and ledger — design decisions
 
-This note records the design decisions taken for the credits, ledger, and budget features in `accounting-service`, and what each one changes in the task list held in [Credits ledger scoping](Credits%20ledger%20scoping.md). It covers metering of a workspace's own platform usage (compute, storage, object-store calls and transfer). The commercial-data purchasing rearchitecture is a separate piece of work and is not affected.
+This note records the design decisions taken for the credits, ledger, and budget features in `accounting-service`, and what each one changes in the task list held in [Credits ledger scoping](credits-ledger-scoping.md). It covers metering of a workspace's own platform usage (compute, storage, object-store calls and transfer). The commercial-data purchasing rearchitecture is a separate piece of work and is not affected.
 
 Decisions are numbered for reference. Each states what was decided and why, because the reasons constrain later choices more than the decisions themselves do.
 
@@ -36,7 +36,7 @@ Credits are an internal quota unit. Nothing in this work moves real money, and t
 
 The ledger stays money-agnostic so the payment work can attach later without reshaping it. Credit grants are an administrative action by a `hub_admin`: a user asks, and the admin adds credits to the balance. Nothing in this service converts money into credits, in either direction.
 
-**Revised 2026-09-08: there is no exchange rate.** This decision originally kept a versioned credit-to-currency rate as a reporting and calibration value, to answer "this workspace's usage was worth £Y" while the platform learned what AWS actually costs. It never acquired a reader. The gap-finding table in the [scoping doc](Credits%20ledger%20scoping.md) recorded that the exchange rate had no consumer and answered it by nominating T11 — and T11 now serves credits, so the finding stands.
+**Revised 2026-09-08: there is no exchange rate.** This decision originally kept a versioned credit-to-currency rate as a reporting and calibration value, to answer "this workspace's usage was worth £Y" while the platform learned what AWS actually costs. It never acquired a reader. The gap-finding table in the [scoping doc](credits-ledger-scoping.md) recorded that the exchange rate had no consumer and answered it by nominating T11 — and T11 now serves credits, so the finding stands.
 
 Calibrating a credit rate against real AWS costs is arithmetic done by whoever writes the configuration document. The document records the outcome, and the rate used to reach it does not need storing. Whatever invoicing arrives later brings its own rates, VAT and discounts, and its own versioning, so this service should not assert a money value it has no authority over.
 
@@ -160,7 +160,7 @@ This needs no filtering logic. The read is `SUM(credits)` grouped by the dimensi
 
 ## Changes to the task list
 
-The sizings in [Credits ledger scoping](Credits%20ledger%20scoping.md) predate these decisions and predate two findings in the current code. The affected rows:
+The sizings in [Credits ledger scoping](credits-ledger-scoping.md) predate these decisions and predate two findings in the current code. The affected rows:
 
 | Task | Was | Now | Reason |
 |---|---|---|---|
@@ -184,7 +184,7 @@ Neither of these is caused by this work, and both affect it.
 
 **The `workspace-settings` schema has already drifted between producer and consumer.** The Python record declares `member_group` and `last_update` (`eodhp-utils/eodhp_utils/pulsar/messages.py:151-158`); the Go producer sends `Owner` and `LastUpdated` (`eodhp-workspace-manager/models/workspace_settings.go`). This does not bite today only because `accounting-service` reads `name` and `account` alone. Decision 6 adds a field to this contract, so the Go and Python sides must change together, and the existing drift is worth fixing in the same pass.
 
-A third item was not a defect but a gap: the config loader was a bare `yaml.safe_load` into a dict with no schema validation. Decision 3 gives the loader more to do, which is the point at which validation earned its place. Closed by T2 — see *The configuration document* in the [schema note](Credits%20ledger%20schema.md).
+A third item was not a defect but a gap: the config loader was a bare `yaml.safe_load` into a dict with no schema validation. Decision 3 gives the loader more to do, which is the point at which validation earned its place. Closed by T2 — see *The configuration document* in the [schema note](credits-ledger-schema.md).
 
 ## Still open
 

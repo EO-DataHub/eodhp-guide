@@ -108,6 +108,6 @@ Two further questions need answers before the relevant pages are built, though n
 
 ## Where the detail lives
 
-- **Credits ledger design decisions** — the twelve technical decisions behind this ADR, with reasoning
-- **Credits ledger schema** — the database design
-- **Credits ledger scoping** — the task list and estimates, reworked to match the decisions recorded here
+- [Credits ledger design decisions](credits-ledger-design-decisions.md) — the twelve technical decisions behind this ADR, with reasoning
+- [Credits ledger schema](credits-ledger-schema.md) — the database design
+- [Credits ledger scoping](credits-ledger-scoping.md) — the task list and estimates, reworked to match the decisions recorded here
