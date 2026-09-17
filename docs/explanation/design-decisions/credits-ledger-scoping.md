@@ -85,9 +85,35 @@ Everything downstream stores a `policy_id`, so the policy tables come before the
 |---|---|---|---|---|
 | T10 | Balance read and the snapshot table | 1.5d | Done | `GET /workspaces/{workspace}/accounting/balance`, any member. `CreditLedgerTransaction.balance` reads the latest snapshot plus every row recorded after it, and is correct with no snapshot at all - nothing writes one yet, so that is the path in use. Two statements rather than this note's single join, which returns no row for a workspace with no snapshot and one row per snapshot where only the latest is wanted. See *A snapshotter cannot cut at "now"* below |
 | T11 | Policy read endpoints | 1d | Done | `GET /accounting/prices` serves credit rates from the policy in force, brought forward as part of removing fiat pricing: `price` became `credits_per_unit`, and `uuid` and `valid_until` are gone. `eodhp-workspace-ui` reads this through `InvoicesContext` and needs updating to match. `GET /accounting/pricing-policy` serves the whole rate card in force as one version - every rate, every multiplier and the default category. **Version history is not served**: it is an audit read rather than a product one, and `billing-admin ls <sku>` already covers it. The endpoint requires a token but asks nothing of its claims, through a `require_token` dependency now carried by every endpoint that has no workspace or account in its path |
-| T12 | Usage reads with period, user and SKU filters | 1d | | `SUM(credits)` grouped by the requested dimension, with `HAVING SUM(credits) <> 0` so a fully reversed charge disappears instead of showing as a zero row (D12) |
+| T12 | Usage reads with period, user and SKU filters | 1d | Part done | Both `usage-data` endpoints now report `credits` beside `quantity`, at one row per event and under `time-aggregation`. What remains is the user and SKU filters and the grouping dimensions - the aggregate still groups by period, SKU and workspace only, and `user` is still the literal `NULL` it always was. Two departures from this note's plan, below |
 | T13 | Explainable pricing endpoint | 0.5d | Done | `GET /workspaces/{workspace}/accounting/ledger/{transaction}`, any member. The row stores the quantity, the policy and the resolved category but not the rate or the multiplier, so the endpoint projects that policy into a rate card and prices again through `price_usage` - the same function that produced the charge, so the two cannot drift. The recomputed `charge` equalling the stored `credits` is the check on the whole scheme. `pricing` is null for a grant. A transaction in another workspace is a 404, not a 403 |
 | T14 | Pre-execution cost estimate | 0.5d | | Runs T7's function against a proposed quantity and writes nothing. Advisory only (D4) |
+| T22 | Ledger list endpoint | 0.5d | Done | `GET /workspaces/{workspace}/accounting/ledger`, any member, newest first by `recorded_at`, paged on `(recorded_at, uuid)` and filtered by `?type=grant|debit|reversal`. The Credits-page read, requested by the front end as "list credit grants". Unlike the usage endpoints it shows every row as stored, reversals included: a correction is a movement a reader sees in their balance, and D12's netting is an argument about usage totals rather than about the ledger. Reuses `LedgerTransactionAPIResult`, which already handled the grant case |
+
+### Credits on the usage reads
+
+Two departures from the plan above, both taken while building T12's first half.
+
+**The spine is still `billing_event`, not the ledger.** The note's `SUM(credits)` over ledger
+rows would have dropped every event the ingester recorded but could not price - no policy
+covering the usage time, no rate for the SKU, or an unpriceable quantity
+(`ingester/messager.py`). Those are logged at error and are exactly the rows worth seeing.
+So the read keeps events as its source and joins credits in from a per-event sub-SELECT,
+which also keeps paging, ordering and the account join untouched. The join is to one summed
+row per event rather than to the ledger directly: an event carries one debit and may carry
+corrections, and joining those in would repeat the event and double its quantity.
+
+**A fully reversed charge shows as a zero-credit row rather than disappearing.** D12 says it
+is hidden. It is not hidden here, because the row still carries the quantity that was
+metered and the spine is the event. The `HAVING SUM(credits) <> 0` that D12 describes cannot
+be applied without also hiding unpriced usage, which the first departure exists to keep
+visible. Distinguishing the two is possible - a missing ledger row is NULL where a reversed
+one sums to zero - so the filter can be written when it is wanted. Nothing writes a reversal
+yet (T17), so today the only zero-credit row is unpriced usage and the divergence is not
+observable. **Take this decision when T17 lands.**
+
+`credits` is reported positive, unlike the ledger's own signing, so it reads alongside
+`quantity`. `UsageRow` in `models.py` carries the reasoning.
 
 ### A snapshotter cannot cut at "now"
 
@@ -152,7 +178,7 @@ So neither source can be trusted for the audience list. Read `aud` off a real to
 
 ## Effort
 
-Waves 0 to 5 total about 23 days. Done: T1 to T5, T7, T8, T9, T10, T11 and T13, which is 11 days, plus most of T6. This excludes the two tasks below that remain blocked, and matches the earlier estimate closely enough that the [ADR](accounting-billing-backend-adr.md) does not need revising.
+Waves 0 to 5 total about 23 days. Done: T1 to T5, T7, T8, T9, T10, T11, T13 and T22, which is 11.5 days, plus most of T6 and the first half of T12. This excludes the two tasks below that remain blocked, and matches the earlier estimate closely enough that the [ADR](accounting-billing-backend-adr.md) does not need revising.
 
 Waves 3 and 4 came in close to their estimates. What they did not include is the demonstration surface: `billing-admin` gained `grant`, `set-category` and `ledger` so that the whole path can be driven from a terminal without the front end, and the walkthrough in the service's own `README.md` is the script for it. `grant` is not T15 - it has no endpoint and no authorisation, and T15 is still to do - but it is what makes a balance start above zero, without which a demonstration shows a workspace going into deficit on its first charge.
 
@@ -167,6 +193,14 @@ The largest single item is now 2 days. The earlier list had one 20-day item. Its
 **Periodic storage charging on a cycle, with proration.** This waits on the storage-billing decision. The mechanism it would extend already exists: `ConsumptionSampleRateIngesterMessager` turns rate samples into `BillingEvent`s in one-hour windows (`ingester/messager.py:83-140`). One caveat on that mechanism: generation is paced by arriving messages rather than by a clock, so it stalls when samples stop.
 
 **Metering of shared and system resources.** It is still unconfirmed whether this reuses T7's engine against a different event source, which is cheap, or needs a flow that splits one cost across several workspaces, which is not. The answer decides the size.
+
+## Raised, not yet discussed
+
+**T23 — a hub-admin overview of usage across every workspace.** Unsized and unscheduled.
+Every usage, balance and ledger read takes a workspace in its path and scopes to it, so an
+estate-wide view is a different query rather than a wider tier on an endpoint that exists.
+What it should group by, whether it reports credits or quantities, and whether it reuses
+`usage-data` or gets its own route are all open. Pick this up once waves 0 to 5 are done.
 
 ## Excluded deliberately
 
