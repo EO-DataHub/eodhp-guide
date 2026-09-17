@@ -3,6 +3,7 @@ title: Reference
 nav:
   - Overview: index.md
   - Services: services
+  - Identity & access: iam
   - APIs: apis
   - Data: data
   - CI/CD: ci-cd

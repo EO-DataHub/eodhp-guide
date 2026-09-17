@@ -17,6 +17,7 @@ Task-focused guides for managing users, credentials, and access on the EO Data H
 ## Keycloak
 
 - [Keycloak initial admin access](keycloak-initial-admin-access.md)
+- [Access the eodhp realm console](access-eodhp-realm-console.md)
 - [Onboard an application developer](onboard-app-dev.md)
 - [Elevate a user](elevate-user.md)
 

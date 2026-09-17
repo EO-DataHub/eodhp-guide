@@ -14,6 +14,10 @@ Catalogues, inventories, and neutral facts about the EO Data Hub platform.
 
 Component reference pages for each platform service, grouped by function.
 
+## Identity & access
+
+- [EODH realm roles](iam/realm-roles.md)
+
 ## APIs
 
 - [API overview](apis/overview.md)
