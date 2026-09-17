@@ -12,7 +12,7 @@ review_notes: Migrated from docs/operations/observability/monitor-resources.md.
 
 ## Purpose
 
-This operation allows a Hub Admin to monitor specific resource usage down to namespace (workspace) and pod level. This can help pinpoint namespaces or pods which are using excessive amounts of RAM or CPU to identify the causing operations.
+This operation allows a Hub Admin to monitor specific resource usage down to namespace (workspace) and pod level. Grafana access requires either the `admin` or `grafana-viewer` realm role. This can help pinpoint namespaces or pods which are using excessive amounts of RAM or CPU to identify the causing operations.
 
 ## When to Use
 
@@ -22,7 +22,7 @@ Grafana can also be used to monitor the Pulsar messaging service, in particular 
 
 ## Operation
 
-To access the Grafana UI, a user with an Admin account (they have the `hub-admin` role assigned) can visit the Grafana domain at https://grafana.eodatahub.org.uk/ and authenticate with their Admin Hub account. To view Kubernetes resource usage across namespaces, navigate to the **Dashboards** page in the left pane, then select **Kubernetes** > **Kubernetes / Views / Namespaces**. This opens the namespaces dashboard. To view data across all namespaces, use the drop-down at the top and select **All**. The dashboards on this page can be used to view CPU and RAM usage within the Kubernetes cluster. The **Overview** section shows live CPU and RAM usage across all pods in the selected namespace(s). Using the **Resources** section, you can monitor resource usage by individual pods — select pod names to isolate them on the graphs. To view details for a specific namespace, choose the workspace from the drop-down at the top. Select **Refresh** to reload the dashboard. Other options are available for finer analysis, such as time filtering and resolution.
+To access the Grafana UI, visit https://grafana.eodatahub.org.uk/ and authenticate with a Hub account having the `admin` or `grafana-viewer` realm role. To view Kubernetes resource usage across namespaces, navigate to the **Dashboards** page in the left pane, then select **Kubernetes** > **Kubernetes / Views / Namespaces**. This opens the namespaces dashboard. To view data across all namespaces, use the drop-down at the top and select **All**. The dashboards on this page can be used to view CPU and RAM usage within the Kubernetes cluster. The **Overview** section shows live CPU and RAM usage across all pods in the selected namespace(s). Using the **Resources** section, you can monitor resource usage by individual pods — select pod names to isolate them on the graphs. To view details for a specific namespace, choose the workspace from the drop-down at the top. Select **Refresh** to reload the dashboard. Other options are available for finer analysis, such as time filtering and resolution.
 
 To view Pulsar backlog information instead, navigate to **Dashboards** and select **Pulsar Backlog**. That page provides graphs displaying counts of message acknowledgements and backlog size for specific topics, among other metrics.
 
@@ -30,7 +30,7 @@ When viewing pod resources, note that Notebook pods are prefixed with `jupyter-`
 
 ## Requirements
 
-- A Hub account with the `hub-admin` role
+- A Hub account with the `admin` or `grafana-viewer` realm role
 - Access to https://grafana.eodatahub.org.uk/
 
 ## Useful Information

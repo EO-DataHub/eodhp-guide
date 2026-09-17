@@ -12,7 +12,7 @@ review_notes: Updated to reflect VictoriaLogs datasource and Logs Explorer dashb
 
 ## Summary
 
-Grafana is the platform's primary observability UI. It can be accessed at https://grafana.eodatahub.org.uk/ by any Keycloak user with the `admin` role.
+Grafana is the platform's primary observability UI. It can be accessed at https://grafana.eodatahub.org.uk/ by a Keycloak user with either the `admin` or `grafana-viewer` realm role. `admin` maps to Grafana Admin; `grafana-viewer` maps to Grafana Viewer. See [EODH realm roles](../iam/realm-roles.md) for details.
 
 Grafana connects to two data sources:
 

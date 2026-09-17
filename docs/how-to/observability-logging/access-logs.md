@@ -21,7 +21,7 @@ Use this when you need to view or search platform logs — container output, app
 
 ## Requirements
 
-- A Hub account with the `admin` realm role in Keycloak (see [Elevate user](../identity-access/elevate-user.md) if an operator must grant it)
+- A Hub account with the `admin` realm role in Keycloak (see [EODH realm roles](../../reference/iam/realm-roles.md) and [Elevate user](../identity-access/elevate-user.md))
 
 ## Operation
 

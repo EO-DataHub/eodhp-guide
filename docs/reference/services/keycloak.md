@@ -65,4 +65,4 @@ New plugin versions, or updates to the Keycloak base image, should be released b
 
 Alternately, releases may be published directly from the code repository with `make publish version=v26.0.4-1.2.3`, but this should only be used for test releases as the Git commit will not be properly tagged.
 
-**Related:** [Keycloak initial admin access](../../how-to/identity-access/keycloak-initial-admin-access.md).
+**Related:** [EODH realm roles](../iam/realm-roles.md) · [Access the eodhp realm console](../../how-to/identity-access/access-eodhp-realm-console.md) · [Keycloak initial admin access](../../how-to/identity-access/keycloak-initial-admin-access.md).
