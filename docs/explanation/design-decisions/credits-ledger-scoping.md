@@ -47,13 +47,15 @@ Two consequences for the tasks below. New tables need no driver guards. And a te
 |---|---|---|---|---|
 | T1 | Replace `require_owner` with ordered authorisation tiers | 0.5d | Done | A `MinTier` enum ordering member, admin, owner, with `hub_admin` above all three. The admin tier reads the `workspaces-admin` claim from T20 (D11) |
 | T2 | Validate the config document with Pydantic | 1d | Done | `accounting_service/configuration.py` holds `ConfiguredItem` and a `Configuration` document model, and `load_configuration` validates the whole document before any of it is applied. Took about half the estimate, because `ConfiguredPrice` had already landed with the pricing rules. See *The configuration document* in the [schema note](credits-ledger-schema.md) |
-| T20 | Publish workspace admin status as a JWT claim | 0.5d + review | Blocked | Cross-repo. A client scope in `eodhp-argocd-deployment/apps/keycloak/base/realms.yaml` using the same `oidc-api-claims-protocol-mapper` pattern as `workspaces-owned`, plus an entry in `apps/oauth2-proxy/base/values.yaml:6`. Depends on the inverse endpoint below |
+| T20 | Publish workspace admin status as a JWT claim | 0.5d + review | Ready | Cross-repo, and the endpoint it waited on has landed. Two edits in `eodhp-argocd-deployment`, both configuration: a `workspaces-admin` client scope in `apps/keycloak/base/realms.yaml`, twinning the `workspaces-owned` block on the same `oidc-api-claims-protocol-mapper` pattern but pointing at `?admin`, and named in `optionalClientScopes` for the `eodh` and `eodh-workspaces` clients; and `workspaces-admin` added to the `scope:` line at `apps/oauth2-proxy/base/values.yaml:6`. See below |
 
-T20 is all that is left in this wave, and it waits on another repository.
+T20 is all that is left in this wave. It is now Keycloak configuration in another repository, with no code to write.
 
 T1 came first because around eight new endpoints each name a minimum tier, so building them against the boolean flag would have meant rewriting all of them later.
 
-T20 needs an endpoint that PR 53 does not include. The PR adds `GET /workspaces/{workspace-id}/admins`, which lists the admins of one workspace. A claim describes the user and is minted before any workspace is known, so the mapper needs the inverse — `GET /api/workspaces?admin`, mirroring the existing `?owned` filter and returning the same object shape. That request is with the PR author. Until it lands, T1 reads a claim that is absent and treats it as an empty list, which is the behaviour D11 originally specified, so T1 is not blocked.
+T20 needed an endpoint that PR 53 did not include. That PR adds `GET /workspaces/{workspace-id}/admins`, which lists the admins of one workspace. A claim describes the user and is minted before any workspace is known, so the mapper needs the inverse. PR 54 on `eodhp-workspace-services` adds it, and it reached `main` on 2026-09-18: `GET /api/workspaces?admin` mirrors the existing `?owned` filter and returns the same object shape, so the mapper's `objectFieldPath: name` works unchanged. It unions the workspaces a user owns with explicit `workspace_admins` grants, which is the owner-or-admin rule D11 describes.
+
+What is left is the client scope. Until it lands, T1 reads a claim that is absent and treats it as an empty list, which is the behaviour D11 originally specified, so T1 is not blocked.
 
 ## Wave 1 — the pricing policy
 
@@ -184,7 +186,7 @@ Waves 3 and 4 came in close to their estimates. What they did not include is the
 
 T21 accounts for 1.5 of those days and is hardening rather than a credit feature. It is counted here because it gates wave 5, but it would be defensible to fund it separately.
 
-T20 is the only item that depends on another team's work. Its half day is small, but it crosses two repositories and a Keycloak realm change, so it wants lead time.
+T20 is the only item that depends on another team's work. Its half day is small, but it changes a Keycloak realm in a repository this team does not own, so it wants lead time.
 
 The largest single item is now 2 days. The earlier list had one 20-day item. Its size hid the risk inside it, which is why it was split.
 
@@ -257,7 +259,7 @@ Two remain open:
 
 - Whether `hub_admin` should override every tier, including on endpoints that exist now. This gates T1. See the first finding above.
 - Which credit endpoints admit the workspace admin tier. Budget configuration (T16) is the likeliest candidate, since PR 53 already gives admins linked-account management. One constant per endpoint, so it does not block T1.
-- Whether PR 53 will carry the `GET /api/workspaces?admin` filter that T20 needs. If it does not, T20 waits on a follow-up in that repository.
+- Whether PR 53 would carry the `GET /api/workspaces?admin` filter that T20 needs. Answered: it did not, and PR 54 added the filter as a follow-up. T20 now waits only on the client scope.
 - Whether `accounting-service` can be reached from inside the cluster without passing through oauth2-proxy. If it can, T21 is not hardening but a fix, and its priority changes.
 - Which audience values appear in the tokens that reach this service. T21 cannot be finished without them, and they cannot be read reliably from either `realms.yaml` or the existing consumer.
 - The storage-billing charging cycle and proration rules. This gates the first blocked task.
