@@ -151,7 +151,11 @@ beside it, is the whole change.
 
 These extend `dev/billing_admin.py`. All are restricted to `hub_admin`.
 
-**T21 gates this wave.** Waves 0 to 4 only read data, and a forged token already reads usage data today, so they add no exposure. Wave 5 introduces privileged writes, and those must not ship to production on an unverified token.
+**T21 gates this wave, and T21 is parked.** Waves 0 to 4 only read data, and a forged token already reads usage data today, so they add no exposure. Wave 5 introduces privileged writes, and those must not ship to production on an unverified token.
+
+Parked on 2026-09-21. A system upstream verifies tokens before they reach the back end, so an externally forged token does not get through; whether the service can be reached from inside the cluster without passing that check is still being established. Many repositories on the platform carry the same `verify_signature: False`, so the fix is to be made to all of them at once once the facts are in, rather than guessed at here in isolation - the audience list is the part that cannot be read reliably from either `realms.yaml` or an existing consumer, and a wrong guess fails closed as blanket 401s.
+
+This leaves wave 5 without a date. Whether the wave waits for T21 or proceeds on the upstream check alone is a separate decision, and it is not the same answer for every task in it: T15 creates credits, where the reads that ship today only expose them.
 
 | ID | Task | Est | Notes |
 |---|---|---|---|
@@ -252,7 +256,7 @@ The earlier version of this document listed eight gaps. Six are now closed by a 
 
 Two remain open:
 
-- **Reconciliation and backfill.** Deduplication stops double-charging but nothing detects a gap from ingester downtime, consumer lag or a dropped message. The `occurred_at` and `recorded_at` split exists to support this, and `budget_breach_notification` gives it somewhere to record a retrospective breach. The unmetered final hour after a resource is deleted (`ingester/messager.py:100-104`) is one instance of the same class.
+- **Reconciliation and backfill.** Deduplication stops double-charging but nothing detects a gap from ingester downtime, consumer lag or a dropped message. The `occurred_at` and `recorded_at` split exists to support this, and `budget_breach_notification` gives it somewhere to record a retrospective breach. The unmetered final hour after a resource is deleted (`ingester/messager.py:100-104`) is one instance of the same class. **The backfill half now has a tool.** `billing-admin recharge` finds events recorded without a debit - the three cases T9 logs and moves past - and charges each by the policy `resolve` picks for its `event_start`, so a backfilled debit matches what the ingester would have written. Dry run by default; `--commit` writes. It is safe to re-run and safe to interrupt: the ledger's partial unique index rather than a check-then-insert is what stops a second debit, and it only ever writes a first one - changing an existing charge is the reversal path (D8, T17, T18). What prompted it was the test database holding 1.46M unpriced events against 206 charged, spanning sixteen months, which the usage reads coalesced to zero credits and so showed as free rather than as unpriced. **Detection is still missing**: the command has to be told to look, and nothing tells it.
 - **The real-money funding boundary.** D2 defers it. T15 is an admin lever with no payment behind it.
 
 ## Open items
@@ -260,7 +264,7 @@ Two remain open:
 - Whether `hub_admin` should override every tier, including on endpoints that exist now. This gates T1. See the first finding above.
 - Which credit endpoints admit the workspace admin tier. Budget configuration (T16) is the likeliest candidate, since PR 53 already gives admins linked-account management. One constant per endpoint, so it does not block T1.
 - Whether PR 53 would carry the `GET /api/workspaces?admin` filter that T20 needs. Answered: it did not, and PR 54 added the filter as a follow-up. T20 now waits only on the client scope.
-- Whether `accounting-service` can be reached from inside the cluster without passing through oauth2-proxy. If it can, T21 is not hardening but a fix, and its priority changes.
+- Whether `accounting-service` can be reached from inside the cluster without passing through oauth2-proxy. If it can, T21 is not hardening but a fix, and its priority changes. Being established as at 2026-09-21, as a platform-wide question rather than one about this service; see the head of wave 5.
 - Which audience values appear in the tokens that reach this service. T21 cannot be finished without them, and they cannot be read reliably from either `realms.yaml` or the existing consumer.
 - The storage-billing charging cycle and proration rules. This gates the first blocked task.
 - Whether reading a balance and usage is open to any workspace member or to admins alone. Answered as `MinTier.MEMBER` for the balance and the single-transaction endpoints, matching the proposed endpoint table and the usage-data endpoints that predate this work. One constant per endpoint, so it can still be tightened per endpoint without touching the rest.
