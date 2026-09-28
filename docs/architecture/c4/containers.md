@@ -40,16 +40,16 @@ System_Boundary(eodh, "EO Data Hub") {
   Container(iam, "Identity & Access Management", "Keycloak + Authagent + OAuth2 Proxy + OPA", "Authenticates and authorizes requests to hub services.")
 }
 
+' Row 1: user-facing front ends. Row 2: back-end services. Row 3: storage, messaging and external systems.
 Lay_R(webPresence, catalogueUI)
 Lay_R(catalogueUI, jupyterhub)
-Lay_D(catalogueUI, dataAccess)
-Lay_R(dataAccess, workflowRunner)
-Lay_D(dataAccess, workspaceStorage)
-Lay_D(webPresence, workspaceMgmt)
 Lay_R(workspaceMgmt, accounting)
-Lay_R(accounting, iam)
-Lay_D(iam, messaging)
-Lay_D(iam, identityProvider)
+Lay_R(accounting, workflowRunner)
+Lay_R(workflowRunner, dataAccess)
+Lay_R(dataAccess, iam)
+Lay_R(messaging, workspaceStorage)
+Lay_R(workspaceStorage, commercialProviders)
+Lay_R(commercialProviders, openProviders)
 
 Rel(user, webPresence, "Manages account, billing and workspaces via", "HTTPS")
 Rel(user, catalogueUI, "Searches, browses and orders EO data via", "HTTPS")
@@ -60,6 +60,7 @@ Rel(gis, dataAccess, "Searches catalogue and renders layers via", "STAC API/XYZ/
 Rel(gis, iam, "Authenticates via")
 
 Rel(catalogueUI, dataAccess, "Searches", "STAC API/HTTPS")
+Rel(catalogueUI, workflowRunner, "Submits and monitors workflows via", "HTTPS")
 Rel(webPresence, workspaceMgmt, "Creates and manages workspaces via")
 Rel(webPresence, accounting, "Retrieves billing/usage info from")
 
