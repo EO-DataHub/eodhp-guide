@@ -28,4 +28,5 @@ Lower-level design work for the credit-based accounting model in `accounting-ser
 - [Credits ledger design decisions](credits-ledger-design-decisions.md) — numbered decisions for the credits, ledger, and budget features, and what each changes in the task list
 - [Credits ledger schema](credits-ledger-schema.md) — database schema implementing those decisions, plus the API response conventions new endpoints should follow
 - [Credits ledger scoping](credits-ledger-scoping.md) — implementation tasks for the credits, ledger, and account system, sequenced against findings in the current codebase
+- [Credit rate derivation](credit-rate-derivation.md) — how each credits-per-unit rate is calculated from AWS eu-west-2 list pricing, and what the rates do not cover
 - [Dev tooling notes](dev-tooling-notes.md) — working notes for the `accounting-service` dev environment, kept separate from the decision records above
