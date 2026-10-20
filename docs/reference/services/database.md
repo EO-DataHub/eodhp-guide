@@ -32,7 +32,7 @@ Many services rely on databases being created and maintained, so if this service
 - Keycloak
 - Web Presence - stores Wagtail contents
 - Workspace - stores workspace details, including ownership and membership information
-- Accounting - stores billing events from billing collectors 
+- Accounting - stores billing events from billing collectors, pricing policies and the credit ledger
 
 
 ## Operation

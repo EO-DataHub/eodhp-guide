@@ -28,7 +28,7 @@ Under https://eodatahub.org.uk/:
 | **/api/catalogue/stac/**              | Metadata and data access APIs (STAC v1 / OGC Records / OGC Features)                  |
 | **/api/workspaces/**                  | Workspace management                                                                   |
 | **/api/accounts/**                    | Account management                                                                     |
-| **/api/accounting/**                  | Billing SKU catalogue and current prices                                               |
+| **/api/accounting/**                  | Billing SKU catalogue, credit rates and pricing policy                                 |
 | **/api/wf-catalogue/**                | Workflow Catalogue — browse, register and manage workflow/notebook records              |
 | **/titiler/**                         | Visualization and mapping — COG/GeoTiff, Zarr/xarray, tile matrix sets                |
 | **/.well-known/openid-configuration** | OIDC information - endpoints under **/keycloak/realms/eodhp/protocol/openid-connect/** |
@@ -215,7 +215,7 @@ These are typical REST-style interfaces. It's expected that most endpoints will 
 | -------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **/api/accounts/**                                                   | GET lists billing accounts owned by the authenticated user                                                                                                        |
 | **/api/accounts/{account-id}**                                       | GET account info (includes list of workspaces)                                                                                                                    |
-| **/api/accounts/{account-id}/accounting/usage-data**                 | GET resource consumption data for all workspaces in an account (filterable by time range, paginated, supports `day`/`month` aggregation)                          |
+| **/api/accounts/{account-id}/accounting/usage-data**                 | GET resource consumption data and credits charged for all workspaces in an account (filterable by time range, user and SKU, paginated, supports `day`/`week`/`month`/`quarter` aggregation) |
 | ...                                                                  |                                                                                                                                                                   |
 | **/api/workspaces/**                                                 | GET lists accessible workspaces, POST to create                                                                                                                   |
 | **/api/workspaces/{workspace-id}**                                   | GET for workspace info, PUT to create or update, PATCH to update. Workspace info includes some information about the owning account.                              |
@@ -230,7 +230,10 @@ These are typical REST-style interfaces. It's expected that most endpoints will 
 | **/api/workspaces/{workspace-id}/{user-id\|'me'}/tokens/{token-id}** | DELETE to invalidate tokens                                                                                                                                       |
 | **/api/workspaces/{workspace-id}/{user-id\|'me'}/s3-tokens**         | POST to create S3 credentials (GET and DELETE not supported)                                                                                                      |
 | **/api/workspaces/{workspace-id}/{user-id\|'me'}/sessions**          | POST to create workspace-scoped session credentials (access and refresh tokens)                                                                                   |
-| **/api/workspaces/{workspace-id}/accounting/usage-data**             | GET resource consumption data for a workspace (filterable by time range, paginated, supports `day`/`month` aggregation)                                           |
+| **/api/workspaces/{workspace-id}/accounting/usage-data**             | GET resource consumption data and credits charged for a workspace (filterable by time range, user and SKU, paginated, supports `day`/`week`/`month`/`quarter` aggregation) |
+| **/api/workspaces/{workspace-id}/accounting/balance**                | GET the workspace's credit balance                                                                                                                                |
+| **/api/workspaces/{workspace-id}/accounting/ledger**                 | GET the workspace's credit transactions (grants, debits and reversals), newest first                                                                              |
+| **/api/workspaces/{workspace-id}/accounting/ledger/{transaction-id}** | GET one credit transaction and, for a debit, how it was priced                                                                                                    |
 | ...                                                                  | More endpoints likely to be added                                                                                                                                 |
 
 Access is controlled so that:
@@ -277,15 +280,16 @@ S3 access is also possible if a workspace member has configured the bucket, or p
 
 ### Accounting API - **/api/accounting/**
 
-These endpoints expose the billing item catalogue and current pricing. They require authentication but are not workspace-scoped.
+These endpoints expose the billing item catalogue and the credit rates. They require authentication but are not workspace-scoped. Usage is charged in credits, not money.
 
 |                                    |                                                                              |
 | ---------------------------------- | ---------------------------------------------------------------------------- |
 | **/api/accounting/skus**           | GET list of all billing items (SKUs), e.g. `wfcpu` (Workflow CPU seconds)   |
 | **/api/accounting/skus/{sku}**     | GET a single billing item by SKU                                             |
-| **/api/accounting/prices**         | GET all current prices (Pounds per unit, current period only)                |
+| **/api/accounting/prices**         | GET credits per unit for every SKU under the pricing policy in force         |
+| **/api/accounting/pricing-policy** | GET the whole pricing policy in force: rates, category multipliers and default category |
 
-Usage data is available per-workspace at `/api/workspaces/{workspace-id}/accounting/usage-data` and per-account at `/api/accounts/{account-id}/accounting/usage-data` (see tables above). Both endpoints support `start`/`end` time filtering, `limit`/`after` pagination, and a `time-aggregation` parameter (`day` or `month`).
+Usage data is available per-workspace at `/api/workspaces/{workspace-id}/accounting/usage-data` and per-account at `/api/accounts/{account-id}/accounting/usage-data` (see tables above). Both endpoints support `start`/`end` time filtering, `limit`/`after` pagination, `user` and `sku` filters, a `time-aggregation` parameter (`day`, `week`, `month` or `quarter`), and a `group-by` parameter (`user`, `sku`, `workspace`). Each row reports the `quantity` consumed and the `credits` it cost. Credit balances and transactions are at `/api/workspaces/{workspace-id}/accounting/balance` and `/ledger`. See [Accounting](../services/accounting.md) for details.
 
 ### Workflow Catalogue - **/api/wf-catalogue/**
 

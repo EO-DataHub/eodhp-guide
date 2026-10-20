@@ -15,8 +15,9 @@ tags:
 The accounting subsystem:
 
 - Collects/generates and stores resource use data relevant to billing.
-- Knows product and price settings.
-- Serves accounting, product and price data to users.
+- Knows product settings and the pricing policy (credit rates and category multipliers).
+- Charges usage in credits and keeps an append-only credit ledger for each workspace.
+- Serves usage, product, pricing and credit data to users.
 
 The accounting subsystem consists of several related microservices linked by messaging - a central Accounting Service and multiple Collectors.
 
@@ -29,9 +30,18 @@ The data model consists of:
 - Billing Events, which record resource consumption by a particular workspace, over a particular time period (typically 5 minutes, 1 hour or 1 day), and of a particular product/resource.
 - Resource Consumption Rate Samples, which are point-in-time samples of the rate at which a particular product is being consumed by a particular workspace.
 - Products, consisting of an SKU (stock-keeping unit, a human-readable identifier), a name and the units in which consumption is measured.
-- Prices, which give the price of a unit of a particular product which applied between particular dates.
+- Pricing Policies, versioned. Each version holds a credit rate for every SKU, a multiplier for every workspace pricing category, and a default category.
+- Workspace Categories, which select the multiplier a workspace is charged under.
+- Credit Ledger Transactions: usage debits (negative), admin grants (positive) and reversals. The ledger is append-only. A workspace's balance is the sum of its ledger.
+- Credit Balance Snapshots, an optimisation for balance reads. Nothing writes to this table yet.
 
-These are all stored persistently in AWS Aurora in a database called 'accounting'. Prices and products can be modified there if necessary but should usually be modified via the configuration file.
+These are all stored persistently in AWS Aurora in a database called 'accounting'. The schema is managed with Alembic. A Kubernetes Job applies migrations before a new version starts.
+
+Products and pricing policies should be changed through the configuration file. Grants and categories are changed with the `billing-admin` CLI (see [Managing Credits](#managing-credits)).
+
+Credits are the unit of account. Nothing converts credits to money.
+
+The Ingester charges every Billing Event it records, including those estimated from Resource Consumption Rate Samples. Each debit stores the quantity, the policy version and the workspace category used, so it can be explained later.
 
 The Ingester will generate Billing Events from Resource Consumption Rate Samples via linear interpolation to the boundaries of one hour intervals. This is done only for S3 and EFS storage use, for all other products exact Billing Events are generated directly by Collectors.
 
@@ -77,35 +87,92 @@ message have a particular order.
 
 The API Service is a Kubernetes Service and Deployment, both called `accounting-api` in the `accounting` namespace. The Ingester is a Deployment only, called `accounting-ingester`. Both may and do have multiple replicas.
 
-The accounting API service serves `/api/accounting/prices` and `/api/accounting/skus` with no authentication requirement. For the other endpoints (see `/api/docs`) either the `hub_admin` role is required, or for `/api/workspaces/<workspace>/accounting/...` ownership or membership of the workspace is required, or for `/api/workspaces/<account>/accounting` ownership of the account is required.
+Every endpoint needs a Keycloak bearer token. The API verifies the token signature against Keycloak's published keys (`KEYCLOAK_BASE_URL` must be set) and accepts the `eodh` and `eodh-workspaces` audiences. Users with the `hub_admin` realm role pass every check.
 
-#### Configuring Products and Prices
+| Endpoint | Access | Returns |
+|----------|--------|---------|
+| `/api/accounting/skus`, `/api/accounting/skus/{sku}` | Any valid token | Billing items (products) |
+| `/api/accounting/prices` | Any valid token | Credits per unit for every SKU, with the `valid_from` and `policy_version` they came from. Hub admins may pass `at` for a past instant |
+| `/api/accounting/pricing-policy` | Any valid token | The whole policy in force: rates, category multipliers and default category. Hub admins may pass `at` |
+| `/api/workspaces/{workspace}/accounting/usage-data` | Workspace member | Usage, with `quantity` and `credits` per row |
+| `/api/workspaces/{workspace}/accounting/balance` | Workspace member | The credit balance, as an exact decimal string |
+| `/api/workspaces/{workspace}/accounting/ledger` | Workspace member | Credit transactions, newest first. Filter with `type=grant`, `debit` or `reversal`, and `start`/`end`. Page with `limit` and `after` |
+| `/api/workspaces/{workspace}/accounting/ledger/{transaction}` | Workspace member | One transaction. For a debit, `pricing` gives the quantity, credits per unit, category, multiplier and policy version |
+| `/api/accounts/{account_id}/accounting/usage-data` | Billing account owner | Usage for every workspace in the account |
 
-Products and prices can be configured via a ConfigMap, which is created at
-`apps/accounting-service/base/products-prices-config.yaml` in eodhp-argocd-deployment. For example
+The usage endpoints take these query parameters:
 
-```
-    items:
-      - sku: cpu-seconds
-        name: CPU use by workspace pods
-        unit: "s"
-    prices:
-      - sku: cpu-seconds
-        valid_from: "2025-01-02T00:00:00Z"
-        price: 0.0000012
+- `start`, `end`: time range.
+- `limit`, `after`: paging. `limit` must be 1 or more.
+- `time-aggregation`: `day`, `week`, `month` or `quarter`. Periods are calendar periods in UTC. A week starts on Monday. Any other value, including an empty one, returns 422.
+- `user`: only usage attributed to this user UUID. Workspace storage has no user, so this filter leaves it out.
+- `sku`: only usage of this SKU.
+- `group-by`: any of `user`, `sku` and `workspace`, comma-separated. The default is `sku,workspace`. Needs `time-aggregation`.
+
+Usage reads net a reversal against the charge it corrects. The ledger endpoints list every movement as recorded.
+
+Decimal values (rates, credits, balances) are exact decimal strings, for example `"0.000000412"`. They are not rounded. Clients format them for display.
+
+#### Configuring Products and Pricing Policy
+
+Products and the pricing policy are configured in the `products-prices` ConfigMap, at
+`apps/accounting-service/base/products-prices-config.yaml` in eodhp-argocd-deployment. The ConfigMap holds an `accounting.conf` document. For example
+
+```yaml
+items:
+  - sku: cpu-seconds
+    name: Notebook and workflow CPU time
+    unit: "s"
+
+pricing_policy:
+  valid_from: "2025-01-01T00:00:00Z"
+  default_category: standard
+  reason: "Why this calibration happened"
+  rates:
+    - sku: cpu-seconds
+      credits_per_unit: 0.001
+  category_multipliers:
+    - category: standard
+      multiplier: 1
+    - category: academic
+      multiplier: 0.5
 ```
 
 For billing items `sku` is a human-readable and potentially user-visible identifier which must match that used by the billing collector generating billing events for the product. This is a fixed and hard-coded value and all known values are listed in the initial ConfigMap. `name` and `unit` are for display to users and do not affect functionality.
 
-When setting prices `price` should be the price in pounds charged for one `unit` of the resource. `valid_from` sets the time from which this price will be applied to new consumption, with prior consumption still being billed at an earlier price (even if the bill has not been issued yet).
+The `pricing_policy` section sets every rate and every multiplier together:
 
-`valid_from` should usually be changed to a future time when changing a price. Not doing so will cause billing history to be rewritten, changing the billed amount for past consumption of the product. This is useful only for correcting mistakes.
+- `credits_per_unit` is the number of credits charged for one `unit` of the SKU.
+- `category_multipliers` scale every rate for workspaces in that category.
+- `default_category` is used for workspaces with no category. It must have a multiplier.
+- `valid_from` is the time from which the policy applies.
+- `reason` is recorded with the policy for audit.
 
-Items will be auto-created if a billing event is observed with an unknown SKU. These will have an empty name and unit (and no prices) and these can be updated later via the config file. This is to avoid data loss in the event of misconfiguration.
+When the Ingester starts, it compares this section with the policy in force. It creates a new policy version only when a rate, a multiplier, the default category or `valid_from` changes. Restarting with the file unchanged writes nothing. Changing only `reason` writes nothing.
+
+Charges already written keep the rate and policy version that priced them. A policy is resolved by when it was configured: a backdated policy applies to every date from its `valid_from` onwards, and replaces older policies for those dates. Set `valid_from` to a future time for a normal rate change. Backdate only to correct a mistake.
+
+Items will be auto-created if a billing event is observed with an unknown SKU. These will have an empty name and unit (and no rate) and these can be updated later via the config file. This is to avoid data loss in the event of misconfiguration. An event for a SKU with no rate is recorded but not charged, and an error is logged.
 
 After changing this file it must be deployed to the cluster and the accounting ingester must be restarted.
 
-Neither prices nor items can be deleted using this file.
+Neither policies nor items can be deleted using this file.
+
+#### Managing Credits
+
+The `billing-admin` CLI is in the accounting-service repository (`uv run billing-admin --help`). It connects directly to the database, so first point it at the right one, for example through a `kubectl port-forward` and the `SQL_*` environment variables. Write commands do not ask for confirmation.
+
+| Command | Purpose |
+|---------|---------|
+| `billing-admin ls [SKU]` | List every item with its rate under the policy in force, or one SKU's rate in every policy version |
+| `billing-admin add-item`, `update-item` | Create an item, or fix an item's name and unit without a redeploy |
+| `billing-admin grant -w WORKSPACE -a AMOUNT -r REASON` | Grant credits to a workspace. Not idempotent: running it twice grants twice |
+| `billing-admin set-category -w WORKSPACE -c CATEGORY` | Set a workspace's pricing category. Affects future charges only |
+| `billing-admin ledger WORKSPACE` | Show recent transactions and the balance |
+| `billing-admin workspaces [--unmapped]` | List workspaces that have usage or an account mapping, one per line. `--unmapped` lists only workspaces with usage but no account mapping |
+| `billing-admin recharge [--commit]` | Charge events that were recorded but never charged, for example usage from before any policy existed. Dry run unless `--commit` is given. Safe to re-run. Filter with `--start`, `--end`, `--workspace`, `--sku`, and pin a version with `--policy` |
+
+Users who need credits ask a hub admin, who grants them. Until the workspace service sends categories over Pulsar, `set-category` is the only way to set a category, and every other workspace is charged under the default category.
 
 #### Control
 
