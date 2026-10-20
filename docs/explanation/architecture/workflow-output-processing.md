@@ -64,8 +64,6 @@ If the `id` of the Catalog, Collection or Item matches matches another one in it
 
 If a Catalog or Collection from the workflow is overwriting an existing entity then existing children are normally preserved.
 
-TODO: Is there any sensible way to specify when existing children should be removed?
-
 ### Workflow produces a top-level Catalog, a Collection or an Item with a parent link
 
 The parent link must identify a location in the catalogue (a Catalog or Collection) which the workflow's caller can write to. For example, if it's this `https://eodatahub.org.uk/api/stac/catalogs/public/catalogs/eodh-hosted/` then this identifies an `eodh-hosted` Catalog in the `public` Catalog, with the `eodh-hosted` Catalog being auto-created if it doesn't exist. Normal workspaces can only write in their workspace catalogue but special-purpose ones may be given greater privileges.

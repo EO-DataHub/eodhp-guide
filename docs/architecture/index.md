@@ -13,9 +13,6 @@ This section splits the authoritative architecture design publication into MkDoc
 
 ## Publication & traceability
 
-!!! todo "Update"
-    Update this section
-
 !!! note "Canonical source"
     Identifiers and versioning follow the latest architecture design artefact circulated for the EO Data Hub platform programme:
 
