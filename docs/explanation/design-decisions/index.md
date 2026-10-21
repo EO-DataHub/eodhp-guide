@@ -30,3 +30,7 @@ Lower-level design work for the credit-based accounting model in `accounting-ser
 - [Credits ledger scoping](credits-ledger-scoping.md) — implementation tasks for the credits, ledger, and account system, sequenced against findings in the current codebase
 - [Credit rate derivation](credit-rate-derivation.md) — how each credits-per-unit rate is calculated from AWS eu-west-2 list pricing, and what the rates do not cover
 - [Dev tooling notes](dev-tooling-notes.md) — working notes for the `accounting-service` dev environment, kept separate from the decision records above
+
+## Data access
+
+- [ADR-002: Bulk download of item assets in the browser](bulk-download-adr.md) — why users download many files of one item from the browser, with scripts for large files, instead of through a backend zip service
