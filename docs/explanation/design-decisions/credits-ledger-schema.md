@@ -5,7 +5,7 @@ tags:
   - workspaces
 last_reviewed:
 reviewed_by:
-review_notes: "Migrated from the standalone accounting and billing repository; not yet reviewed in the guide."
+review_notes: "Migrated from the standalone accounting and billing repository; not yet reviewed in the guide. Updated 2026-10-21 against shipped code."
 ---
 # Credits and ledger — schema design
 
@@ -41,7 +41,7 @@ established by changes already made to the existing endpoints rather than by the
 
 **Money and credits are exact decimal strings, not JSON numbers.** `Decimal` in the database
 became `float` on the way out, which loses exactness on precisely the values where it matters.
-`price` on `GET /accounting/prices` is now a string, produced by the `ExactDecimal` type in
+`credits_per_unit` (formerly `price`) on `GET /accounting/prices` is now a string, produced by the `ExactDecimal` type in
 `app/models.py`. New endpoints returning credits or money should use it.
 
 Two details are deliberate. The serialisation never uses scientific notation: Pydantic's own
@@ -151,19 +151,21 @@ what this document describes there is nothing left to do, which is the whole rec
 coexisted with it, feeding `billing_item_price` in pounds, and both are gone: credits are the
 unit of account and there was no second number worth keeping in step.
 
-The pair `(valid_from, configured_at)` makes the policy bi-temporal, which is what allows a corrected policy to be added for a period already charged without destroying the record of what was charged at the time. `BillingItemPrice` already describes this pattern in its docstring, so the concept is not new to this codebase — see *What this replaces*.
+The pair `(valid_from, configured_at)` makes the policy bi-temporal, which is what allows a corrected policy to be added for a period already charged without destroying the record of what was charged at the time. `BillingItemPrice` described this pattern in its docstring before it was dropped, so the concept was not new to this codebase — see *What this replaces*.
 
-Resolving the policy for a given usage time selects the policy whose validity range contains that time, ordered by `configured_at` descending so a correcting policy wins over the policy it corrects. This mirrors the lookup `BillingItemPrice` documents. Usage predating every policy resolves to the earliest `valid_from` rather than failing (D10).
+Resolving the policy for a given usage time selects the policy whose validity range contains that time, ordered by `configured_at` descending so a correcting policy wins over the policy it corrects. This mirrors the lookup `BillingItemPrice` documented. Usage predating every policy resolves to the earliest `valid_from` rather than failing (D10).
 
 ## Category assignment
 
 **`workspace_category`** — `workspace` (str, primary key), `category` (str), `updated_at` (timestamptz), `updated_by` (UUID, null).
 
-Populated from the `workspace-settings` Pulsar topic, which `accounting-service` already consumes (`ingester/__main__.py:37`). This is a separate table from `workspace_account` rather than a column on it, because `WorkspaceAccount.record_mapping` is insert-only by design and silently ignores changes — correct for the account mapping, wrong for a category that D6 requires to be changeable.
+Populated from the `workspace-settings` Pulsar topic, which `accounting-service` already consumes (`ingester/__main__.py:43`). As built, it is not: the Python message record in `eodhp-utils` has no `category` field, and the ingester records only the account mapping from that topic. Today the table is populated only by `billing-admin set-category`. This is a separate table from `workspace_account` rather than a column on it, because `WorkspaceAccount.record_mapping` is insert-only by design and silently ignores changes — correct for the account mapping, wrong for a category that D6 requires to be changeable.
 
 No history is kept here. History lives on the ledger, which records the category resolved at pricing time.
 
 ## Ledger
+
+As built, the model is a SQLModel class (`CreditLedgerTransaction(SQLModel, table=True)` in `models.py`) following the conventions above, not the declarative `Base`/`Mapped` form sketched here. The columns match, with one difference: `correction_batch_id` has no foreign key yet, because the `correction_batch` table has not been created. It exists now because the idempotency index tests it.
 
 ```python
 class CreditLedgerTransaction(Base):
@@ -350,6 +352,8 @@ This is what makes task 2b unremarkable rather than risky. The original estimate
 
 ## Usage reads
 
+As built, the usage reads do not work this way. They aggregate `billing_event` rows and join in each event's summed credits, so unpriced usage stays visible and a fully reversed charge shows as a zero-credit row. The ledger list endpoint shows reversal rows as stored. See *Credits on the usage reads* in the [scoping note](credits-ledger-scoping.md). The plan follows.
+
 The usage and ledger endpoints return net credits (D12). Netting needs no filtering logic, because it falls out of the aggregation:
 
 ```sql
@@ -386,7 +390,7 @@ Alembic is in place. It owns the schema for the running application. `create_db_
 3. **Single runner.** `accounting-service` runs two API replicas and two ingester replicas (`api-deployment.yaml:6`, `ingester-deployment.yaml:6`). Four pods each calling `alembic upgrade head` at startup will contend. Migrations belong in a dedicated Job — an ArgoCD PreSync hook, following the Job pattern already used elsewhere in the deployment repository — with the application pods failing fast if the schema version is not what they expect. Locally this is a one-shot `migrate` service that both long-running services wait on, so the same ordering is exercised.
 4. **Tests build the schema with `create_all`. Nothing tests the migrations.** `uv run pytest` needs only Docker; see *How the tests get a database* below.
 
-   There were three migration tests and they have been removed deliberately: migrations are applied by hand and reviewed before they reach a remote database. Two of the three duplicated what `alembic check` reports. The third did not — see *Two expression indexes are managed by hand* — so verifying those two indexes is now a manual step, and the reasoning sits in a comment on `UNCOMPARED_INDEXES` in `alembic/env.py`.
+   There were three migration tests and they have been removed deliberately: migrations are applied by hand and reviewed before they reach a remote database. Two of the three duplicated what `alembic check` reports. The third did not — see *Four expression indexes are managed by hand* — so verifying those indexes was a manual step until `make check-migrations` gained an index check, and the reasoning sits in a comment on `UNCOMPARED_INDEXES` in `alembic/env.py`.
 
    An earlier draft of this note said the tests should build their schema by running the migrations instead, and recorded that as unworkable because the expression indexes have no SQLite form. That objection was entirely about SQLite and no longer applies. Doing it would make the tests run against the schema production has, rather than one `create_all` derives from the same models, and would close the gap the removed tests covered. It is available and not done.
 
@@ -414,15 +418,15 @@ That last point matters more than it looks. The previous fixture called `session
 
 New tests that drive the ingester must pass `session_factory=db_session_factory` when constructing a messager. Without it the ingester opens sessions on the process-wide engine, outside the test's transaction, and its writes survive the test.
 
-### Two expression indexes are managed by hand
+### Four expression indexes are managed by hand
 
-`billingevent_day_aggregate_index` and `billingevent_month_aggregate_index` are excluded from autogenerate comparison, listed in `UNCOMPARED_INDEXES` in `alembic/env.py`. PostgreSQL normalises their expressions when storing them — `date_trunc('day', event_start AT TIME ZONE 'UTC')` comes back with explicit casts and parentheses — and Alembic compares the two as strings, so they would otherwise appear changed in perpetuity and every generated revision would drop and recreate them.
+`billingevent_day_aggregate_index`, `billingevent_week_aggregate_index`, `billingevent_month_aggregate_index` and `billingevent_quarter_aggregate_index` are excluded from autogenerate comparison, listed in `UNCOMPARED_INDEXES` in `alembic/env.py`. PostgreSQL normalises their expressions when storing them — `date_trunc('day', event_start AT TIME ZONE 'UTC')` comes back with explicit casts and parentheses — and Alembic compares the two as strings, so they would otherwise appear changed in perpetuity and every generated revision would drop and recreate them.
 
-The exclusion has a sharp edge: `include_object` governs rendering as well as comparison, so these indexes are also left out of generated revisions. `alembic check` therefore reports clean when they are missing. It is not that the check is unreliable in general; it cannot see these two at all, because the hook hides them from it.
+The exclusion has a sharp edge: `include_object` governs rendering as well as comparison, so these indexes are also left out of generated revisions. `alembic check` therefore reports clean when they are missing. It is not that the check is unreliable in general; it cannot see these at all, because the hook hides them from it.
 
 That has already happened once. A regenerated baseline dropped both indexes, `alembic check` reported no changes, and it was caught only by reading the revision file and noticing there was no `date_trunc` in it.
 
-So they are written by hand in the baseline. If you regenerate it, re-add them by hand and confirm by reading the SQL rather than by running `alembic check`. Anything added to `UNCOMPARED_INDEXES` inherits the same problem. There is no test covering this: the one that did has been removed, so it is a review step.
+So they are written by hand: day and month in the baseline, week and quarter in revision `5e8a1c7d2b94`. If you regenerate the baseline, re-add them by hand and confirm by reading the SQL rather than by running `alembic check`. Anything added to `UNCOMPARED_INDEXES` inherits the same problem. `make check-migrations` (`dev/check_migrations.py`) now covers part of this: it migrates an empty container to head and confirms that every index the models declare exists. It checks by name only, so an index whose expression differs from the model still passes.
 
 ### Constraint naming
 
@@ -434,13 +438,13 @@ One trap for a multi-column unique constraint. The convention names a unique con
 
 Reconciled against the frontend endpoint proposal in `pending-backend-endpoints.md`.
 
-What already fits: the proposed `/api/workspaces/:id/accounting/*` paths sit in a namespace `accounting-service` already serves (`app/app.py:217`, `:319`), and the "any member", "owner", and "`hub_admin` only" tiers all map onto `workspace_authz` as it stands. The proposal's fourth tier, workspace admin, is being built in PR 53 on `eodhp-workspace-services` and reaches this service as a JWT claim (D11). `GET /api/accounting/pricing-policy` is D3's bundled policy, and `PUT /api/workspaces/:id/category` restricted to `hub_admin` is D6's write side, landing in `eodhp-workspace-services` and reaching this service over Pulsar.
+What already fits: the proposed `/api/workspaces/:id/accounting/*` paths sit in a namespace `accounting-service` already serves (`app/app.py`), and the "any member", "owner", and "`hub_admin` only" tiers all map onto `workspace_authz` as it stands. The proposal's fourth tier, workspace admin, was built in PR 53 on `eodhp-workspace-services` and reaches this service as a JWT claim (D11) once the Keycloak client scope is added. `GET /api/accounting/pricing-policy` is D3's bundled policy, and `PUT /api/workspaces/:id/category` restricted to `hub_admin` is D6's write side, landing in `eodhp-workspace-services` and reaching this service over Pulsar. As built, the endpoint has shipped (PR #56) but this service does not yet read the category from the message; see *Category assignment*.
 
 One divergence as built. The proposal marks `GET /api/accounting/pricing-policy` as auth "Any", and it requires a token - any valid one, with no claim examined. That was settled on 2026-09-15 for every endpoint this service serves, `/accounting/skus` and `/accounting/prices` included: "Any" now means any signed-in user rather than anonymous. Nothing here is anonymously readable, and `test_no_endpoint_is_readable_without_a_token` walks the routes so a new one cannot quietly be.
 
 Three things the schema cannot supply on its own:
 
-**No GPU SKU exists.** `products-prices-config.yaml` defines `cpu-seconds`, `memory-gb-seconds`, `EFS-STORAGE-STD` and four `AWS-S3-*` items. The Credits page prices GPU and the budget page treats it as a cost, so `billing-collector` must emit GPU consumption first. This is upstream of everything here.
+**No GPU SKU exists.** Resolved: `billing-collector` PR #15 emits `gpu-seconds`, and `products-prices-config.yaml` defines it beside `cpu-seconds`, `memory-gb-seconds`, `EFS-STORAGE-STD` and the `AWS-S3-*` items.
 
 **The per-user alerts toggle has no consumer.** The proposal offers users an `alertsEnabled` switch, while D9 leaves notification delivery out of scope and undesigned. The toggle either ships inert or the consumer comes into scope.
 

@@ -5,7 +5,7 @@ tags:
   - workspaces
 last_reviewed:
 reviewed_by:
-review_notes: "Migrated from the standalone accounting and billing repository; not yet reviewed in the guide."
+review_notes: "Migrated from the standalone accounting and billing repository; not yet reviewed in the guide. Updated 2026-10-21 against shipped code."
 ---
 # Credits and ledger — design decisions
 
@@ -19,12 +19,12 @@ A credit pool belongs to a workspace, and the workspace's member users share it.
 
 A workspace is an organisation or a department. An `account` in `eodhp-workspace-services` is a user's billing registration, not an organisation, so it is the wrong home for a shared pool. Membership of a workspace is a flat Keycloak group whose name is the workspace name (`eodhp-workspace-services/api/services/workspaces.go:218`).
 
-Four authorisation tiers exist once PR 53 on `eodhp-workspace-services` lands. The credit features reuse them and add no roles of their own:
+Four authorisation tiers exist now that PR 53 on `eodhp-workspace-services` has merged. The credit features reuse them and add no roles of their own:
 
 | Tier | How it is established | Credit permissions |
 |---|---|---|
 | `hub_admin` | Keycloak realm role, short-circuits all checks (`api/services/utils.go:68`) | Grant credits, issue reversals, re-price history, set a workspace's category |
-| Workspace owner | The `workspaces-owned` JWT claim, which `accounting-service` already reads (`app/app.py:178-199`). The Go service derives the same fact from account ownership (`IsUserAccountOwner`, `api/services/utils.go:88`) | Configure the workspace's budget and thresholds |
+| Workspace owner | The `workspaces-owned` JWT claim, which `accounting-service` already reads (`app/authz.py:58-73`). The Go service derives the same fact from account ownership (`IsUserAccountOwner`, `api/services/utils.go:88`) | Configure the workspace's budget and thresholds |
 | Workspace admin | The `workspace_admins` table in `eodhp-workspace-services`, reaching this service as a `workspaces-admin` JWT claim (D11) | Undecided. See D11 |
 | Member | In the workspace's Keycloak group | Read balance and usage |
 
@@ -44,7 +44,7 @@ What this gives up: there is no way to ask retrospectively what a workspace's us
 
 ## 3. A pricing policy is a single versioned bundle
 
-A pricing policy is one versioned record covering every rate at once: the per-resource-type credit consumption rates and the per-category multipliers. It replaces the existing per-SKU approach, where each `BillingItemPrice` row carries its own `valid_from`/`valid_until` (`accounting_service/models.py:155`).
+A pricing policy is one versioned record covering every rate at once: the per-resource-type credit consumption rates and the per-category multipliers. It replaces the earlier per-SKU approach, where each `BillingItemPrice` row carried its own `valid_from`/`valid_until`. That table was dropped in revision `30ac7fce87ae`.
 
 Rates will be re-tuned repeatedly as real AWS costs become clearer. A calibration pass changes many rates together, so the set of numbers in force at a given time is the thing worth versioning. Under the per-SKU model, "what was in force last March" means reconstructing it from many independent date ranges that only coincidentally align, and nothing enforces that they do.
 
@@ -74,15 +74,17 @@ The budget key becomes `(workspace, user-or-null)`, where the null-user row is t
 
 ## 6. Category multipliers are policy; category assignment is operational fact
 
-The multiplier for each category (commercial, research) lives in the versioned pricing policy. The assignment of a workspace to a category comes from `eodhp-workspace-services` over the existing `workspace-settings` Pulsar channel, with a default for newly created workspaces, which are self-service and so exist before anyone categorises them.
+The multiplier for each category lives in the versioned pricing policy. As built, categories are whatever the configuration names; the deployed policies define `standard` and `academic`, with `standard` as the default. The assignment of a workspace to a category comes from `eodhp-workspace-services` over the existing `workspace-settings` Pulsar channel, with a default for newly created workspaces, which are self-service and so exist before anyone categorises them.
 
-The two change for different reasons. Re-tuning the research multiplier is a calibration pass that should apply to every research workspace from that point. Recategorising one department says nothing about pricing and must not mint a policy version, because that would imply every rate changed.
+The two change for different reasons. Re-tuning the academic multiplier is a calibration pass that should apply to every academic workspace from that point. Recategorising one department says nothing about pricing and must not mint a policy version, because that would imply every rate changed.
 
-**Each ledger transaction records the resolved category alongside the policy version.** A row reading "priced under policy v7, category=research" stays explainable after the workspace's category changes, with no category-history table and no question about re-pricing. Without it, explaining an old charge means reading today's category and computing a different, wrong number.
+**Each ledger transaction records the resolved category alongside the policy version.** A row reading "priced under policy v7, category=academic" stays explainable after the workspace's category changes, with no category-history table and no question about re-pricing. Without it, explaining an old charge means reading today's category and computing a different, wrong number.
 
 Category changes are expected to be rare — spinning up a new workspace is more likely than converting one — but the capability is retained deliberately. It is available to `hub_admin` only and is not exposed on the workspace-admin API surface.
 
 Assignment is always a manual `hub_admin` action, taken case by case once the workspace exists. A workspace therefore has no category for however long that takes, and usage in that window is priced under the policy's `default_category`. This is accepted rather than prevented. Credits carry no financial consequence yet (D2), and if such a window ever matters, each row records the category it was priced under, so the re-pricing machinery in D8 can correct it retroactively.
+
+As built, the `workspace-settings` path does not carry the category to this service yet (see the schema drift under *Defects found in existing code*), so `billing-admin set-category` is the only way a workspace gets one here today.
 
 ## 7. Corrections are append-only, and support bulk
 
@@ -124,7 +126,7 @@ The case is expected to be rare. It is specified because the pricing engine need
 
 Endpoint authorisation names a minimum tier, not a boolean. The order is member, then admin, then owner, with `hub_admin` overriding all three.
 
-`accounting-service` already carries most of this: `workspace_authz` (`app/app.py:178-199`) reads `workspaces` and `workspaces-owned` from the JWT, checks `hub_admin` in realm roles, and takes a `require_owner` flag. The flag is the part to replace, because a boolean cannot express "owner or admin".
+`accounting-service` already carried most of this: `workspace_authz` (then in `app/app.py`, now `app/authz.py`) read `workspaces` and `workspaces-owned` from the JWT, checked `hub_admin` in realm roles, and took a `require_owner` flag. The flag was the part to replace, because a boolean cannot express "owner or admin". As built: `workspace_authz` takes a `MinTier`, and `hub_admin` passes every tier check (`app/authz.py:82-94`).
 
 The admin tier is real, not a placeholder. PR 53 on `eodhp-workspace-services` records it, and the tier reaches this service as a `workspaces-admin` JWT claim.
 
@@ -142,7 +144,7 @@ objectFieldPath: name
 
 The same pattern produces `workspaces` and `billing-accounts`, so a fourth claim follows a path used three times already. The admin claim needs a client scope in `eodhp-argocd-deployment/apps/keycloak/base/realms.yaml` and an entry in the oauth2-proxy scope list (`apps/oauth2-proxy/base/values.yaml:6`).
 
-It also needs an endpoint that does not exist in PR 53. The PR adds `GET /workspaces/{workspace-id}/admins`, which answers "who administers this workspace" and returns usernames. A claim describes the user, and the token is minted before any workspace is known, so the mapper needs the inverse: "which workspaces does this user administer", returning workspace names. The mapper takes a single URL and one field path, with no way to loop over workspaces or filter by caller, so `GET /api/workspaces?admin` mirroring the existing `?owned` filter is the shape required. This has been raised on the PR.
+It also needs an endpoint that does not exist in PR 53. The PR adds `GET /workspaces/{workspace-id}/admins`, which answers "who administers this workspace" and returns usernames. A claim describes the user, and the token is minted before any workspace is known, so the mapper needs the inverse: "which workspaces does this user administer", returning workspace names. The mapper takes a single URL and one field path, with no way to loop over workspaces or filter by caller, so `GET /api/workspaces?admin` mirroring the existing `?owned` filter is the shape required. As built: PR 54 added it, and it has merged. The client scope and oauth2-proxy entry have not been added yet.
 
 That endpoint should mirror `isUserWorkspaceAuthorized`'s own semantics and include workspaces the caller owns, because PR 53 treats the account owner as an implicit admin. Tier ordering means an owner would pass an admin-tier check anyway, but keeping the claim's meaning identical to the Go service's avoids a gap that would appear only for account owners.
 
@@ -150,7 +152,7 @@ Because the mapper reads the API at token issue, revoking admin takes effect on 
 
 **Whether the credit endpoints admit the admin tier is an open decision.** PR 53 gives admins linked-account management, which is billing-adjacent and argues for letting them configure budgets. Nothing in the credit design depends on the answer: each endpoint names a minimum tier, so the change is one constant per endpoint.
 
-Reads of the pricing policy require a valid token and no workspace membership check, since the policy is platform-wide. `/accounting/skus` and `/accounting/prices` take no token at all today (`app/app.py:429`, `:461`), so the pound-denominated values derived from the policy stay publicly reachable unless those endpoints are tightened too.
+Reads of the pricing policy require a valid token and no workspace membership check, since the policy is platform-wide. `/accounting/skus` and `/accounting/prices` took no token at all when this was written, so the values derived from the policy were publicly reachable. As built: both now require a token through the `require_token` dependency, as every endpoint does, and `/accounting/prices` serves credits rather than pounds.
 
 ## 12. Usage reads show net charges only
 
@@ -158,14 +160,16 @@ The usage and ledger read endpoints return net credits: a reversal reduces the f
 
 This needs no filtering logic. The read is `SUM(credits)` grouped by the dimension requested — period, user, or SKU — so a reversal nets against the charge it reverses automatically. Two details follow. A fully reversed charge nets to zero and is hidden rather than shown as a zero row. And individual reversal rows never appear in these endpoints, which makes the audit surface (task 9) the only place a correction is visible as an event in its own right.
 
+As built, this differs in two ways. The ledger list endpoint (T22) shows every row as stored, reversals included, because it answers a different question from a usage total. And the usage reads keep a zero-credit row rather than hiding it, so that unpriced usage stays visible. See *Credits on the usage reads* in the [scoping note](credits-ledger-scoping.md).
+
 ## Changes to the task list
 
 The sizings in [Credits ledger scoping](credits-ledger-scoping.md) predate these decisions and predate two findings in the current code. The affected rows:
 
 | Task | Was | Now | Reason |
 |---|---|---|---|
-| 1 — usage to credits with category multiplier | L | M | The cross-repo integration already exists. `accounting-service` consumes `workspace-settings` (`ingester/__main__.py:37`) and keeps a `WorkspaceAccount` cache table (`models.py:45`). Adding category is one message field, one column, and a fix to `record_mapping`. |
-| 6 — periodic storage charging | L, size unclear | M | Periodic windowing already exists. `ConsumptionSampleRateIngesterMessager` converts rate samples into `BillingEvent`s in one-hour windows (`ingester/messager.py:83-140`). Storage is rate-shaped, so this extends an existing mechanism. The earlier claim that no scheduler exists was wrong. |
+| 1 — usage to credits with category multiplier | L | M | The cross-repo integration already exists. `accounting-service` consumes `workspace-settings` (`ingester/__main__.py:43`) and keeps a `WorkspaceAccount` cache table (`models.py:92`). Adding category is one message field, one column, and a fix to `record_mapping`. |
+| 6 — periodic storage charging | L, size unclear | M | Periodic windowing already exists. `ConsumptionSampleRateIngesterMessager` converts rate samples into `BillingEvent`s in one-hour windows (`ingester/messager.py:158`). Storage is rate-shaped, so this extends an existing mechanism. The earlier claim that no scheduler exists was wrong. |
 | 0, 3, 7, 8 — policy version items | M, S, M, S | One mechanism | Decision 3 merges these into the versioned policy bundle and operations on its identifier. |
 | 11 — budget and threshold model | L, size unclear | M | Decision 4 settles the enforcement question that made the size unclear. The model is per type, but a breach only publishes a message. |
 
@@ -180,9 +184,9 @@ One caveat on the message-paced windowing behind task 6: generation runs up to t
 
 Neither of these is caused by this work, and both affect it.
 
-**Unmetered final hour after resource deletion.** When a resource is deleted, part of its last hour goes uncharged. Collectors are supposed to emit a zero-rate message at deletion and an hour later; none do. Recorded in a code comment at `accounting_service/ingester/messager.py:100-104`, which notes "deletion is currently rare."
+**Unmetered final hour after resource deletion.** When a resource is deleted, part of its last hour goes uncharged. Collectors are supposed to emit a zero-rate message at deletion and an hour later; none do. Recorded in a code comment at `accounting_service/ingester/messager.py:175-178`, which notes "deletion is currently rare."
 
-**The `workspace-settings` schema has already drifted between producer and consumer.** The Python record declares `member_group` and `last_update` (`eodhp-utils/eodhp_utils/pulsar/messages.py:151-158`); the Go producer sends `Owner` and `LastUpdated` (`eodhp-workspace-manager/models/workspace_settings.go`). This does not bite today only because `accounting-service` reads `name` and `account` alone. Decision 6 adds a field to this contract, so the Go and Python sides must change together, and the existing drift is worth fixing in the same pass.
+**The `workspace-settings` schema has already drifted between producer and consumer.** The Python record declares `member_group` and `last_update` (`eodhp-utils/eodhp_utils/pulsar/messages.py:151-158`); the Go producer sends `Owner` and `LastUpdated` (`eodhp-workspace-manager/models/workspace_settings.go`). This does not bite today only because `accounting-service` reads `name` and `account` alone. Decision 6 adds a field to this contract, so the Go and Python sides must change together, and the existing drift is worth fixing in the same pass. As built: the Go side now sends `category` (`eodhp-workspace-manager` PR #9). The Python record has not gained it, and the drift is not fixed.
 
 A third item was not a defect but a gap: the config loader was a bare `yaml.safe_load` into a dict with no schema validation. Decision 3 gives the loader more to do, which is the point at which validation earned its place. Closed by T2 — see *The configuration document* in the [schema note](credits-ledger-schema.md).
 
@@ -190,6 +194,6 @@ A third item was not a defect but a gap: the config loader was a bare `yaml.safe
 
 - The storage-billing decision referenced by task 6. Decision 4 and the windowing finding reduce its scope, but the charging cycle and proration rules are still undecided.
 - Reconciliation and backfill for missed billing events. Deduplication on event UUID prevents double-charging, but nothing detects gaps from ingester downtime, consumer lag, or a dropped message. The unmetered-deletion defect above is one instance of the same class.
-- Whether reading a balance is available to every member of a workspace or to the workspace admin alone. Decision 1 assumes members can read; this is not confirmed.
+- Whether reading a balance is available to every member of a workspace or to the workspace admin alone. Answered in code as `MinTier.MEMBER`: any member can read the balance, the ledger and usage.
 - Which credit endpoints admit the workspace admin tier now that PR 53 makes it real. Budget configuration is the likeliest candidate. See D11.
 - How often a calibration pass is expected to run. This affects how much tooling the policy-version mechanism deserves, not whether it is correct.

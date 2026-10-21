@@ -5,7 +5,7 @@ tags:
   - pulsar
 last_reviewed:
 reviewed_by:
-review_notes: "Working notes rather than a decision record; migrated from the standalone accounting and billing repository; not yet reviewed in the guide."
+review_notes: "Working notes rather than a decision record; migrated from the standalone accounting and billing repository; not yet reviewed in the guide. Updated 2026-10-21 against shipped code."
 ---
 # Dev tooling notes
 
@@ -87,8 +87,10 @@ because production will not be recreated.
 The tests run against a throwaway PostgreSQL container started by
 `tests/conftest.py`, so `uv run pytest` needs only Docker. `tests/test_migrations.py`
 has been removed: migrations are applied and reviewed by hand. The one thing it
-covered that no tool reports is recorded on `UNCOMPARED_INDEXES` in
-`alembic/env.py`.
+covered that `alembic check` does not report is recorded on `UNCOMPARED_INDEXES` in
+`alembic/env.py`. `make check-migrations` (`dev/check_migrations.py`) now checks part
+of it: it migrates an empty PostgreSQL container to head, confirms by name that every
+index the models declare exists, and runs `alembic check` against the result.
 
 `dev/inject.py` sends fake Pulsar messages and is wired up as a console script, so
 `uv run inject` works. It has `billing-event` and `workspace-settings` commands;

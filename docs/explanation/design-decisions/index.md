@@ -3,7 +3,7 @@ title: Design decisions
 doc_status: unreviewed
 last_reviewed:
 reviewed_by:
-review_notes: "New section, no content migrated yet"
+review_notes: "Updated 2026-10-21 against shipped code."
 ---
 
 # Design decisions
@@ -14,12 +14,12 @@ Expect pages here to read like a decision log (context, options considered, deci
 
 ## Workspace roles, ownership, visibility & accounting
 
-This covers Members, Publisher, Files, Profile, Platform admin usage, and the Accounting/Billing pages (Credits, Usage, Budget).
+This covers Members, Publisher, Files, Profile, Platform admin usage, and the Accounting/Billing pages (Credits, Usage, Budget). The Members, Credits and Usage pages are built, and the back end can set a workspace category. Publisher and Files visibility, Platform admin and Budget remain proposals only. The two UX pages describe what is on `develop`, with the proposals listed at the end of each.
 
-- [Workspace management UX](workspace-management-ux.md) — what's changing in Members, Publisher/Files visibility, Profile, and platform-admin controls, and why, with open questions for client review
-- [Accounting & billing UX](accounting-billing-ux.md) — the proposed credit-based Credits/Usage/Budget pages and the workspace category setting, with open questions for client review
-- [Proposed backend endpoints](pending-backend-endpoints.md) — flat, scannable table of every backend endpoint needed, grouped by page
-- [Accounting & billing backend ADR](accounting-billing-backend-adr.md) —  Architecture Decision Record describing the proposed back end changes and the reasoning behind them
+- [Workspace management UX](workspace-management-ux.md) — the Profile, Members, Credentials and Provider accounts pages as built, who can do what, and the proposals not yet built (Publisher/Files visibility, platform admin)
+- [Accounting & billing UX](accounting-billing-ux.md) — the Credits, Usage and Billing accounts pages as built, and the proposals not yet built (Budget, platform costs, category display)
+- [Proposed backend endpoints](pending-backend-endpoints.md) — flat, scannable table of every backend endpoint needed, grouped by page, with which are built
+- [Accounting & billing backend ADR](accounting-billing-backend-adr.md) — Architecture Decision Record describing the back end changes, proposed and implemented, and the reasoning behind them
 
 ## Credits ledger implementation
 

@@ -6,81 +6,151 @@ tags:
   - workspaces
 last_reviewed:
 reviewed_by:
-review_notes: "New page summarising feat/add-workspace-services for client review"
+review_notes: "Rewritten 2026-10-21 to describe eodhp-rc-ui develop"
 ---
 
 # Workspace management UX
 
-Today, workspace admin tasks — members, credentials, billing, publishing — live in a separate app (`eodhp-workspace-ui`), disconnected from the main Resource Catalogue app. We're folding that functionality into the Resource Catalogue app itself, so everything about a workspace lives in one place instead of two. This page walks through what that looks like so far, on branch `feat/add-workspace-services`.
+Workspace admin tasks used to live in a separate app, `eodhp-workspace-ui`. They are now part of the Resource Catalogue app (`eodhp-rc-ui`), so everything about a workspace is in one place. This page describes the profile and workspace settings pages on the `develop` branch: what each page shows, which API it calls, who can do what, and why where the code or pull requests say so.
 
-Two labels appear throughout this page:
+All pages call real endpoints, mostly on `eodhp-workspace-services`. There are no mocks. The work arrived in rc-ui #598 to #611 and #613. Accounting pages and billing accounts are covered in [Accounting & billing UX](accounting-billing-ux.md).
 
-- **Rebuilt** — this already existed in the old workspace app; we've reproduced the same capability here, usually with a better UI.
-- **Draft** — this is a new proposal. Nothing behind it is wired up to a real backend yet — it's a clickable mock so you can react to the idea before we build it for real.
+## Navigation
 
-Where a section is a draft, it ends with specific questions we'd like your view on.
+The username menu in the top right has these groups:
 
-## Settings navigation — Rebuilt, reorganised
+| Menu group | Entries | Route prefix |
+|---|---|---|
+| Username (Profile) | Identity, Accounts, Workspaces | `/profile` |
+| Workspace settings | Members, Credentials, Provider accounts | `/settings` |
+| Accounting / Billing | Credits, Usage | `/accounting` |
+| Publishing | Disabled, marked "Soon" | none |
+| My data | Purchased data, Workflow outputs, Files, Saved sets | `/my-data` |
 
-Workspace settings (Members, Credentials) and the publishing tools are now reachable from inside the Resource Catalogue app itself, from the username menu in the top right, rather than linking out to a separate app. Settings, Accounting/Billing, Publishing, and My Data each open into a sidebar layout, similar to how the old workspace app organised its own menu.
+Profile, Settings, Accounting and My data each open in a shared sidebar layout (`SidebarNavLayout`). The Settings sidebar also has **S3 credentials**, which is not in the menu. #602 removed the older My Data link from the Catalogue dropdown. The `/my-data/*` routes did not change.
 
-**Question for you:** does grouping things this way (Settings / Accounting & Billing / Publishing / My Data) match how you'd expect to find these, or would you group them differently?
+Routes are defined in `src/app/router.tsx`, with each section's pages in `profileRoutes.tsx`, `settingsRoutes.tsx` and `accountingRoutes.tsx`.
 
-## Members — mixed: list is rebuilt, roles are a draft
+### Current workspace
 
-**Rebuilt:** the member list itself — who's in a workspace, and removing a member — carries over the same capability the old app had.
+The workspace switcher in the top nav is the single source of truth for the current workspace (`AuthenticationContext.currentWorkspace`). Before #598, several pages had their own workspace picker with separate state. Settings, Accounting and My data pages now read the current workspace from the switcher. The data purchase flow keeps its own workspace dropdown, which does not change the global selection.
 
-**Draft:** the old app only ever had one distinction: the workspace owner, and everyone else ("member"). We've mocked up a proper three-tier model — **Owner** (one per workspace, transferable), **Admin** (can be promoted/demoted by the owner), and **Member** — plus an ownership-transfer flow (type the new owner's name to confirm). None of this is saved anywhere real yet; it resets if you refresh the page.
+Workspace-scoped pages show a workspace badge in the page heading. Profile pages show the signed-in username instead (#608).
 
-**Questions for you:**
+## Roles
 
-- Who should be able to see workspace members — every member, or just admins/owner?
-- Who should be able to promote a member to admin or demote them back — only the owner, or any admin too?
+A workspace has three roles. The backend (`eodhp-workspace-services`) enforces them. The UI shows or hides controls to match.
 
-## Credentials — Rebuilt
+| Role | Who | Source |
+|---|---|---|
+| Owner | The owner of the billing account the workspace belongs to | `owner` field on `GET /api/workspaces` |
+| Admin | A member explicitly granted admin on that workspace | `GET /api/workspaces/:ws/admins` |
+| Member | Anyone in the workspace's member group | `GET /api/workspaces/:ws/users` |
 
-API tokens for connecting external tools to a workspace — create, view, and revoke — carried over largely as-is from the old app, restyled to match the rest of the Resource Catalogue app. This is real, not a draft, but there is a CORS issue with it that means it isn't working on the server.
+The owner is an implicit admin and is never in the admins list. A user with the `hub_admin` realm role passes every workspace check.
 
-## Provider accounts — Rebuilt, with two known gaps
+| Action | Member | Admin | Owner |
+|---|---|---|---|
+| View members and admins | Yes | Yes | Yes |
+| Add or remove members | No | Yes | Yes |
+| Grant or revoke admin | No | Yes | Yes |
+| Link or unlink provider accounts | No | Yes | Yes |
+| Delete the workspace | No | Yes | Yes |
+| Create and delete own API tokens, request S3 credentials | Yes | Yes | Yes |
 
-A new "Provider accounts" tab in Settings, next to Members and Credentials, lets a workspace link commercial data-provider accounts so it can order their imagery — carried over from the old app's "Linked accounts" page. Airbus and Planet linking (a simple API key) is a straight rebuild of what already existed and works for real today. Open Cosmos (sign in via their own login page) is also real, not a mock, but has two gaps carried over from the old app that need backend work to close: the "Connected" status doesn't survive a page reload even if a session already exists, and "Disconnect" only clears the button's own state rather than actually revoking anything server-side. Both are tracked in [Proposed backend endpoints](pending-backend-endpoints.md).
+The backend refuses to remove the owner from the workspace and refuses to revoke the owner's admin status. There is no way to transfer ownership.
 
-**Question for you:** same as Members — who should be able to link/unlink these accounts: only the workspace owner (current behaviour), or any admin too?
+## Profile
 
-## Profile page - Draft
+### Identity
 
-Clicking on the users username in the menu takes them to a page where there are deep-links out to Keycloak's own account page for changing your name/email, and to Keycloak's linked-accounts page.
+Route `/profile/identity`. Shows the signed-in user's name, username and email from the Keycloak token. Two buttons open Keycloak's own pages in a new tab: **Edit details** (account page) and **Manage linked accounts** (identity providers). Those pages use Keycloak's styling, not the app's.
 
-The Profile page also has a **draft** "delete my account" flow, blocked if you currently own any workspace (since deleting an owner's account with no owner left behind is unresolved). No account is actually deleted by this yet.
+Code: `src/pages/IdentityPage/IdentityPage.tsx`.
 
-**Questions for you:**
+### Accounts
 
-- If a workspace owner wants to leave/delete their account, should we require them to transfer ownership first (current mock), or offer something else — e.g. automatically promote an existing admin to owner?
-- Is it ok that the pages to manage account details and identity providers are in keycloak and so look different to the rest of the site?
+Route `/profile/accounts`. Lists the user's billing accounts and lets them request a new one. See [Billing accounts](accounting-billing-ux.md#billing-accounts).
 
-## Publisher & Files — visibility, Draft
+### Workspaces
 
-Both the Publisher page (for catalogue collections and workflows) and the Files page (workspace file storage) now have a Public/Private visibility control per item, gated behind a confirmation step. Nothing is actually made public yet — this is UI only, to check the interaction feels right before we build the real permission checks behind it. This is designed to replace the current publishing workflow where the user has to upload a json file in a particular format.
+Route `/profile/workspaces`. Lists the user's workspaces from `GET /api/workspaces`, with the billing account each belongs to.
 
-**Question for you:** who should be allowed to change an item's visibility — only the workspace owner, any admin, or any member?
+- **Open a workspace.** Click a workspace name to make it the current workspace and go to its Members page (#608).
+- **Create.** `POST /api/workspaces` with a name and an approved billing account. The name must be 3 to 50 characters of lowercase letters, numbers and hyphens, and cannot start or end with a hyphen. The Create button is disabled until the user has at least one approved account, and a callout points them to the Accounts page. A 409 response means the name is taken.
+- **Delete.** Owners and admins see a Delete button (#613). The dialog warns that all data is removed permanently and needs a confirmation checkbox. It calls `DELETE /api/workspaces/:ws`. The backend removes the workspace asynchronously, so the page drops it from the list at once instead of refetching. If the deleted workspace was current, the app switches to another one. The dialog cannot be closed while the request is running.
 
-Also worth flagging: visibility is currently a simple binary (Public/Private). If you need anything more granular later — e.g. shared with specific other workspaces — that's a bigger piece of work than what's mocked here, so it's worth saying now if that's a requirement.
+To decide who sees Delete, the page fetches the admin list for each workspace the user does not own.
 
-## Platform admin — Draft
+Code: `src/pages/WorkspacesPage/WorkspacesPage.tsx`.
 
-Platform/hub admins now have their own area, separate from any single workspace's Settings — reachable from the username menu, visible only to platform admins. It exists because the workspace switcher only ever lists workspaces you're a member of, and a platform admin needs to reach workspaces they don't belong to at all (e.g. to enable GPU access for a workspace they're not in). It has four tabs; two are covered here, two are billing concepts covered in [Accounting & billing UX](accounting-billing-ux.md).
+## Workspace settings
 
-- **Workspace settings** — every workspace on the platform, with its **Category** (Commercial/Research — drives the pricing multiplier, see the billing doc) and **Dask/GPU integration** toggles.
-- **Usage** — the same cross-workspace usage leaderboard; every workspace's usage (CPU, memory, GPU) and total credits, for spotting which are consuming the most.
-- **Budget policy** and **Platform costs** — see the billing doc.
+### Members
 
-All four tabs are mock data — the real version needs a "list every workspace" endpoint that doesn't exist yet (today's workspace/usage APIs are scoped to the caller's own memberships, or one billing account at a time, not the whole platform).
+Route `/settings/members`. Lists the current workspace's members with username, name, email and role.
 
-**Questions for you:**
+- The owner's row shows an **Owner** badge.
+- Owners and admins see a role selector (Member or Admin) on every other row. Each change asks for confirmation in both directions, because granting admin gives real control and revoking removes it (#605). It calls `PUT` or `DELETE /api/workspaces/:ws/admins/:username`.
+- Owners and admins can add a member by username (`PUT /api/workspaces/:ws/users/:username`) and remove one after confirmation (`DELETE` on the same path). Removal takes effect at once.
+- Other members see the list and their roles as text, with a note that only the owner or an admin can change membership.
 
-- Should platform admins be the only ones who can change a workspace's category or enable Dask/GPU, or should workspace owners eventually be able to self-serve some of this?
-- Beyond "who's using the most," is there other information you'd want on the Usage tab — e.g. flagging workspaces close to a budget limit, or inactive workspaces?
+Code: `src/pages/MembersPage/MembersPage.tsx`.
 
----
+### Credentials
 
-For the underlying API work needed to make the draft items real, see [Proposed backend endpoints](pending-backend-endpoints.md).
+Route `/settings/credentials`. Manages DataHub API tokens for the current workspace, ported from the old app (#604).
+
+- List: name, scope, created and expiry (`GET /api/workspaces/:ws/me/tokens`).
+- Create: a name and an expiry of 1 to 30 days, default 30 (`POST` on the same path). The token is shown once, with a copy button.
+- Delete after confirmation (`DELETE /api/workspaces/:ws/me/tokens/:id`). Anything using the token stops working at once.
+
+Tokens belong to the signed-in user (`me`), so every member manages their own.
+
+Code: `src/pages/CredentialsPage/CredentialsPage.tsx`.
+
+### S3 credentials
+
+Route `/settings/s3-credentials`. Requests temporary AWS credentials for the workspace (`POST /api/workspaces/:ws/me/s3-tokens`). The dialog shows access key ID, secret access key and session token once, each with a copy button, plus the expiry time and a **Copy all to .env** button.
+
+This is a separate page, not a tab on Credentials. #604 gives the reason: S3 credentials are generated on demand and have no list, create or delete lifecycle like DataHub tokens.
+
+The `/me/*` endpoints behind both credential pages do not allow cross-origin calls. In local development the app sends these requests through the Vite `/api` proxy (`src/services/apiUrlUtils.ts`). A deployed build calls `VITE_HUB_BASE_URL` directly.
+
+Code: `src/pages/S3CredentialsPage/S3CredentialsPage.tsx`.
+
+### Provider accounts
+
+Route `/settings/provider-accounts`. Links commercial data-provider accounts so the workspace can order their imagery (#603). Replaces the old app's "Linked accounts" page.
+
+| Provider | How it links | Endpoints |
+|---|---|---|
+| Airbus | API key, validated, then the user picks a LEGACY and a PNEO optical contract (independent dropdowns, since a workspace can hold one of each). SAR availability is shown. | `POST .../linked-accounts/airbus/validate`, `POST .../linked-accounts`, `DELETE .../linked-accounts/airbus` |
+| Planet | API key, validated, then linked | `POST .../linked-accounts/planet/validate`, `POST .../linked-accounts`, `DELETE .../linked-accounts/planet` |
+| Open Cosmos | Organisation ID, then sign-in on Open Cosmos's own page (OAuth2 with PKCE). The app stores the session on the backend. | `GET`, `POST`, `DELETE /api/workspaces/:ws/open-cosmos/session` |
+
+All paths are under `/api/workspaces/:ws`. `GET .../linked-accounts` gives the linked status for Airbus and Planet.
+
+The Open Cosmos card reads its status from `GET .../open-cosmos/session`, so "Connected" survives a page reload and follows a workspace switch. **Disconnect** calls `DELETE` and revokes the session on the server. If that call fails, the card stays connected, because the app cannot confirm the session was revoked. The callback checks a `state` parameter, which the old app did not.
+
+Owners and admins can link and unlink. Other members see the cards with the controls disabled and a note explaining why (#605). The backend enforces owner-or-admin for linking, unlinking, key validation and Open Cosmos disconnect. It accepts any member for storing an Open Cosmos session, so the owner-or-admin rule for connecting Open Cosmos is enforced only in the UI.
+
+Code: `src/pages/ProviderAccountsPage/ProviderAccountsPage.tsx`, `src/provider/OpenCosmosAuthProvider.tsx`.
+
+## Open questions
+
+- Should the backend require owner or admin to store an Open Cosmos session, to match the UI and the other provider actions?
+- If a workspace owner wants to leave or delete their account, what happens to the workspace? Options include transferring ownership first or promoting an existing admin.
+
+## Proposed, not built
+
+These ideas came from the earlier clickable proposal. They are not on `develop`.
+
+- **Ownership transfer.** Move the Owner role to another member, confirmed by typing their name.
+- **Delete my account.** A Profile flow to delete the user's own account, blocked while they own a workspace.
+- **Publisher visibility.** A Public or Private control per catalogue collection and workflow, to replace uploading a JSON file. The Publishing menu entry is disabled.
+- **Files visibility.** The same Public or Private control per item in workspace file storage.
+- **Platform admin.** A hub-admin area outside any workspace, with tabs for workspace settings (category, Dask and GPU toggles), cross-workspace usage, budget policy and platform costs. It needs a "list every workspace" endpoint.
+- **Workspace category display.** Show a workspace's pricing category (`standard` or `academic`). The backend can set a category (`PUT /api/workspaces/:ws/category`, hub admin only) but not return it.
+
+For the API work these need, see [Proposed backend endpoints](pending-backend-endpoints.md).
