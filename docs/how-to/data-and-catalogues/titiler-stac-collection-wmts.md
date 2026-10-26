@@ -96,4 +96,4 @@ The response is XML listing layers. Check that your layer appears as expected.
 - COG assets must be reachable by TiTiler (public object URLs or credentials the service can use).
 - You can define multiple `renders` per collection (for example false-colour composites).
 
-**Related:** Catalogue ingest walkthrough [Sample data ingest](sample-data-ingest.md); [harvest-transformer](../../reference/repositories.md#harvest-transformer) in [Repositories](../../reference/repositories.md).
+**Related:** Catalogue ingest walkthrough [Sample data ingest](sample-data-ingest.md); [harvest-transformer](../../reference/repositories.md#resource-catalogue) in [Repositories](../../reference/repositories.md).

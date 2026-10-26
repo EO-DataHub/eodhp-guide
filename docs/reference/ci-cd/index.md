@@ -15,4 +15,4 @@ Reference for the shared continuous-integration tooling in the [`github-actions`
 - [Reusable CI workflows](reusable-workflows.md) — the `workflow_call` workflows and the `storage-optimizer` composite action.
 - [Shared Renovate configuration](renovate-config.md) — the shared Renovate Bot preset and how to adopt it.
 
-See also the [repository catalogue](../repositories.md#github-actions) entry for `github-actions`.
+See also the [repository catalogue](../repositories.md#github) entry for `github-actions`.

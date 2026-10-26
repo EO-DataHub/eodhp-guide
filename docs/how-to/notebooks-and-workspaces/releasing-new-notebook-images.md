@@ -20,7 +20,7 @@ Use this procedure when you need to update an existing or add a new notebook ima
 
 ## Operation
 
-The default image for Jupyter Hub notebook is version-controlled in the [eodh-jupyter-images](https://github.com/EO-DataHub/eodh-jupyter-images) GitHub repo (also summarised in the [Repositories](../../reference/repositories.md) catalogue — [eodh-jupyter-images](../../reference/repositories.md#eodh-jupyter-images)). While it is possible to use stock images for Jupyter Hub profile images, it is suggested that this repo is used to version control any custom images for the EO DataHub.
+The default image for Jupyter Hub notebook is version-controlled in the [eodh-jupyter-images](https://github.com/EO-DataHub/eodh-jupyter-images) GitHub repo (also summarised in the [Repositories](../../reference/repositories.md#jupyter) catalogue). While it is possible to use stock images for Jupyter Hub profile images, it is suggested that this repo is used to version control any custom images for the EO DataHub.
 
 This procedure assumes you are updating the default notebook image but many of the steps are relevant to using a stock image or adding a new custom image.
 
