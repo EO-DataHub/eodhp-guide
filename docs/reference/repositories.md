@@ -13,7 +13,8 @@ This document is a working inventory of repositories related to the EO Data Hub 
 
 Notes:
 
-- The "remove" label indicates candidates for archival/removal. This is a prompt for discussion rather than a final decision—please review and confirm before taking action.
+- Synced against the EO-DataHub GitHub organisation on 2026-10-26. Repositories are public unless they carry the "private" label.
+- The "archived" label marks repositories that are archived on GitHub (read-only). They are listed in the Archived section.
 - Most descriptions were compiled from repository READMEs and observable configuration (e.g., Docker/ArgoCD); details may be incomplete or outdated. Corrections and updates are welcome.
 - Categories are best‑effort and some repos could reasonably appear in multiple sections. Feel free to propose re-categorisations.
 - To suggest changes, open a PR or issue against this guide with updated descriptions, links, or categorisation.
@@ -21,149 +22,147 @@ Notes:
 ## Table of contents
 
 - Backend
-  - [configscanning](#configscanning)
-  - [eodhp-git-change-scanner](#eodhp-git-change-scanner)
-  - [eodhp-spdx-change-scanner](#eodhp-spdx-change-scanner)
-  - Accounting
-    - [accounting-service](#accounting-service)
-    - [billing-collector](#billing-collector)
-    - [eodhp-accounting-efs](#eodhp-accounting-efs)
-    - [eodhp-accounting-s3-usage](#eodhp-accounting-s3-usage)
-    - [eodhp-data-transfer-events](#eodhp-data-transfer-events)
-  - Ades
-    - [ades-fastapi](#ades-fastapi)
-    - [ades-stagein](#ades-stagein)
-    - [ades-stageout](#ades-stageout)
-    - [calrissian](#calrissian)
-    - [eoepca-proc-service-template](#eoepca-proc-service-template)
-    - [public-workflow-loader](#public-workflow-loader)
-    - [pycalrissian](#pycalrissian)
-    - [user-workflows-catalogue-dev](#user-workflows-catalogue-dev)
-    - [user-workflows-catalogue-prod](#user-workflows-catalogue-prod)
-    - [user-workflows-catalogue-test](#user-workflows-catalogue-test)
-    - [workflow-ingester](#workflow-ingester)
-    - [workflow-system-test](#workflow-system-test)
-    - [zoo-calrissian-runner](#zoo-calrissian-runner)
-    - [ZOO-Project](#zoo-project)
-  - Api
-    - [eodh-openapi](#eodh-openapi)
-  - Apis
-    - [platform-smoke-tests](#platform-smoke-tests)
-  - Auth
-    - [eodh-auth-proxy](#eodh-auth-proxy)
-    - [eodh-keycloak](#eodh-keycloak)
-    - [eodhp-auth-agent](#eodhp-auth-agent)
-    - [eodhp-opa-config](#eodhp-opa-config)
-    - [keycloakify-starter](#keycloakify-starter)
-  - Deployment
-    - [eodhp-argocd-deployment](#eodhp-argocd-deployment)
-    - [eodhp-deploy-infrastucture](#eodhp-deploy-infrastucture)
-    - [eodhp-deploy-supporting-infrastructure](#eodhp-deploy-supporting-infrastructure)
-    - [git-change-scanner](#git-change-scanner)
-  - Jupyter
-    - [eodh-jpyauth](#eodh-jpyauth)
-    - [eodh-jupyter-images](#eodh-jupyter-images)
-    - [notebooks](#notebooks)
-  - Messaging
-    - [eodhp-utils](#eodhp-utils)
-  - Resource Catalogue
-    - [airbus-harvester](#airbus-harvester)
-    - [commercial-data-adaptors](#commercial-data-adaptors)
-    - [eodh-stac-validator](#eodh-stac-validator)
-    - [eodhp-init-catalogs-harvest](#eodhp-init-catalogs-harvest)
-    - [eodhp-stac-fastapi](#eodhp-stac-fastapi)
-    - [eodhp-stac-fastapi-elasticsearch-opensearch](#eodhp-stac-fastapi-elasticsearch-opensearch)
-    - [harvest-transformer](#harvest-transformer)
-    - [planet-harvester](#planet-harvester)
-    - [planet-stac-converter](#planet-stac-converter)
-    - [resource-catalog-support-utils](#resource-catalog-support-utils)
-    - [resource-catalogue-fastapi](#resource-catalogue-fastapi)
-    - [stac-fastapi-ingester](#stac-fastapi-ingester)
-    - [stac-harvester](#stac-harvester)
-    - [stac-harvester-configurations](#stac-harvester-configurations)
-    - [stac-harvester-ingester](#stac-harvester-ingester)
-    - [stac-planet-api](#stac-planet-api)
-    - [stac-pydantic](#stac-pydantic)
-    - [workspace-catalog-generator](#workspace-catalog-generator)
-    - [workspace-file-harvester](#workspace-file-harvester)
-  - Titiler
-    - [titiler](#titiler)
-    - [titiler-stacapi](#titiler-stacapi)
-
-  - Workspaces
-    - [eodhp-workspace-controller](#eodhp-workspace-controller)
-    - [eodhp-workspace-manager](#eodhp-workspace-manager)
-    - [eodhp-workspace-services](#eodhp-workspace-services)
-    - [eodhp-workspaces](#eodhp-workspaces)
+    - [configscanning](#configscanning)
+    - [eodhp-git-change-scanner](#eodhp-git-change-scanner)
+    - [eodhp-spdx-change-scanner](#eodhp-spdx-change-scanner)
+    - Accounting
+        - [accounting-service](#accounting-service)
+        - [billing-collector](#billing-collector)
+        - [eodhp-accounting-efs](#eodhp-accounting-efs)
+        - [eodhp-accounting-s3-usage](#eodhp-accounting-s3-usage)
+        - [eodhp-data-transfer-events](#eodhp-data-transfer-events)
+    - Ades
+        - [ades-fastapi](#ades-fastapi)
+        - [ades-stagein](#ades-stagein)
+        - [ades-stageout](#ades-stageout)
+        - [calrissian](#calrissian)
+        - [eoepca-proc-service-template](#eoepca-proc-service-template)
+        - [public-workflow-loader](#public-workflow-loader)
+        - [pycalrissian](#pycalrissian)
+        - [user-workflows-catalogue-dev](#user-workflows-catalogue-dev)
+        - [user-workflows-catalogue-prod](#user-workflows-catalogue-prod)
+        - [user-workflows-catalogue-test](#user-workflows-catalogue-test)
+        - [workflow-ingester](#workflow-ingester)
+        - [workflow-system-test](#workflow-system-test)
+        - [zoo-calrissian-runner](#zoo-calrissian-runner)
+        - [ZOO-Project](#zoo-project)
+    - Annotations
+        - [annotations-api](#annotations-api)
+        - [annotations-ingester](#annotations-ingester)
+        - [annotations-transformer](#annotations-transformer)
+    - Api
+        - [eodh-openapi](#eodh-openapi)
+    - Apis
+        - [platform-smoke-tests](#platform-smoke-tests)
+    - Auth
+        - [eodh-keycloak](#eodh-keycloak)
+        - [eodhp-auth-agent](#eodhp-auth-agent)
+        - [eodhp-opa-config](#eodhp-opa-config)
+        - [keycloakify-starter](#keycloakify-starter)
+    - Deployment
+        - [eodhp-argocd-deployment](#eodhp-argocd-deployment)
+        - [eodhp-deploy-infrastucture](#eodhp-deploy-infrastucture)
+        - [eodhp-deploy-supporting-infrastructure](#eodhp-deploy-supporting-infrastructure)
+    - Jupyter
+        - [eodh-jpyauth](#eodh-jpyauth)
+        - [eodh-jupyter-images](#eodh-jupyter-images)
+        - [notebooks](#notebooks)
+    - Messaging
+        - [eodhp-utils](#eodhp-utils)
+    - Resource Catalogue
+        - [airbus-harvester](#airbus-harvester)
+        - [commercial-data-adaptors](#commercial-data-adaptors)
+        - [element84-harvester](#element84-harvester)
+        - [eodh-qa-data](#eodh-qa-data)
+        - [eodh-stac-validator](#eodh-stac-validator)
+        - [eodhp-init-catalogs-harvest](#eodhp-init-catalogs-harvest)
+        - [eodhp-stac-fastapi](#eodhp-stac-fastapi)
+        - [eodhp-stac-fastapi-elasticsearch-opensearch](#eodhp-stac-fastapi-elasticsearch-opensearch)
+        - [harvest-transformer](#harvest-transformer)
+        - [opencosmos-harvester](#opencosmos-harvester)
+        - [planet-harvester](#planet-harvester)
+        - [resource-catalog-support-utils](#resource-catalog-support-utils)
+        - [resource-catalogue-fastapi](#resource-catalogue-fastapi)
+        - [stac-fastapi-ingester](#stac-fastapi-ingester)
+        - [stac-harvester](#stac-harvester)
+        - [stac-harvester-configurations](#stac-harvester-configurations)
+        - [stac-harvester-ingester](#stac-harvester-ingester)
+        - [stac-planet-api](#stac-planet-api)
+        - [stac-pydantic](#stac-pydantic)
+        - [test-catalogue-data](#test-catalogue-data)
+        - [workspace-catalog-generator](#workspace-catalog-generator)
+        - [workspace-file-harvester](#workspace-file-harvester)
+    - Titiler
+        - [titiler](#titiler)
+        - [titiler-stacapi](#titiler-stacapi)
+    - Workflow Catalogue
+        - [wf-catalogue-service](#wf-catalogue-service)
+        - [workflow-catalogue](#workflow-catalogue)
+    - Workspaces
+        - [eodhp-workspace-controller](#eodhp-workspace-controller)
+        - [eodhp-workspace-manager](#eodhp-workspace-manager)
+        - [eodhp-workspace-services](#eodhp-workspace-services)
 - Documentation
-  - [documentation](#documentation)
-  - [eodh-training](#eodh-training)
-  - [eodhp-guide](#eodhp-guide)
-  - [eodhp-release-notes](#eodhp-release-notes)
-  - [eodhp-sprint-reports](#eodhp-sprint-reports)
-  - [processes-catalog-api-proposal](#processes-catalog-api-proposal)
+    - [eodh-training](#eodh-training)
+    - [eodh-userdocs](#eodh-userdocs)
+    - [eodhp-guide](#eodhp-guide)
 - Examples
-  - [template-python](#template-python)
-  - [eodh-qa-prototype](#eodh-qa-prototype)
-  - Ades
-    - [ceda-snuggs](#ceda-snuggs)
-    - [eodhp-ades-demonstration](#eodhp-ades-demonstration)
-    - [example-workflows](#example-workflows)
-    - [physrisk-workflow](#physrisk-workflow)
-    - [public-workflows](#public-workflows)
-    - [tiff-to-cog-workflow](#tiff-to-cog-workflow)
-    - [user-workflows](#user-workflows)
-    - [workflow-private-data-access](#workflow-private-data-access)
+    - [eodh-qa-prototype](#eodh-qa-prototype)
+    - [eodhp-local-dev-stack](#eodhp-local-dev-stack)
+    - [template-python](#template-python)
+    - Ades
+        - [ceda-snuggs](#ceda-snuggs)
+        - [eodhp-ades-demonstration](#eodhp-ades-demonstration)
+        - [example-workflows](#example-workflows)
+        - [physrisk-workflow](#physrisk-workflow)
+        - [public-workflows](#public-workflows)
+        - [tiff-to-cog-workflow](#tiff-to-cog-workflow)
+        - [user-workflows](#user-workflows)
+        - [workflow-private-data-access](#workflow-private-data-access)
 - Frontend
-  - [eodhp-rc-ui](#eodhp-rc-ui)
-  - [eodhp-web-presence](#eodhp-web-presence)
-  - [eodhp-workspace-ui](#eodhp-workspace-ui)
-  - [react-starter-app](#react-starter-app)
+    - [eodhp-rc-ui](#eodhp-rc-ui)
+    - [eodhp-web-presence](#eodhp-web-presence)
+    - [eodhp-workspace-ui](#eodhp-workspace-ui)
 - Github
-  - [.github](#github)
-  - [github-actions](#github-actions)
-  - [link-checker](#link-checker)
+    - [.github](#github)
+    - [github-actions](#github-actions)
+    - [link-checker](#link-checker)
 - Other
-  - [eodh-eocis-sprint](#eodh-eocis-sprint)
+    - [eodh-community-notebook-competition](#eodh-community-notebook-competition)
+    - [eodh-eocis-sprint](#eodh-eocis-sprint)
 - Project-Management
-  - [eodh-qa-pm](#eodh-qa-pm)
-  - [eodhp-sparkgeo-pm](#eodhp-sparkgeo-pm)
-  - [platform-bugs](#platform-bugs)
-  - [project-delivery](#project-delivery)
-  - [project_management](#project-management)
-  - [user_engagement](#user-engagement)
-- Remove
-  - [annotations-api](#annotations-api)
-  - [annotations-ingester](#annotations-ingester)
-  - [annotations-transformer](#annotations-transformer)
-  - [commercial-harvester-ingester](#commercial-harvester-ingester)
-  - [eodh-demo-client-app](#eodh-demo-client-app)
-  - [eodh-pykeycloak](#eodh-pykeycloak)
-  - [eodhp-system-tests](#eodhp-system-tests)
-  - [generate-annotations-workflow](#generate-annotations-workflow)
-  - [harvester-error-notifier](#harvester-error-notifier)
-  - [keycloak-offline-token](#keycloak-offline-token)
-  - [platform-smoke-tests-tpz](#platform-smoke-tests-tpz)
-  - [sparkgeouser-workspace-data](#sparkgeouser-workspace-data)
-  - [stac-browser](#stac-browser)
-  - [test-catalogue-data](#test-catalogue-data)
-  - [tjellicoe-tpzuk-data](#tjellicoe-tpzuk-data)
-  - [workflow-harvester](#workflow-harvester)
-  - [workspace-logs-aggregator](#workspace-logs-aggregator)
+    - [eodh-qa-pm](#eodh-qa-pm)
+    - [eodhp-sparkgeo-pm](#eodhp-sparkgeo-pm)
+    - [feature-requests](#feature-requests)
+    - [platform-bugs](#platform-bugs)
+    - [project-delivery](#project-delivery)
+    - [project_management](#project-management)
+    - [user-journeys](#user-journeys)
+    - [user_engagement](#user-engagement)
 - Tools
-  - Clarat
-    - [climate-app-docs](#climate-app-docs)
-    - [climate-app-lst-workflow](#climate-app-lst-workflow)
-    - [climate-app-ui](#climate-app-ui)
-  - Eopro
-    - [eodh-fe](#eodh-fe)
-    - [eodh-fe-infra](#eodh-fe-infra)
-    - [eodh-workflows](#eodh-workflows)
-  - Integration
-    - [eoap-gen](#eoap-gen)
-    - [eodh-ac-api](#eodh-ac-api)
-    - [eodh-qgis](#eodh-qgis)
-    - [pyeodh](#pyeodh)
+    - Clarat
+        - [climate-app-docs](#climate-app-docs)
+        - [climate-app-lst-workflow](#climate-app-lst-workflow)
+        - [climate-app-ui](#climate-app-ui)
+    - Eopro
+        - [eodh-fe](#eodh-fe)
+        - [eodh-fe-infra](#eodh-fe-infra)
+        - [eodh-workflows](#eodh-workflows)
+    - Integration
+        - [arcgis-plugin](#arcgis-plugin)
+        - [dev-platform-eoap](#dev-platform-eoap)
+        - [eoap-gen](#eoap-gen)
+        - [eodh-ac-api](#eodh-ac-api)
+        - [eodh-arcgis](#eodh-arcgis)
+        - [eodh-qgis](#eodh-qgis)
+        - [pyeodh](#pyeodh)
+- Archived
+    - [documentation](#documentation)
+    - [eodhp-release-notes](#eodhp-release-notes)
+    - [eodhp-sprint-reports](#eodhp-sprint-reports)
+    - [processes-catalog-api-proposal](#processes-catalog-api-proposal)
+    - [stac-browser](#stac-browser)
+    - [test-workflow-store](#test-workflow-store)
 
 <a id="github"></a>
 
@@ -249,7 +248,8 @@ Notes:
 
   This API lists and returns the graphs of annotations attached to catalogue entries.
 
-  ![remove](https://img.shields.io/badge/remove-e74c3c?style=flat)
+  ![backend](https://img.shields.io/badge/backend-34495e?style=flat)
+  ![annotations](https://img.shields.io/badge/annotations-8e44ad?style=flat)
 
   Docker Image: `public.ecr.aws/eodh/annotations-api`  
   ArgoCD Files: `apps/resource-catalogue/base/annotations/deployment.yaml`
@@ -262,7 +262,8 @@ Notes:
 
   Populates the annotations service with both annotations and a simple DCAT description of catalogue entries. Annotations are small pieces of third-party metadata attached to catalogue entries - ie, they are not produced or maintained by the supplier of the dataset or its core catalogue entry.
 
-  ![remove](https://img.shields.io/badge/remove-e74c3c?style=flat)
+  ![backend](https://img.shields.io/badge/backend-34495e?style=flat)
+  ![annotations](https://img.shields.io/badge/annotations-8e44ad?style=flat)
 
   Docker Image: `public.ecr.aws/n1b3o1k2//ukeodhpannotations-ingester`  
   ArgoCD Files: `apps/resource-catalogue/base/annotations/ingester.yaml`
@@ -275,10 +276,22 @@ Notes:
 
   Receives harvested annotations data in the form provided by users and transforms it to the RDF linked data representation the annotations service needs.
 
-  ![remove](https://img.shields.io/badge/remove-e74c3c?style=flat)
+  ![backend](https://img.shields.io/badge/backend-34495e?style=flat)
+  ![annotations](https://img.shields.io/badge/annotations-8e44ad?style=flat)
 
   Docker Image: `public.ecr.aws/n1b3o1k2/annotations-transformer`  
   ArgoCD Files: `apps/resource-catalogue/base/annotations/transformer.yaml`
+
+  ---
+
+<a id="arcgis-plugin"></a>
+
+### arcgis-plugin
+
+  Early version of the EODH ArcGIS Pro add-in. Development continues in [eodh-arcgis](#eodh-arcgis); no pushes since March 2026.
+
+  ![tools](https://img.shields.io/badge/tools-34495e?style=flat)
+  ![integration](https://img.shields.io/badge/integration-8e44ad?style=flat)
 
   ---
 
@@ -367,18 +380,6 @@ Notes:
 
   ---
 
-<a id="commercial-harvester-ingester"></a>
-
-### commercial-harvester-ingester
-
-  Service for harvesting and ingesting data from commercial Earth observation data providers.  A planned component that hasn&#x27;t been fully implemented yet
-
-  ![remove](https://img.shields.io/badge/remove-e74c3c?style=flat)
-
-  Docker Image: `public.ecr.aws/n1b3o1k2//ukeodhpCHANGEME`  
-
-  ---
-
 <a id="configscanning"></a>
 
 ### configscanning
@@ -391,13 +392,39 @@ Notes:
 
   ---
 
+<a id="dev-platform-eoap"></a>
+
+### dev-platform-eoap
+
+  Kubernetes-based developer environment for Earth Observation Application Packages. Runs a browser-accessible code-server pod that can invoke Calrissian and submit Kubernetes Jobs to run CWL workflows.
+
+  ![tools](https://img.shields.io/badge/tools-34495e?style=flat)
+  ![integration](https://img.shields.io/badge/integration-8e44ad?style=flat)
+
+  ---
+
 <a id="documentation"></a>
 
 ### documentation
 
   Contains some of Telespazio&#x27;s documentation about EODHP as a whole (vs an individual component) and working practices.
 
-  ![documentation](https://img.shields.io/badge/documentation-95a5a6?style=flat)
+  ![archived](https://img.shields.io/badge/archived-555555?style=flat)
+  ![private](https://img.shields.io/badge/private-c0392b?style=flat)
+
+  ---
+
+<a id="element84-harvester"></a>
+
+### element84-harvester
+
+  Harvests the Element84 Earth Search STAC catalogue (`sentinel-2-c1-l2a` collection only) into the EODH `public` catalogue tree. Writes catalog and collection documents only; item search is still served by the Element84 proxy.
+
+  ![backend](https://img.shields.io/badge/backend-34495e?style=flat)
+  ![rc](https://img.shields.io/badge/rc-9b59b6?style=flat)
+
+  Docker Image: `public.ecr.aws/eodh/element84-harvester`  
+  ArgoCD Files: `apps/resource-catalogue/base/proxies/element84/harvester.yaml`
 
   ---
 
@@ -423,26 +450,23 @@ Notes:
 
   ---
 
-<a id="eodh-auth-proxy"></a>
+<a id="eodh-arcgis"></a>
 
-### eodh-auth-proxy
+### eodh-arcgis
 
-  A forward auth proxy sidecar to add authentication to outgoing requests for configured domains.
+  ArcGIS Pro add-in to search, preview and load EODH datasets, purchase commercial imagery (Airbus, Planet) and load completed workspace assets.
 
-  ![backend](https://img.shields.io/badge/backend-34495e?style=flat)
-  ![auth](https://img.shields.io/badge/auth-27ae60?style=flat)
-
-  Docker Image: `public.ecr.aws/eodh/eodh-auth-proxy`  
+  ![tools](https://img.shields.io/badge/tools-34495e?style=flat)
+  ![integration](https://img.shields.io/badge/integration-8e44ad?style=flat)
 
   ---
 
-<a id="eodh-demo-client-app"></a>
+<a id="eodh-community-notebook-competition"></a>
 
-### eodh-demo-client-app
+### eodh-community-notebook-competition
 
-  just a demo repo to trial out app client integrations and debug auth issues.
+  Rules, dates and submissions for the EODH Community Notebook Competition (October–December 2026).
 
-  ![remove](https://img.shields.io/badge/remove-e74c3c?style=flat)
 
   ---
 
@@ -526,13 +550,15 @@ Notes:
 
   ---
 
-<a id="eodh-pykeycloak"></a>
+<a id="eodh-qa-data"></a>
 
-### eodh-pykeycloak
+### eodh-qa-data
 
-  A repository to demonstrate different token endpoint calls.
+  QA documentation (Quality Processes Review) and radiometric uncertainty JSON files produced by NPL for EODH collections, exposed as `qa_documentation` and `qa_radiometric` STAC assets.
 
-  ![remove](https://img.shields.io/badge/remove-e74c3c?style=flat)
+  ![backend](https://img.shields.io/badge/backend-34495e?style=flat)
+  ![rc](https://img.shields.io/badge/rc-9b59b6?style=flat)
+  ![qa](https://img.shields.io/badge/qa-27ae60?style=flat)
 
   ---
 
@@ -543,6 +569,7 @@ Notes:
   Quality assurance project management and testing coordination.
 
   ![project-management](https://img.shields.io/badge/project-management-7f8c8d?style=flat)
+  ![private](https://img.shields.io/badge/private-c0392b?style=flat)
 
   ---
 
@@ -586,6 +613,16 @@ Notes:
 ### eodh-training
 
   Training materials, tutorials, and examples for using the EODH platform and APIs.
+
+  ![documentation](https://img.shields.io/badge/documentation-95a5a6?style=flat)
+
+  ---
+
+<a id="eodh-userdocs"></a>
+
+### eodh-userdocs
+
+  Source for the user-facing EODH documentation site (MkDocs Material), published at `https://eodatahub.org.uk/docs/documentation`.
 
   ![documentation](https://img.shields.io/badge/documentation-95a5a6?style=flat)
 
@@ -649,6 +686,7 @@ Notes:
 
   ![backend](https://img.shields.io/badge/backend-34495e?style=flat)
   ![deployment](https://img.shields.io/badge/deployment-d35400?style=flat)
+  ![private](https://img.shields.io/badge/private-c0392b?style=flat)
 
   ---
 
@@ -688,6 +726,7 @@ Notes:
 
   ![backend](https://img.shields.io/badge/backend-34495e?style=flat)
   ![deployment](https://img.shields.io/badge/deployment-d35400?style=flat)
+  ![private](https://img.shields.io/badge/private-c0392b?style=flat)
 
   ---
 
@@ -699,6 +738,7 @@ Notes:
 
   ![backend](https://img.shields.io/badge/backend-34495e?style=flat)
   ![deployment](https://img.shields.io/badge/deployment-d35400?style=flat)
+  ![private](https://img.shields.io/badge/private-c0392b?style=flat)
 
   ---
 
@@ -739,6 +779,16 @@ Notes:
 
   ---
 
+<a id="eodhp-local-dev-stack"></a>
+
+### eodhp-local-dev-stack
+
+  Docker Compose stack that emulates S3 (RustFS) and Pulsar, with optional harvest-transformer and CWL runner containers, for local development of EODH backend services.
+
+  ![examples](https://img.shields.io/badge/examples-f1c40f?style=flat)
+
+  ---
+
 <a id="eodhp-opa-config"></a>
 
 ### eodhp-opa-config
@@ -747,6 +797,7 @@ Notes:
 
   ![backend](https://img.shields.io/badge/backend-34495e?style=flat)
   ![auth](https://img.shields.io/badge/auth-27ae60?style=flat)
+  ![private](https://img.shields.io/badge/private-c0392b?style=flat)
 
   ---
 
@@ -766,7 +817,8 @@ Notes:
 
   Release notes for the work done by Telespazio UK on the EO DataHub platform.
 
-  ![documentation](https://img.shields.io/badge/documentation-95a5a6?style=flat)
+  ![archived](https://img.shields.io/badge/archived-555555?style=flat)
+  ![private](https://img.shields.io/badge/private-c0392b?style=flat)
 
   ---
 
@@ -777,6 +829,7 @@ Notes:
   SparkGeo related issue/project tracking
 
   ![project-management](https://img.shields.io/badge/project-management-7f8c8d?style=flat)
+  ![private](https://img.shields.io/badge/private-c0392b?style=flat)
 
   ---
 
@@ -799,7 +852,8 @@ Notes:
 
   Contains reports on each Scrum sprint carried out by Telespazio UK for the EODH project.
 
-  ![documentation](https://img.shields.io/badge/documentation-95a5a6?style=flat)
+  ![archived](https://img.shields.io/badge/archived-555555?style=flat)
+  ![private](https://img.shields.io/badge/private-c0392b?style=flat)
 
   ---
 
@@ -825,16 +879,6 @@ Notes:
 
   ![backend](https://img.shields.io/badge/backend-34495e?style=flat)
   ![rc](https://img.shields.io/badge/rc-9b59b6?style=flat)
-
-  ---
-
-<a id="eodhp-system-tests"></a>
-
-### eodhp-system-tests
-
-  Placeholder tests
-
-  ![remove](https://img.shields.io/badge/remove-e74c3c?style=flat)
 
   ---
 
@@ -913,19 +957,6 @@ Notes:
 
   ---
 
-<a id="eodhp-workspaces"></a>
-
-### eodhp-workspaces
-
-  Manages the configuration of the UK EO DataHub Platform workspaces.
-
-  ![backend](https://img.shields.io/badge/backend-34495e?style=flat)
-  ![workspaces](https://img.shields.io/badge/workspaces-1abc9c?style=flat)
-
-  Docker Image: `public.ecr.aws/n1b3o1k2//ukeodhpeodhp-workspaces`  
-
-  ---
-
 <a id="eoepca-proc-service-template"></a>
 
 ### eoepca-proc-service-template
@@ -948,24 +979,14 @@ Notes:
 
   ---
 
-<a id="generate-annotations-workflow"></a>
+<a id="feature-requests"></a>
 
-### generate-annotations-workflow
+### feature-requests
 
-  Used as a testing tool for the annotations ingest pipeline. Development has been suspended on the annotations pipeline and this is no longer maintained.
+  Proposed new features for the EODH, and the main repository for the user journey project.
 
-  ![remove](https://img.shields.io/badge/remove-e74c3c?style=flat)
-
-  ---
-
-<a id="git-change-scanner"></a>
-
-### git-change-scanner
-
-  Automates GitOps-style deployment for the AIPIPE machine learning platform
-
-  ![backend](https://img.shields.io/badge/backend-34495e?style=flat)
-  ![deployment](https://img.shields.io/badge/deployment-d35400?style=flat)
+  ![project-management](https://img.shields.io/badge/project-management-7f8c8d?style=flat)
+  ![private](https://img.shields.io/badge/private-c0392b?style=flat)
 
   ---
 
@@ -992,28 +1013,6 @@ Notes:
 
   Docker Image: `public.ecr.aws/eodh/harvest-transformer`  
   ArgoCD Files: `apps/resource-catalogue/base/git-harvester/configuration-transformer.yaml`, `apps/resource-catalogue/base/transformer.yaml`
-
-  ---
-
-<a id="harvester-error-notifier"></a>
-
-### harvester-error-notifier
-
-  Template repository (not fully implemented) for notifying on harvester errors.
-
-  ![remove](https://img.shields.io/badge/remove-e74c3c?style=flat)
-
-  Docker Image: `public.ecr.aws/n1b3o1k2/harvester-error-notifier`  
-
-  ---
-
-<a id="keycloak-offline-token"></a>
-
-### keycloak-offline-token
-
-  Script to demonstrate how application developers can get a Keycloak offline refresh token and then use this to request an access token for use with API calls
-
-  ![remove](https://img.shields.io/badge/remove-e74c3c?style=flat)
 
   ---
 
@@ -1051,6 +1050,17 @@ Notes:
 
   ---
 
+<a id="opencosmos-harvester"></a>
+
+### opencosmos-harvester
+
+  Harvests Open Cosmos archive imagery metadata, converts it to STAC, stores it in S3 and publishes change messages to Pulsar. Not yet referenced in ArgoCD.
+
+  ![backend](https://img.shields.io/badge/backend-34495e?style=flat)
+  ![rc](https://img.shields.io/badge/rc-9b59b6?style=flat)
+
+  ---
+
 <a id="physrisk-workflow"></a>
 
 ### physrisk-workflow
@@ -1076,17 +1086,6 @@ Notes:
 
   ---
 
-<a id="planet-stac-converter"></a>
-
-### planet-stac-converter
-
-  Tool that converts STAC query requests into Planet Labs API calls, enabling STAC-standard searches on Planet&#x27;s satellite imagery catalog.
-
-  ![backend](https://img.shields.io/badge/backend-34495e?style=flat)
-  ![rc](https://img.shields.io/badge/rc-9b59b6?style=flat)
-
-  ---
-
 <a id="platform-bugs"></a>
 
 ### platform-bugs
@@ -1094,6 +1093,7 @@ Notes:
   This is a place for partners to report bugs and feature requests against the hub platform.
 
   ![project-management](https://img.shields.io/badge/project-management-7f8c8d?style=flat)
+  ![private](https://img.shields.io/badge/private-c0392b?style=flat)
 
   ---
 
@@ -1105,16 +1105,7 @@ Notes:
 
   ![backend](https://img.shields.io/badge/backend-34495e?style=flat)
   ![apis](https://img.shields.io/badge/apis-2ecc71?style=flat)
-
-  ---
-
-<a id="platform-smoke-tests-tpz"></a>
-
-### platform-smoke-tests-tpz
-
-  This was a temporary repo set up to create a PR for platform-smoke-tests repo
-
-  ![remove](https://img.shields.io/badge/remove-e74c3c?style=flat)
+  ![private](https://img.shields.io/badge/private-c0392b?style=flat)
 
   ---
 
@@ -1124,7 +1115,8 @@ Notes:
 
   Proposed structures and documents for the EODH (Earth Observation Data Hub) process catalogue, which enables discovery and execution of Earth observation workflows and notebooks
 
-  ![documentation](https://img.shields.io/badge/documentation-95a5a6?style=flat)
+  ![archived](https://img.shields.io/badge/archived-555555?style=flat)
+  ![private](https://img.shields.io/badge/private-c0392b?style=flat)
 
   ---
 
@@ -1135,6 +1127,7 @@ Notes:
   Project delivery issues and tracking.
 
   ![project-management](https://img.shields.io/badge/project-management-7f8c8d?style=flat)
+  ![private](https://img.shields.io/badge/private-c0392b?style=flat)
 
   ---
 
@@ -1145,6 +1138,7 @@ Notes:
   Project management issues, and tracking for platform development.
 
   ![project-management](https://img.shields.io/badge/project-management-7f8c8d?style=flat)
+  ![private](https://img.shields.io/badge/private-c0392b?style=flat)
 
   ---
 
@@ -1195,16 +1189,6 @@ Notes:
 
   ---
 
-<a id="react-starter-app"></a>
-
-### react-starter-app
-
-  Template providing a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-  ![frontend](https://img.shields.io/badge/frontend-3498db?style=flat)
-
-  ---
-
 <a id="resource-catalog-support-utils"></a>
 
 ### resource-catalog-support-utils
@@ -1230,23 +1214,13 @@ Notes:
 
   ---
 
-<a id="sparkgeouser-workspace-data"></a>
-
-### sparkgeouser-workspace-data
-
-  Repository for workspace-specific user datasets and access policies for the sparkgeouser user
-
-  ![remove](https://img.shields.io/badge/remove-e74c3c?style=flat)
-
-  ---
-
 <a id="stac-browser"></a>
 
 ### stac-browser
 
   STAC browser for static catalogs
 
-  ![remove](https://img.shields.io/badge/remove-e74c3c?style=flat)
+  ![archived](https://img.shields.io/badge/archived-555555?style=flat)
 
   ---
 
@@ -1344,9 +1318,22 @@ each catalogue.
 
 ### test-catalogue-data
 
-  A data repository for testing and experimentation. Assume that any and all branches may change.
+  A data repository for testing and experimentation. Assume that any and all branches may change. Used as the source data for the git harvester test job.
 
-  ![remove](https://img.shields.io/badge/remove-e74c3c?style=flat)
+  ![backend](https://img.shields.io/badge/backend-34495e?style=flat)
+  ![rc](https://img.shields.io/badge/rc-9b59b6?style=flat)
+
+  ArgoCD Files: `apps/resource-catalogue/base/git-harvester/tests/files/harvester-test.py`
+
+  ---
+
+<a id="test-workflow-store"></a>
+
+### test-workflow-store
+
+  Empty test repository for workflow storage.
+
+  ![archived](https://img.shields.io/badge/archived-555555?style=flat)
 
   ---
 
@@ -1389,13 +1376,14 @@ each catalogue.
 
   ---
 
-<a id="tjellicoe-tpzuk-data"></a>
+<a id="user-journeys"></a>
 
-### tjellicoe-tpzuk-data
+### user-journeys
 
-  Repository for workspace-specific user datasets and access policies for the particular user
+  Tasks, issues and project tracking for the user journey work.
 
-  ![remove](https://img.shields.io/badge/remove-e74c3c?style=flat)
+  ![project-management](https://img.shields.io/badge/project-management-7f8c8d?style=flat)
+  ![private](https://img.shields.io/badge/private-c0392b?style=flat)
 
   ---
 
@@ -1418,6 +1406,7 @@ each catalogue.
 
   ![backend](https://img.shields.io/badge/backend-34495e?style=flat)
   ![ades](https://img.shields.io/badge/ades-2980b9?style=flat)
+  ![private](https://img.shields.io/badge/private-c0392b?style=flat)
 
   ---
 
@@ -1429,6 +1418,7 @@ each catalogue.
 
   ![backend](https://img.shields.io/badge/backend-34495e?style=flat)
   ![ades](https://img.shields.io/badge/ades-2980b9?style=flat)
+  ![private](https://img.shields.io/badge/private-c0392b?style=flat)
 
   ---
 
@@ -1440,6 +1430,7 @@ each catalogue.
 
   ![backend](https://img.shields.io/badge/backend-34495e?style=flat)
   ![ades](https://img.shields.io/badge/ades-2980b9?style=flat)
+  ![private](https://img.shields.io/badge/private-c0392b?style=flat)
 
   ---
 
@@ -1450,16 +1441,32 @@ each catalogue.
   Manage user engagement tasks
 
   ![project-management](https://img.shields.io/badge/project-management-7f8c8d?style=flat)
+  ![private](https://img.shields.io/badge/private-c0392b?style=flat)
 
   ---
 
-<a id="workflow-harvester"></a>
+<a id="wf-catalogue-service"></a>
 
-### workflow-harvester
+### wf-catalogue-service
 
-  Empty repo
+  Workflow and notebook catalogue API (OGC API – Records style). Lists catalogues and records, and registers or deletes workflow and notebook records.
 
-  ![remove](https://img.shields.io/badge/remove-e74c3c?style=flat)
+  ![backend](https://img.shields.io/badge/backend-34495e?style=flat)
+  ![workflow-catalogue](https://img.shields.io/badge/workflow--catalogue-e67e22?style=flat)
+
+  Docker Image: `public.ecr.aws/eodh/wf-catalogue-service`  
+  ArgoCD Files: `apps/workflow-discovery/base/deployment.yaml`
+
+  ---
+
+<a id="workflow-catalogue"></a>
+
+### workflow-catalogue
+
+  Shared EODH workflow and notebook record definitions, with CI that validates them and CD that registers them in [wf-catalogue-service](#wf-catalogue-service).
+
+  ![backend](https://img.shields.io/badge/backend-34495e?style=flat)
+  ![workflow-catalogue](https://img.shields.io/badge/workflow--catalogue-e67e22?style=flat)
 
   ---
 
@@ -1527,18 +1534,6 @@ each catalogue.
 
   Docker Image: `public.ecr.aws/n1b3o1k2/workspace-file-harvester`  
   ArgoCD Files: `apps/resource-catalogue/base/workspaces/deployment.yaml`
-
-  ---
-
-<a id="workspace-logs-aggregator"></a>
-
-### workspace-logs-aggregator
-
-  Template repository (not fully implemented) intended to aggregate logs from EODH workspaces
-
-  ![remove](https://img.shields.io/badge/remove-e74c3c?style=flat)
-
-  Docker Image: `public.ecr.aws/n1b3o1k2//ukeodhpCHANGEME`  
 
   ---
 
