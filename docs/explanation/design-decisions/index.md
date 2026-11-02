@@ -34,3 +34,4 @@ Lower-level design work for the credit-based accounting model in `accounting-ser
 ## Data access
 
 - [ADR-002: Bulk download of item assets in the browser](bulk-download-adr.md) — why users download many files of one item from the browser, with scripts for large files, instead of through a backend zip service
+- [Feasibility: Landsat from Earth Search and requester-pays access](landsat-requester-pays-feasibility.md) — what it takes to serve Landsat from a requester-pays bucket and charge the cost to workspaces, with a proof-of-concept plan
