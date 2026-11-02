@@ -52,6 +52,7 @@ As built, the allowed values come from the workspace service's configuration (`w
 | Method | Path | Request body | Description | Auth | Status |
 | ------ | ---- | ------------ | ----------- | ---- | ------ |
 | GET | `/api/admin/workspaces` | – | Returns every workspace on the platform, regardless of the caller's own membership | `hub_admin` | Not built |
+| GET | `/api/accounting/workspaces` | – | Every workspace the accounting service knows of, including idle ones, with its balance, billing account, pricing category (the policy default where none is assigned, flagged by `category_assigned`), latest usage and net credits granted. Whole list, no parameters; filtering by balance is left to the UI | `hub_admin` | Built (`accounting-service` PR #67, not yet merged) |
 | GET | `/api/accounting/usage-data` | – | Usage across every workspace. Same query as the workspace usage read; `?time-aggregation=day&group-by=workspace` gives one series per workspace | `hub_admin` | Built (`accounting-service` PR #65, not in the original proposal) |
 
 The proposal paired `/api/admin/workspaces` with a per-account usage read. As built, the usage half is served by `GET /api/accounting/usage-data` on its own. To drill down to one workspace, the UI sends the same parameters to `GET /api/workspaces/:id/accounting/usage-data`.
