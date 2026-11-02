@@ -206,7 +206,7 @@ The largest single item is now 2 days. The earlier list had one 20-day item. Its
 
 ## Raised, not yet discussed
 
-**T23 — a hub-admin overview of usage across every workspace.** Done as of PR #65 (merged 2026-10-21): `GET /accounting/usage-data`, `hub_admin` only, takes the same query as the workspace and account reads with nothing selecting the workspaces. `?time-aggregation=day&group-by=workspace` gives one series per workspace; ranking is left to the front end. The original note follows.
+**T23 — a hub-admin overview of usage across every workspace.** Done as of PR #65 (merged 2026-10-21): `GET /accounting/usage-data`, `hub_admin` only, takes the same query as the workspace and account reads with nothing selecting the workspaces. `?time-aggregation=day&group-by=workspace` gives one series per workspace; ranking is left to the front end. `GET /accounting/workspaces`, also `hub_admin` only, adds the list of every workspace with its balance, account, category, latest usage and net grants, so a workspace idle in the period and one about to run out both show (`accounting-service` PR #67, not yet merged). The original note follows.
 Every usage, balance and ledger read takes a workspace in its path and scopes to it, so an
 estate-wide view is a different query rather than a wider tier on an endpoint that exists.
 What it should group by, whether it reports credits or quantities, and whether it reuses
