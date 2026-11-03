@@ -8,7 +8,7 @@ tags:
   - workspaces
 last_reviewed:
 reviewed_by:
-review_notes: "Feasibility study for eodhp-sparkgeo-pm#246, updated 2026-11-02 with the proof-of-concept results."
+review_notes: "Feasibility study for eodhp-sparkgeo-pm#246, updated 2026-11-02 with the proof-of-concept results and 2026-11-03 after review."
 ---
 # Feasibility: Landsat from Earth Search and requester-pays access
 
@@ -24,7 +24,7 @@ Most of the catalogue side exists already. A proof of concept (PoC) tested signi
 
 - **The redirect works.** curl, GDAL/rasterio, QGIS, pystac-client, a notebook, ADES stage-in and a UI download all read Landsat through the endpoint. GDAL reads take the same time as direct access.
 - **CloudTrail meters the reads per workspace.** The reads appear in the Hub's own trail, named by the workspace's role session, with exact byte counts, about 5 minutes after the read.
-- **Browser JavaScript cannot read the data.** USGS has CORS turned off on the bucket. Downloads by link work. In-browser COG viewers cannot work through a redirect.
+- **Browser JavaScript cannot read the data.** USGS has CORS turned off on the bucket. Downloads by link work. This does not affect the Hub's UIs, whose maps read through titiler.
 - **Titiler must check access itself.** GDAL's cache, inside one titiler process, serves a second user without asking the endpoint.
 
 See [Proof of concept](#proof-of-concept) for the details.
@@ -72,10 +72,12 @@ A token can list more than one workspace (the `workspaces` claim), and the asset
 
 If none of these applies, the endpoint returns 400. The chosen workspace must be in the token's `workspaces` claim, or the endpoint returns 403. The query parameter is as safe as the header, because the endpoint checks both against the same claim. Clients that cannot send a header need it: a link click, and a tile URL.
 
+A real Hub token, shared in review on 2026-11-03, is scoped to one workspace. The user belongs to eight groups, but the token has `workspaces: ["sparkgeotest"]`, a matching `workspace` claim and a `workspace:sparkgeotest` scope. Its `aud` includes `eodh`. It was a UI token (`azp: eodh-workspaces`). If workspace API tokens and the auth agent's session cookie are scoped in the same way, step 3 always applies, and the header and query parameter add nothing. The contract could then drop them. Confirm both before deciding (see [Open questions](#open-questions)).
+
 | Access path | How it authenticates | How it names the workspace |
 |---|---|---|
 | GDAL, QGIS, `pyeodh` | Bearer token (`GDAL_HTTP_HEADERS`, or a QGIS **API Header** auth configuration whose value is `Bearer <token>`) | Header. Not the query parameter: see below. |
-| Notebook | Workspace access token | The token's only workspace (tested with a local token; still to confirm that real workspace tokens list one workspace) |
+| Notebook | Workspace access token | The token's only workspace (tested with a local token. A real UI token lists one workspace; still to confirm for workspace access tokens) |
 | ADES stage-in | `ades-stagein/stage.py` sends `WORKSPACE_ACCESS_TOKEN` as a bearer token with `requests.get` | The token's only workspace |
 | UI download (link click) | A link click sends no bearer header, so the endpoint sits behind the auth agent, which authenticates the session cookie | `?workspace=` from the UI's active workspace |
 | Titiler tiles | Titiler forwards the user's token to the endpoint (see [Titiler](#titiler)) | `?workspace=` on the URL that titiler gets |
@@ -152,11 +154,17 @@ A full Level-2 scene is about 1 GB.
 
 ## Other risks
 
-- **Browser COG viewers cannot work.** CORS is not enabled on `usgs-landsat` (`CORSResponse: CORS is not enabled for this bucket`), and USGS owns the bucket. JavaScript in a browser (`fetch`, in-browser COG libraries) cannot read the data through any redirect. Navigation (links, downloads, new tabs) is not subject to CORS and works. The Hub's own UIs do not read COGs in the browser: their maps go through titiler. The `stac-browser` fork can, but no deployment of it was found. A browser viewer for this data would need the bytes proxied through the Hub.
-- **Thumbnails are not free.** The `thumbnail` and `reduced_resolution_browse` assets are in `usgs-landsat` and are rewritten like any other asset, so they would need a login and cost a workspace each time a page shows them. The item's `rel=thumbnail` link is not a free alternative. Earth Search answers it with a 302 to a URL presigned with Element 84's own credentials, so Element 84 pay for each view. That is a courtesy with no SLA, and the Hub should not depend on it. This needs a decision between two options:
-    - **Sign thumbnails through the Hub and pay for them.** `thumb_small.jpeg` files are small, so the cost may be negligible. Every catalogue page that shows Landsat thumbnails would need a login. The Hub could also carry the cost itself, not charge it to a workspace.
-    - **Use Planetary Computer's rendered preview.** It needs no login. Its `landsat-c2-l2` item IDs match Earth Search's, so the UI can build the URL from `item.id`: `https://planetarycomputer.microsoft.com/api/data/v1/item/preview.png?collection=landsat-c2-l2&item={id}&assets=red&assets=green&assets=blue&color_formula=gamma%20RGB%202.7,%20saturation%201.5,%20sigmoidal%20RGB%2015%200.55&format=png`. A test on 2026-11-03 returned a 67 KB PNG in about 1.8 s. It is a third-party service with no SLA, it renders on request, and the image looks a little different from the USGS thumbnail.
-- **`storage:*` metadata no longer matches the href.** The rewritten href points at the Hub, but `storage:platform`, `storage:region` and `storage:requester_pays` still describe S3. pystac warns about this. Decide whether to drop or keep these fields on rewrite.
+- **Third-party browser COG viewers cannot read the data.** CORS is not enabled on `usgs-landsat`, and USGS owns the bucket. This does not affect the Hub's UIs, which read through titiler. Supporting an in-browser viewer would need the bytes proxied through the Hub.
+- **Thumbnails are not free.** The `thumbnail` and `reduced_resolution_browse` assets are in `usgs-landsat` and are rewritten like any other asset, so they would need a login and cost a workspace each time a page shows them. The item's `rel=thumbnail` link is not a free alternative. Earth Search answers it with a 302 to a URL presigned with Element 84's own credentials, so Element 84 pay for each view. That is a courtesy with no SLA, and the Hub should not depend on it. The options:
+    - **Recommended: an anonymous thumbnail route that the Hub pays for.** This is what Element 84 do. The route needs no token and accepts only thumbnail keys (`*_thumb_small.jpeg`). It signs as a fixed platform session, for example `catalogue-thumbnails`, so CloudTrail shows the total and no workspace is charged. A `thumb_small.jpeg` is about 5.5 KB, so a million views cost about $0.50 in transfer and $0.40 in GET requests. The route needs an nginx rate limit, so that nobody can run up the cost. It can let browsers cache the redirect for a few minutes.
+    - **Fallback: Planetary Computer's rendered preview.** It needs no login. Its `landsat-c2-l2` item IDs match Earth Search's, so the UI can build the URL from `item.id`: `https://planetarycomputer.microsoft.com/api/data/v1/item/preview.png?collection=landsat-c2-l2&item={id}&assets=red&assets=green&assets=blue&color_formula=gamma%20RGB%202.7,%20saturation%201.5,%20sigmoidal%20RGB%2015%200.55&format=png`. A test on 2026-11-03 returned a 67 KB PNG in about 1.8 s. It is a third-party service with no SLA, it renders on request, and the image looks a little different from the USGS thumbnail.
+- **`storage:*` metadata must match the rewritten href.** The rewritten href points at the Hub, and the user no longer pays AWS or needs AWS credentials. So the proxy sets `storage:requester_pays` to `false`. Earth Search returns compact JSON, so this is one more `sub_filter` line. It depends on Earth Search keeping that format:
+
+    ```nginx
+    sub_filter '"storage:requester_pays":true' '"storage:requester_pays":false';
+    ```
+
+    `storage:platform` and `storage:region` stay as they are. After the redirect, the bytes still come from S3 in us-west-2, and the region affects the transfer cost. pystac still warns that it cannot parse a bucket from the Hub href. The warning is harmless.
 - **Render configurations must use the rewritten URLs.** See [Titiler](#titiler) and [Render configurations](../architecture/render-configs.md).
 
 ## Proposed URL scheme
@@ -173,7 +181,7 @@ Feature-requests#16 proposes a scheme based on item and asset IDs. The two ticke
 
 ## Proof of concept
 
-The PoC ran on 2026-11-02 in the EODH-test AWS account, from a laptop on home broadband. It is a separate project (`requester-pays-poc`, not yet published) and changes no existing repository. It uses local RS256 tokens with the platform's claim names, in place of Keycloak.
+The PoC ran on 2026-11-02 in the EODH-test AWS account, from a laptop on home broadband. It is a separate project ([`requester-pays-poc`](https://github.com/EO-DataHub/requester-pays-poc), private, with the full findings in `RESULTS.md`) and changes no existing repository. It uses local RS256 tokens with the platform's claim names, in place of Keycloak.
 
 ### Results
 
@@ -196,7 +204,8 @@ The extra round trip to the endpoint is within the noise of these measurements.
 
 ### Open questions
 
-- Do real workspace access tokens list exactly one workspace? The notebook and ADES paths depend on it.
+- Do workspace access tokens, and the auth agent's session cookie, list exactly one workspace, like the UI token in [Every data request must name a workspace](#every-data-request-must-name-a-workspace)? The notebook and ADES paths depend on it. If both do, the header and query parameter can go.
+- How long should a presigned URL live? The PoC used 15 minutes (`X-Amz-Expires=900`). The URL also stops working when its STS session expires. With a 1-hour session that is refreshed 20 minutes before expiry, a URL of up to 20 minutes is always valid. A longer lifetime means fewer requests to the endpoint, but a leaked URL works for longer, and titiler's cache window grows. A single GET that starts before expiry should finish, because S3 checks the signature when a request starts. A shorter lifetime depends on GDAL going back to the endpoint when its cached redirect expires. The GDAL source suggests that it does, but the PoC did not test it. A QGIS session longer than the URL lifetime would show it.
 - How many data events, and what trail cost, does a realistic COG session produce? The PoC reads were small.
 - How does the endpoint run behind the real auth agent? The PoC emulated it with nginx.
 - Which GDAL versions do users run? The redirect behaviour above is from GDAL 3.12.2.
