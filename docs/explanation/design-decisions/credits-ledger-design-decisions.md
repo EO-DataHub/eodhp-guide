@@ -36,9 +36,9 @@ Credits are an internal quota unit. Nothing in this work moves real money, and t
 
 The ledger stays money-agnostic so the payment work can attach later without reshaping it. Credit grants are an administrative action by a `hub_admin`: a user asks, and the admin adds credits to the balance. Nothing in this service converts money into credits, in either direction.
 
-**Revised 2026-09-08: there is no exchange rate.** This decision originally kept a versioned credit-to-currency rate as a reporting and calibration value, to answer "this workspace's usage was worth £Y" while the platform learned what AWS actually costs. It never acquired a reader. The gap-finding table in the [scoping doc](credits-ledger-scoping.md) recorded that the exchange rate had no consumer and answered it by nominating T11 — and T11 now serves credits, so the finding stands.
+**Revised 2026-09-08: there is no exchange rate.** This decision originally kept a versioned credit-to-currency rate as a reporting and calibration value, to answer "this workspace's usage was worth £Y" while the rates were being set. It never acquired a reader. The gap-finding table in the [scoping doc](credits-ledger-scoping.md) recorded that the exchange rate had no consumer and answered it by nominating T11 — and T11 now serves credits, so the finding stands.
 
-Calibrating a credit rate against real AWS costs is arithmetic done by whoever writes the configuration document. The document records the outcome, and the rate used to reach it does not need storing. Whatever invoicing arrives later brings its own rates, VAT and discounts, and its own versioning, so this service should not assert a money value it has no authority over.
+Setting a credit rate is done by whoever writes the configuration document. The document records the outcome, and the rate used to reach it does not need storing. Whatever invoicing arrives later brings its own rates, VAT and discounts, and its own versioning, so this service should not assert a money value it has no authority over.
 
 What this gives up: there is no way to ask retrospectively what a workspace's usage was worth in pounds under the policy that priced it, because only a stored, versioned rate could answer that and it cannot be reconstructed later. Nobody has asked for it. If it is ever wanted, a nullable column on a table that already carries versions and dates is a cheap addition.
 
@@ -46,7 +46,7 @@ What this gives up: there is no way to ask retrospectively what a workspace's us
 
 A pricing policy is one versioned record covering every rate at once: the per-resource-type credit consumption rates and the per-category multipliers. It replaces the earlier per-SKU approach, where each `BillingItemPrice` row carried its own `valid_from`/`valid_until`. That table was dropped in revision `30ac7fce87ae`.
 
-Rates will be re-tuned repeatedly as real AWS costs become clearer. A calibration pass changes many rates together, so the set of numbers in force at a given time is the thing worth versioning. Under the per-SKU model, "what was in force last March" means reconstructing it from many independent date ranges that only coincidentally align, and nothing enforces that they do.
+Rates will be re-tuned repeatedly. A re-tuning pass changes many rates together, so the set of numbers in force at a given time is the thing worth versioning. Under the per-SKU model, "what was in force last March" means reconstructing it from many independent date ranges that only coincidentally align, and nothing enforces that they do.
 
 The config loader gains a matching job: each load either matches the current policy or mints a new version.
 

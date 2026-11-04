@@ -31,7 +31,7 @@ Handling real money is deliberately excluded. Payments and invoicing are hard, c
 
 Six choices define the system.
 
-**Credits are the unit of account, and nothing converts them to money.** Usage is converted into credits at a published rate. No payment system is involved: a user asks a hub administrator for credits and the administrator adds them to the balance. An earlier version of this design also stored what a credit was worth in pounds, for reporting and for calibrating rates against real AWS costs. That value never acquired a reader and has been removed — whatever invoicing arrives later will bring its own rates and rules, and this service should not assert a money value it has no authority over.
+**Credits are the unit of account, and nothing converts them to money.** Usage is converted into credits at a published rate. No payment system is involved: a user asks a hub administrator for credits and the administrator adds them to the balance. An earlier version of this design also stored what a credit was worth in pounds, for reporting. That value never acquired a reader and has been removed — whatever invoicing arrives later will bring its own rates and rules, and this service should not assert a money value it has no authority over.
 
 **Each workspace has one shared balance.** A workspace represents a department or organisation, and its members draw on a single pool. Workspaces can optionally set per-member spending thresholds within that pool.
 

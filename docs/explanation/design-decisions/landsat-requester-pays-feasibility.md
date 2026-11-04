@@ -148,7 +148,7 @@ These are AWS list prices. Check them before quoting.
 | Read from the Hub cluster: NAT gateway processing | About $0.045 per GB |
 | GET requests | About $0.0004 per 1,000 |
 
-A read from the Hub cluster costs about $0.065 per GB in total. This covers notebooks, workflows, ADES stage-in and titiler. A gateway VPC endpoint for S3 serves only buckets in the same region, so traffic to `usgs-landsat` in us-west-2 goes through a NAT gateway. See also [Credit rate derivation](credit-rate-derivation.md), which notes that NAT traffic is not metered today.
+A read from the Hub cluster costs about $0.065 per GB in total. This covers notebooks, workflows, ADES stage-in and titiler. A gateway VPC endpoint for S3 serves only buckets in the same region, so traffic to `usgs-landsat` in us-west-2 goes through a NAT gateway. NAT traffic is not metered today.
 
 A full Level-2 scene is about 1 GB.
 
