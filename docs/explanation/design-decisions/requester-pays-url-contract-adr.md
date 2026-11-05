@@ -8,7 +8,7 @@ tags:
   - workspaces
 last_reviewed:
 reviewed_by:
-review_notes: "Draft. All six decisions made on 2026-11-04; see Acceptance conditions."
+review_notes: "All six decisions made on 2026-11-04. PR #76 review by geodowd addressed 2026-11-05 (HEAD 403 mapping, lifetime vs file size). Acceptance conditions still open."
 ---
 # ADR-003: URL contract for requester-pays data access
 
@@ -18,7 +18,7 @@ review_notes: "Draft. All six decisions made on 2026-11-04; see Acceptance condi
 
 ## Summary
 
-A client reads an object in a requester-pays bucket at `/api/data/objects/{bucket}/{key}`, with a bearer token. The endpoint chooses the workspace to charge from the `X-EODH-Workspace` header, the `workspace` query parameter, or the token's only workspace. GET returns a 307 redirect to an S3 URL that the Hub signs, valid for 15 minutes by default. HEAD is answered by the endpoint itself. Catalogue preview images need no token, and the Hub pays for them.
+A client reads an object in a requester-pays bucket at `/api/data/objects/{bucket}/{key}`, with a bearer token. The endpoint chooses the workspace to charge from the `X-EODH-Workspace` header, the `workspace` query parameter, or the token's only workspace. GET returns a 307 redirect to an S3 URL that the Hub signs, valid for 15 minutes by default. The lifetime limits when a download can start, not how long it can take, so file size does not matter. HEAD is answered by the endpoint itself. Catalogue preview images need no token, and the Hub pays for them.
 
 ## Context
 
@@ -108,6 +108,11 @@ What each method returns, including status codes and response headers.
 
 **HEAD is answered by the endpoint itself.** A presigned URL is valid for one method only, and GDAL reuses the target of its first redirect for its later range GETs. So the endpoint never redirects a HEAD. It calls `HeadObject` as the workspace's session and returns `200` with `Content-Length`, `Content-Type`, `ETag`, `Last-Modified` and `Accept-Ranges: bytes`, or `404` if the key does not exist. CloudTrail attributes the `HeadObject` to the workspace.
 
+**A `403` from `HeadObject` becomes `404`.** The signer role has `s3:GetObject` but not `s3:ListBucket`, and the Hub cannot get `s3:ListBucket` on a bucket it does not own. Without it, S3 returns `403` for a missing key, not `404`. A `403` can also mean that the role's policy is wrong, so the endpoint:
+
+- logs the original S3 status and error code with every mapped `404`
+- calls `HeadObject` on a known key at startup, as each signing role, and fails its readiness check if that call does not return `200`
+
 | Option for a missing key on GET | Outcome | Reason |
 |---|---|---|
 | Do not check: sign and redirect | **Chosen** | GDAL and titiler always send HEAD first, so they get a 404 from the endpoint anyway. A check adds a round trip to us-west-2 (about 150 ms) and a billed request to every GET, on titiler's busiest path. |
@@ -122,8 +127,8 @@ A client that skips HEAD and asks for a missing key gets the error from S3, afte
 | `400` | Both | No workspace could be chosen (see decision 3), or the workspace name is not valid |
 | `401` | Both | No token, or the token is not valid |
 | `403` | Both | The chosen workspace is not in the token's `workspaces` claim |
-| `404` | Both | The bucket is not on the allowlist (checked before the token), or, for HEAD, the key does not exist |
-| `502` | HEAD | `HeadObject` failed for any other reason |
+| `404` | Both | The bucket is not on the allowlist (checked before the token), or, for HEAD, `HeadObject` returned `403` or `404` (see above) |
+| `502` | HEAD | `HeadObject` failed for any other reason, for example a timeout or a `5xx` from S3 |
 
 **CORS.** Responses allow any origin, the methods GET, HEAD and OPTIONS, and the request headers `Authorization`, `X-EODH-Workspace` and `Range`. Browser JavaScript still cannot read the data, because CORS is disabled on `usgs-landsat`, but navigation and downloads work.
 
@@ -131,7 +136,13 @@ A client that skips HEAD and asks for a missing key gets the error from S3, afte
 
 How long a presigned URL stays valid.
 
-A presigned URL stops working at the earlier of two times: its own expiry (`X-Amz-Expires`), and the expiry of the STS session that signed it. A GET that starts before expiry runs to completion, because S3 checks the signature when a request starts.
+A presigned URL stops working at the earlier of two times: its own expiry (`X-Amz-Expires`), and the expiry of the STS session that signed it.
+
+**The lifetime does not limit file size or download time.** S3 checks the signature only when a request starts. A GET that starts before expiry runs to completion, however long it takes. For scale, the proof of concept downloaded one surface reflectance band (`SR_B4`, 71 MB) in 35 seconds. The lifetime was not chosen from file size. It balances how long a leaked URL works against how often clients go back to the endpoint. The lifetime does limit requests that start later with the same URL:
+
+- **Range reads.** Each range read is a new request. GDAL must get a new URL from the endpoint once its cached one expires (see below).
+- **Resumed downloads.** A browser download that is paused for longer than the lifetime cannot resume. The user clicks the link again.
+- **Download managers that fetch parallel ranges.** They work while the URL is valid. A download that runs past expiry fails if it starts new range requests after that.
 
 The trade-off:
 
