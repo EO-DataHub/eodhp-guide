@@ -34,3 +34,4 @@ Lower-level design work for the credit-based accounting model in `accounting-ser
 
 - [ADR-002: Bulk download of item assets in the browser](bulk-download-adr.md) — why users download many files of one item from the browser, with scripts for large files, instead of through a backend zip service
 - [Feasibility: Landsat from Earth Search and requester-pays access](landsat-requester-pays-feasibility.md) — what it takes to serve Landsat from a requester-pays bucket and charge the cost to workspaces, with proof-of-concept results
+- [ADR-003: URL contract for requester-pays data access](requester-pays-url-contract-adr.md) — the URL, token and response contract of the endpoint that signs requester-pays reads (proposed)
