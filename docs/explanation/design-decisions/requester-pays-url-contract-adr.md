@@ -8,7 +8,7 @@ tags:
   - workspaces
 last_reviewed:
 reviewed_by:
-review_notes: "All six decisions made on 2026-11-04. PR #76 review by geodowd addressed 2026-11-05 (HEAD 403 mapping, lifetime vs file size). Acceptance conditions still open."
+review_notes: "All six decisions made on 2026-11-04. PR #76 review by geodowd addressed 2026-11-05 (HEAD 403 mapping, lifetime vs file size). Decision 6 confirmed 2026-11-11 (option 1); preview sizes measured and rate limit set, so acceptance condition 2 is met. Conditions 1 and 3 still open."
 ---
 # ADR-003: URL contract for requester-pays data access
 
@@ -157,7 +157,7 @@ Before release, a test must show that GDAL goes back to the endpoint when its ca
 
 How catalogue thumbnails are served without a login, and which objects that route accepts.
 
-Each Landsat item has two preview images in `usgs-landsat`: `thumbnail` (`*_thumb_small.jpeg`, about 5.5 KB) and `reduced_resolution_browse` (`*_thumb_large.jpeg`, larger, size not yet measured). Catalogue pages show them to users who are not logged in. Earth Search's own `/thumbnail` link works only because Element 84 pay for each view, so the Hub must not depend on it.
+Each Landsat item has two preview images in `usgs-landsat`: `thumbnail` (`*_thumb_small.jpeg`, about 10–20 KB) and `reduced_resolution_browse` (`*_thumb_large.jpeg`, about 90–180 KB). These sizes were measured on two scenes on 2026-11-11. Catalogue pages show them to users who are not logged in. Earth Search's own `/thumbnail` link works only because Element 84 pay for each view, so the Hub must not depend on it.
 
 | Option | Outcome | Reason |
 |---|---|---|
@@ -165,15 +165,21 @@ Each Landsat item has two preview images in `usgs-landsat`: `thumbnail` (`*_thum
 | Only the small thumbnail is anonymous | Not chosen | Item pages could not show the larger preview to users who are not logged in |
 | A separate route, for example `/api/data/thumbnails/...` | Not chosen | `sub_filter` cannot tell thumbnail hrefs from data hrefs, so the UI would have to build these URLs itself |
 
-**Decision: both preview images are served without a login, and the Hub pays for them.**
+**Decision: both preview images are served without a login, and the Hub pays for them.** This was confirmed on 2026-11-11.
 
 - **The URL is the same.** A preview image is at `/api/data/objects/usgs-landsat/<key>`, like any other object.
-- **A second ingress turns off the login check for preview images only.** Its path regex matches keys that end `_thumb_small.jpeg` or `_thumb_large.jpeg` in an allowlisted bucket. It has its own per-IP rate limit, so that nobody can run up the cost.
+- **A second ingress turns off the login check for preview images only.** Its path regex matches keys that end `_thumb_small.jpeg` or `_thumb_large.jpeg` in an allowlisted bucket. It has its own rate limit for each viewer (see below).
 - **The endpoint signs these with a separate thumbnail role.** That role's IAM policy allows `s3:GetObject` only on `usgs-landsat/*_thumb_small.jpeg` and `usgs-landsat/*_thumb_large.jpeg`. Even if the endpoint has a bug, the anonymous route cannot sign a read of data. CloudTrail shows thumbnail costs under that role, apart from every workspace's reads, and no workspace is charged. A separate role also avoids a fixed session name that could collide with a workspace name.
 - **A token is ignored for preview images.** A logged-in user's preview reads are also the Hub's cost, so the same image costs the same for every user.
 - **The redirect may be cached.** The 307 carries `Cache-Control: max-age=300`, so a browser reuses the presigned URL while it is valid and does not ask the endpoint again for every page view. `max-age` must stay shorter than the URL lifetime.
 
-Before release, measure the size of `*_thumb_large.jpeg` and set the rate limit from the expected cost.
+**The rate limit is 120 requests a minute for each viewer, with a burst of 60.** The burst lets a catalogue page load all its previews at once. Requests over the limit get `429`.
+
+- **The limit is keyed on the viewer's address from `X-Forwarded-For`, not on `$remote_addr`.** Requests reach nginx through CloudFront and then a Classic ELB in TCP mode, with `externalTrafficPolicy: Cluster`. So `$remote_addr`, the ingress controller's default key, is a cluster node's address. On the test cluster, all 604 access-log lines in one hour had an internal `10.x` address. A limit keyed on it would be shared by every viewer. CloudFront appends the viewer's address to `X-Forwarded-For`, so the ingress uses the last entry, and uses `$remote_addr` when the header is missing.
+- **Each ingress controller replica applies the limit separately.** With 3 replicas, one viewer can get up to 360 requests a minute.
+- **Someone who sends requests straight to the ELB, not through CloudFront, can forge the header** and so avoid the limit. The thumbnail role still allows only preview images.
+
+**Cost.** S3 charges about $0.09 per GB sent to the internet from us-west-2. One million views cost about $2 for small previews and about $16 for large ones. One viewer who uses the full limit for a day, on large previews, costs about $8.
 
 ## Consequences
 
@@ -184,24 +190,27 @@ Before release, measure the size of `*_thumb_large.jpeg` and set the rate limit 
 - **Anonymous reads of Landsat data stop.** Every data read needs a token. The user documentation must say so.
 - **The `s3://` hrefs disappear.** The proxy replaces them for every user, including users who could read the bucket with their own AWS credentials.
 - **There are three ways to name the workspace.** A client can be charged to a workspace it did not intend, if it sends a header it forgot about. The endpoint logs the chosen workspace on every request.
-- **The Hub pays for preview images.** That cost is not recharged to anyone.
+- **The Hub pays for preview images.** That cost is not recharged to anyone. Decision 6 gives the expected cost.
 
 **What it does not do.**
 
 - **It does not stop titiler from serving one user's cached redirect to another.** Titiler must check the user's access itself before every read. This is a separate change to titiler.
 - **It does not measure bytes.** The endpoint sees about two requests per file. CloudTrail data events measure the bytes, and a separate billing feed turns them into charges.
+- **The preview rate limit counts requests to the endpoint, not to S3.** A presigned preview URL works until it expires, so a client can fetch the same preview from S3 again and again until then. CloudTrail records these reads under the thumbnail role, so a budget alarm on that role's reads would show this kind of abuse.
 
 ## Acceptance conditions
 
 The ADR can move to Accepted when:
 
 1. A test shows that GDAL goes back to the endpoint when its cached redirect expires (decision 5).
-2. The size of `*_thumb_large.jpeg` is measured, and the thumbnail rate limit is set from it (decision 6).
+2. **Met on 2026-11-11.** The size of `*_thumb_large.jpeg` is measured, and the thumbnail rate limit is set from it (decision 6).
 3. The owner of feature-requests#16 agrees to use this route for download tracking (decision 1).
 
 ## Where the detail lives
 
 - [Feasibility: Landsat from Earth Search and requester-pays access](landsat-requester-pays-feasibility.md): the problem, costs and proof-of-concept results
 - [EO-DataHub/requester-pays-poc](https://github.com/EO-DataHub/requester-pays-poc) (private): the proof-of-concept code and `RESULTS.md`
+- [EO-DataHub/eodhp-data-objects](https://github.com/EO-DataHub/eodhp-data-objects): the endpoint
+- `apps/data-objects` in [eodhp-argocd-deployment](https://github.com/EO-DataHub/eodhp-argocd-deployment): the deployment, IAM roles and both ingresses
 - [eodhp-sparkgeo-pm#259](https://github.com/EO-DataHub/eodhp-sparkgeo-pm/issues/259): the findings and the work plan
 - [feature-requests#16](https://github.com/EO-DataHub/feature-requests/issues/16): download tracking
