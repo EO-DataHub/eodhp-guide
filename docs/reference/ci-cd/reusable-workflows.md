@@ -39,8 +39,8 @@ All workflows live under `.github/workflows/` and are triggered via `workflow_ca
 
 | Workflow | Purpose |
 |----------|---------|
-| `ecr-publish.yaml` | Build and push a Docker image to AWS **public** ECR. |
-| `s3-publish.yaml` | Sync a build-artifact directory to an S3 bucket. |
+| `ecr-publish.yaml` | Build and push a Docker image to AWS **public** ECR. See [Publish from GitHub Actions to AWS](../../how-to/ci-cd/publish-from-github-actions.md). |
+| `s3-publish.yaml` | Sync a build-artifact directory to an S3 bucket. See [Publish from GitHub Actions to AWS](../../how-to/ci-cd/publish-from-github-actions.md). |
 | `security.yaml` | Security scan: Trivy filesystem scan + Semgrep SAST. Also runs on `pull_request`. |
 | `qa-python.yaml` | Python QA via `uv`: Ruff lint, Ruff format check, Pyright. |
 | `unit-tests-python-uv.yaml` | Python unit tests with `uv` + pytest. |

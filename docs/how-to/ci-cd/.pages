@@ -1,0 +1,5 @@
+title: CI/CD
+
+nav:
+  - Overview: index.md
+  - Publish from GitHub Actions to AWS: publish-from-github-actions.md

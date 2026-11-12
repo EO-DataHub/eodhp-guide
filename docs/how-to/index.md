@@ -30,6 +30,10 @@ Data ingestion, catalogue management, and tile services.
 
 Keycloak, user management, tokens, and federation.
 
+## [CI/CD](ci-cd/index.md)
+
+Publishing images and static sites from GitHub Actions.
+
 ## Notebooks & workspaces
 
 - [Releasing new notebook images](notebooks-and-workspaces/releasing-new-notebook-images.md)

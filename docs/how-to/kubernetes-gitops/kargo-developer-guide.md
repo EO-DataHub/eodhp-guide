@@ -64,6 +64,8 @@ Steps for progressing freight, onboarding apps, and Kustomize overlays in the de
 
 ### Deploying a dev/feature branch image
 
+Dev images built by the shared publish workflow go to `eodh/dev/<image>`, which these warehouses do not watch yet. See [Publish a dev image](../ci-cd/publish-from-github-actions.md#publish-a-dev-image).
+
 1. Push your image with any tag to ECR (e.g. `my-feature-branch`, `fix-123`, etc.)
 2. Open the [Kargo UI](https://kargo.eodatahub.org.uk) and navigate to the `eodhp` project
 3. Find the `<app>-dev-images` warehouse
