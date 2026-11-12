@@ -128,6 +128,7 @@ A client that skips HEAD and asks for a missing key gets the error from S3, afte
 | `401` | Both | No token, or the token is not valid |
 | `403` | Both | The chosen workspace is not in the token's `workspaces` claim |
 | `404` | Both | The bucket is not on the allowlist (checked before the token), or, for HEAD, `HeadObject` returned `403` or `404` (see above) |
+| `429` | Both | The rate limit for a viewer has been exceeded |
 | `502` | HEAD | `HeadObject` failed for any other reason, for example a timeout or a `5xx` from S3 |
 
 **CORS.** Responses allow any origin, the methods GET, HEAD and OPTIONS, and the request headers `Authorization`, `X-EODH-Workspace` and `Range`. Browser JavaScript still cannot read the data, because CORS is disabled on `usgs-landsat`, but navigation and downloads work.
