@@ -200,7 +200,7 @@ Watches container image registries and Helm chart repositories for new semver ve
 
 ### `<app>-dev-images` (created when any image has `enableDevTags: true`)
 
-Watches the same image repos but configured for dev/feature branch images.
+Watches dev/feature branch images. An image with `enableDevTags: true` is watched in its `dev/` repository: `public.ecr.aws/eodh/my-image` becomes `public.ecr.aws/eodh/dev/my-image`.
 
 - **`freightCreationPolicy: Manual`** -- freight is never auto-created; you must manually create it in the UI
 - Images with `enableDevTags: true` use `imageSelectionStrategy: NewestBuild` and `discoveryLimit: 20`
@@ -277,6 +277,8 @@ Clears the `./out` directory to ensure a clean build.
 
 Updates container image references in `./src/<appPath>/envs/<env>` using the standard Kustomize image transformer. This handles images specified in deployment manifests.
 
+On dev stages a second `kustomize-set-image` step per app (alias: `update-dev-images-<app>`) replaces each release image name with its `dev/` repository when the freight carries the `dev/` image.
+
 ### Step 4: Chart version updates (conditional, per app/chart)
 
 For each app that defines `charts`, a `yaml-update` step updates the `version` field in the `HelmChartInflationGenerator` file(s). Skipped for dev stages (`isDevStage == "true"`). Handles both `generatorFile` (single) and `generatorFiles` (multiple).
@@ -286,6 +288,8 @@ For each app that defines `charts`, a `yaml-update` step updates the `version` f
 For images with `customPath` defined (e.g. Keycloak's `spec.image`, Jupyter's `hub.image.tag`), a `yaml-update` step writes the new image reference to the specified file and key. Supports two `valueType` modes:
 - `tag` -- writes just the image tag (e.g. `4.2.0-0.2.1`)
 - `full` (default) -- writes the full image reference (e.g. `public.ecr.aws/eodh/eodh-keycloak:26.0.4-0.2.5`)
+
+On dev stages each of these has a matching step (alias: `update-custom-dev-image-<app>-<n>`) that writes the `dev/` image instead when the freight carries one.
 
 ### Step 6: Release URL updates (conditional, per app/release)
 

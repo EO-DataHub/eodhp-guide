@@ -34,7 +34,7 @@ Steps for progressing freight, onboarding apps, and Kustomize overlays in the de
 
 ### Dev / feature image
 
-1. Push your image with any tag to ECR
+1. Push to a branch; the image goes to `public.ecr.aws/eodh/dev/<image>`
 2. In the Kargo UI, navigate to the `<app>-dev-images` warehouse
 3. Refresh the warehouse, then click **Create Freight** -- you must **select image tags for ALL images** in the warehouse, not just the one you changed
 4. Promote `<app>-config` freight that is currently promoted in test stage (skip this if the freight is already promoted in dev)
@@ -64,7 +64,7 @@ Steps for progressing freight, onboarding apps, and Kustomize overlays in the de
 
 ### Deploying a dev/feature branch image
 
-1. Push your image with any tag to ECR (e.g. `my-feature-branch`, `fix-123`, etc.)
+1. Push to a branch other than the default one. The shared publish workflow pushes `public.ecr.aws/eodh/dev/<image>` tagged `<branch>` and `<branch>-<short sha>`. See [Publish a dev image](../ci-cd/publish-from-github-actions.md#publish-a-dev-image).
 2. Open the [Kargo UI](https://kargo.eodatahub.org.uk) and navigate to the `eodhp` project
 3. Find the `<app>-dev-images` warehouse
 4. Click **Refresh** to pick up the new tag
