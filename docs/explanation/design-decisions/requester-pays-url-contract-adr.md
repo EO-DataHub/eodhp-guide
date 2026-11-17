@@ -8,7 +8,7 @@ tags:
   - workspaces
 last_reviewed:
 reviewed_by:
-review_notes: "All six decisions made on 2026-11-04. PR #76 review by geodowd addressed 2026-11-05 (HEAD 403 mapping, lifetime vs file size). Decision 6 confirmed 2026-11-11 (option 1); preview sizes measured and rate limit set, so acceptance condition 2 is met. Conditions 1 and 3 still open."
+review_notes: "All six decisions made on 2026-11-04. PR #76 review by geodowd addressed 2026-11-05 (HEAD 403 mapping, lifetime vs file size). Decision 6 confirmed 2026-11-11 (option 1); preview sizes measured and rate limit set, so acceptance condition 2 is met. Conditions 1 and 3 still open. Billing feed recorded 2026-11-17 (live on test)."
 ---
 # ADR-003: URL contract for requester-pays data access
 
@@ -196,7 +196,10 @@ Each Landsat item has two preview images in `usgs-landsat`: `thumbnail` (`*_thum
 **What it does not do.**
 
 - **It does not stop titiler from serving one user's cached redirect to another.** Titiler must check the user's access itself before every read. This is a separate change to titiler.
-- **It does not measure bytes.** The endpoint sees about two requests per file. CloudTrail data events measure the bytes, and a separate billing feed turns them into charges.
+- **It does not measure bytes.** The endpoint sees about two requests per file. CloudTrail data events measure the bytes, and a separate billing feed turns them into charges. The feed is part of the S3 collector in `eodhp-accounting-s3-usage` (live on test since 2026-11-17):
+    - For each period, one Athena query over the trail totals `bytesTransferredOut` per workspace. It counts only successful `GetObject` events signed by the cluster's signer role, so thumbnail reads and failed reads are not charged.
+    - Each workspace gets one `BillingEvent` per period with SKU `REQUESTER-PAYS-DATA-TRANSFER`, in GB. The price is 0.08 credits per GB, about the AWS cost, before the account type's multiplier.
+    - Charges reach the ledger 3 to 7 hours after the read. The collector charges in 4-hour periods and waits 3 hours after each period ends, because the S3 access logs that it also reads can arrive hours late. CloudTrail arrives in about 15 minutes, so requester-pays reads could have a shorter period and wait if the delay matters.
 - **The preview rate limit counts requests to the endpoint, not to S3.** A presigned preview URL works until it expires, so a client can fetch the same preview from S3 again and again until then. CloudTrail records these reads under the thumbnail role, so a budget alarm on that role's reads would show this kind of abuse.
 
 ## Acceptance conditions
@@ -212,6 +215,7 @@ The ADR can move to Accepted when:
 - [Feasibility: Landsat from Earth Search and requester-pays access](landsat-requester-pays-feasibility.md): the problem, costs and proof-of-concept results
 - [EO-DataHub/requester-pays-poc](https://github.com/EO-DataHub/requester-pays-poc) (private): the proof-of-concept code and `RESULTS.md`
 - [EO-DataHub/eodhp-data-objects](https://github.com/EO-DataHub/eodhp-data-objects): the endpoint
+- [EO-DataHub/eodhp-accounting-s3-usage](https://github.com/EO-DataHub/eodhp-accounting-s3-usage): the billing feed, and in its README the timing of charges
 - `apps/data-objects` in [eodhp-argocd-deployment](https://github.com/EO-DataHub/eodhp-argocd-deployment): the deployment, IAM roles and both ingresses
 - [eodhp-sparkgeo-pm#259](https://github.com/EO-DataHub/eodhp-sparkgeo-pm/issues/259): the findings and the work plan
 - [feature-requests#16](https://github.com/EO-DataHub/feature-requests/issues/16): download tracking
