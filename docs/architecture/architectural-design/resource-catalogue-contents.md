@@ -66,12 +66,7 @@ Each data stream must provide catalogue metadata which can be harvested by EODH 
 
 ##### 3.5.4.1 STAC Harvester-Based Harvesting
 
-In many cases, data stream metadata is already provided as a STAC catalogue which EODH should harvest. The STAC Harvester is a containerized CLI-based tool which can be configured to be run on a schedule, such as once per day. This can be done in one of two ways: 
-
-- By creating a CronJob Kubernetes resource using ArgoCD, 
-- By creating a harvester configuration in a harvested Git repo. 
-
-In the latter case a STACHarvester custom resource is created in a workspace, along with the required Argo Events EventSource and Sensor to trigger harvesting on a schedule. There is currently little advantage to this second option which exists as a step towards user managed harvesters, but it is the method used for harvesting the CEDA catalogue. 
+In many cases, data stream metadata is already provided as a STAC catalogue which EODH should harvest. The STAC Harvester is a containerized CLI-based tool which is run on a schedule, such as once per day, by a CronJob Kubernetes resource created using ArgoCD. This is the method used for harvesting the CEDA catalogue, with one CronJob per collection.
 
 ##### 3.5.4.2 Custom Harvester
 
