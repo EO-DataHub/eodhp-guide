@@ -58,12 +58,10 @@ Raw data from several data sources is converted into STAC by harvesters. which r
 - Container image published to public.ecr.aws/eodh/stac-planet-api AWS ECR
 
 ##### STAC harvester
-- Harvests STAC data from external STAC catalogues as specified in the stac harvester configuration repository
-- The STAC harvester is configured in the https://github.com/EO-DataHub/stac-harvester-configurations repository. 
-- Stac harvesters are created in the environment for each specified catalogue by the stac harvester ingester. Code available in the https://github.com/EO-DataHub/stac-harvester-ingester repository.
-- STAC harvester ingester container image published to public.ecr.aws/eodh/stac-harvester-ingester AWS ECR
+- Harvests STAC data from external STAC catalogues
+- Each harvested catalogue or collection is a Kubernetes CronJob. They are listed, with their schedules, in `apps/resource-catalogue/base/stac-harvesters/values.yaml` in the [ArgoCD deployment repository](https://github.com/EO-DataHub/eodhp-argocd-deployment)
 - STAC harvester code available in the https://github.com/EO-DataHub/stac-harvester repository
-- STAC harvester ingester container image published to public.ecr.aws/eodh/stac-harvester AWS ECR
+- STAC harvester container image published to public.ecr.aws/eodh/stac-harvester AWS ECR
 
 ##### Workspace file harvester
 - Harvests user-supplied files into the user data directory
@@ -156,8 +154,6 @@ flowchart TB
 - [**planet-harvester**](https://github.com/EO-DataHub/planet-harvester): Collects data from Planet API and converts to STAC format
 - [**airbus-harvester**](https://github.com/EO-DataHub/airbus-harvester): Collects data from Airbus and converts to STAC format
 - [**stac-harvester**](https://github.com/EO-DataHub/stac-harvester): Harvests STAC data from external catalogues
-- [**configuration-harvester**](https://github.com/EO-DataHub/eodhp-git-change-scanner): Scans stac-harvester-configurations repository
-- [**stac-harvester-ingester**](https://github.com/EO-DataHub/stac-harvester-ingester): Creates Kubernetes resources for STAC harvesters
 - [**harvest-transformer**](https://github.com/EO-DataHub/harvest-transformer): Transforms raw STAC data into standardized EODH format
 - [**stac-fastapi-ingester**](https://github.com/EO-DataHub/stac-fastapi-ingester/tree/main/stac_fastapi_ingester): Performs final ingestion into the resource catalogue
 
@@ -167,8 +163,6 @@ flowchart TB
 - `transformed`: Standard queue for transformed messages from `harvested` topic
 - `harvested_bulk`: Bulk queue for large harvests (Airbus, STAC catalogues)
 - `transformed_bulk`: Bulk queue for transformed messages from `harvested_bulk` topic
-- `harvested_stac`: Queue for STAC harvester configuration messages
-- `transformed_stac`: Queue for transformed STAC harvester configuration messages
 
 #### Workflow data
 1. A pulsar message is generated as part of a workflow or similar on the `harvested` topic.
@@ -188,13 +182,10 @@ The Planet catalogue is too big to fully harvest and most of the Planet catalogu
 3. The pulsar message is passed to the [stac-fastapi-ingester](https://github.com/EO-DataHub/stac-fastapi-ingester/tree/main/stac_fastapi_ingester) which ingests the messages into the catalogue.
 
 #### STAC catalogue from API or git repository
-1. A catalogue (or collection) is defined in [stac-harvester-configurations](https://github.com/EO-DataHub/stac-harvester-configurations). 
-2. This is ingested via the [configuration-harvester](https://github.com/EO-DataHub/eodhp-git-change-scanner) CronJob which generates a pulsar messages on the `harvested_stac` topic when it runs.
-3. The pulsar message is passed through the [STAC harvest transformer](https://github.com/EO-DataHub/harvest-transformer) which generates a message on the `transformed_stac` topic. 
-4. The [stac-harvester-ingester](https://github.com/EO-DataHub/stac-harvester-ingester) then receives the message and creates a [STACHarvester](https://github.com/EO-DataHub/eodhp-argocd-deployment/blob/main/apps/resource-catalogue/base/git-harvester/crds.yaml), a [sensor](https://argoproj.github.io/argo-events/concepts/sensor/) and an [event source](https://argoproj.github.io/argo-events/concepts/event_source/). The STACHarvester is a Custom Resource which contains fields for the provided catalogue's URL, source and target. This can be accessed by other kubernetes resources.
-5. When the event is triggered on schedule, a [stac-harvester](https://github.com/EO-DataHub/stac-harvester) job runs which harvests from the catalogue defined in the corresponding STACHarvester CRD. Pulsar messages are generated as part of this process and are sent with the `harvested_bulk` topic.
-6. The pulsar message is passed through the [STAC harvest transformer](https://github.com/EO-DataHub/harvest-transformer) which generates messages on the `transformed_bulk` topic.
-7. The pulsar message is passed to the [stac-fastapi-ingester](https://github.com/EO-DataHub/stac-fastapi-ingester/tree/main/stac_fastapi_ingester) which ingests the messages into the catalogue.
+1. A catalogue (or collection) is added to `apps/resource-catalogue/base/stac-harvesters/values.yaml` in the [ArgoCD deployment repository](https://github.com/EO-DataHub/eodhp-argocd-deployment) with its URL and a cron schedule. ArgoCD creates a CronJob for it.
+2. On schedule, the CronJob runs a [stac-harvester](https://github.com/EO-DataHub/stac-harvester) job which harvests from that URL. Pulsar messages are generated as part of this process and are sent with the `harvested_bulk` topic.
+3. The pulsar message is passed through the [STAC harvest transformer](https://github.com/EO-DataHub/harvest-transformer) which generates messages on the `transformed_bulk` topic.
+4. The pulsar message is passed to the [stac-fastapi-ingester](https://github.com/EO-DataHub/stac-fastapi-ingester/tree/main/stac_fastapi_ingester) which ingests the messages into the catalogue.
 
 #### Airbus catalogues
 Airbus catalogues share much of the pipeline above. Steps are as follows:

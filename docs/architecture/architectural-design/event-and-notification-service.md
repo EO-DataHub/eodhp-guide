@@ -11,7 +11,7 @@ tags:
 
 Argo Events and Argo Workflows are installed as part of the incomplete ENS. Using Kubernetes custom resources, event sources and sensors can be configured which receive event triggers and trigger downstream actions. The possible event sources include GitHub and GitLab webhooks, Pulsar messages and calendar events. The actions that can be triggered include Argo Workflows and Kubernetes Jobs. 
 
-Currently, event sources are used to detect changes to Git repos containing harvestable files, and to trigger on a daily schedule. The sensors attached to these are used to trigger Jobs containing harvest pipeline harvesters. This is used for harvesting the Airbus and CEDA catalogues each day, and for harvesting platform workflow definitions from a Git repository. 
+Currently, event sources are used to detect changes to Git repos containing harvestable files, and to trigger on a daily schedule. The sensors attached to these are used to trigger Jobs containing harvest pipeline harvesters. This is used for harvesting the Airbus and Open Cosmos catalogues, and for harvesting platform workflow definitions from a Git repository. 
 
 This is intended to be extensible in various ways. 
 

@@ -163,35 +163,26 @@ SearchService --> NonSTACC
 ```
 
 
-### STAC Harvester configuration ingest
+### STAC Harvester configuration
 
-This configures persistent 'harvesters' into the system based on a configuration file in Git. The configuration is stored persistently in the form of a Kubernetes custom resource, STACHarvester.
+Each harvested STAC catalogue or collection is a Kubernetes CronJob which runs the STAC Harvester with the source URL as an argument. The CronJobs are listed in `apps/resource-catalogue/base/stac-harvesters/values.yaml` in the ArgoCD deployment repository.
 
 ```mermaid
 flowchart TB
-   subgraph GHCatRepo[GitHub catalogue repo]
-      harvesterconfigfile[STAC Harvester config file]
+   subgraph DeployRepo[ArgoCD deployment repo]
+      harvesterlist[STAC harvester list]
    end
-
-
-   githarvester((Git Harvester))
-   transformer((Transformers))
-   harvesterconfigingester((Harvester\nconfig\ningester))
 
    subgraph Kubernetes
-      subgraph WSNamespace[Workspace Namespace]
-         stacharvestercr[STACHarvester CR]
-      end
+      cronjob[CronJob per catalogue or collection]
    end
 
-
-   harvesterconfigfile --> |harvest config| githarvester --> |Pulsar msg + config| transformer  --> |Pulsar msg + config| harvesterconfigingester  --> |creates/manages| stacharvestercr
-   
+   harvesterlist --> |ArgoCD| cronjob
 
    UpstreamSTAC[Upstream STAC API]
    stacharvester[STAC Harvester]
    stacharvesternext[...]
 
-   stacharvestercr --> |harvest config| stacharvester --> stacharvesternext
+   cronjob --> |runs on schedule| stacharvester --> stacharvesternext
    UpstreamSTAC --> stacharvester
 ```
